@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>programming on Mem.Wey&#39;s Gitpage</title>
+    <link>https://memwey.github.io/categories/programming/</link>
+    <description>Recent content in programming on Mem.Wey&#39;s Gitpage</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 14 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://memwey.github.io/categories/programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Yes</title>
+      <link>https://memwey.github.io/2018/yes/</link>
+      <pubDate>Fri, 14 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://memwey.github.io/2018/yes/</guid>
+      <description>最近看到一个有趣的GNU/Linux命令, yes
+先man一下
+YES(1) BSD General Commands Manual YES(1) NAME yes -- be repetitively affirmative SYNOPSIS yes [expletive] DESCRIPTION yes outputs expletive, or, by default, ``y&#39;&#39;, forever. HISTORY The yes command appeared in 4.0BSD. 4th Berkeley Distribution June 6, 1993 4th Berkeley Distribution (END)  emmmmm,在macOS下并没有--help或者-h的选项
+试试Linux下呢
+➜ / yes --help Usage: yes [STRING]... or: yes OPTION Repeatedly output a line with all specified STRING(s), or &#39;y&#39;. --help display this help and exit --version output version information and exit GNU coreutils online help: &amp;lt;https://www.</description>
+    </item>
+    
+    <item>
+      <title>红黑树笔记</title>
+      <link>https://memwey.github.io/2016/red-black-tree/</link>
+      <pubDate>Tue, 13 Sep 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://memwey.github.io/2016/red-black-tree/</guid>
+      <description>最近研究了一下红黑树的一些性质和思想,在这里记录一下.
+Map,或者在Python等一些语言中叫做dictionary的常用的以键值对形式储存的数据结构一般有两种实现方式,在C++的STL中使用了红黑树的方式,而在Python中使用了哈希表的方式.
+一般认为采用哈希表的方式查找删除的时间复杂度为O(1),而红黑树为O(logn).
+Python中的哈希表使用开放寻址法解决冲突.
+对于普通的二叉查找树来说,查找和插入的时间复杂度在最坏的情况下可能会变成O(n),即完全偏向一边的不平衡情况使其成为一个单链表.如果只是在树的叶子上增加节点而不进行其他的调整,很容易会使只向下增长的树不平衡.为了保证O(logn)的时间复杂度,我们需要一种动态的机制,来调整树的父节点,乃至于根节点.
+红黑树是一种动态调整的实现方式.红黑树其实是在2,3-树的基础上实现的.他们也完全可以等价的转换.不过2,3-树在程序的实现上比较复杂,而且查找操作也和二叉搜索树有一些不同,所以在程序实现中一般使用红黑树.
+2,3-树和红黑树他们共同的思想是,将树的叶子节点上的操作造成的影响,逐步的传递给父节点,按照一定的方式对当前子树进行调整.父节点再传递给它的父节点,调整更大一些的子树.最终传递到根节点,调整整颗树.
+可以这样理解,在红黑树中,用红色来标记正在累计调整的节点.当节点M的两个子节点均被标记,则M取消子节点的标记,并标记自己,使调整向根节点传递.</description>
+    </item>
+    
+    <item>
+      <title>在CentOS上使用较新的软件</title>
+      <link>https://memwey.github.io/2016/centos-latest-software/</link>
+      <pubDate>Tue, 02 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://memwey.github.io/2016/centos-latest-software/</guid>
+      <description>公司的服务器都是CentOS的,带的软件都比较旧,让我这个不更新会死星人很难过啊.
+开玩笑的,主要问题是git版本太旧, clone的时候会报错,然后也需要python3.5.在git上面发现ius来解决这个问题.
+ius是一个社区项目,目的是为Linux的企业发行版提供一些更新版本的RPM包.
+sudo yum install epel-release sudo yum install https://centos6.iuscommunity.org/ius-release.rpm  为了解决一些冲突和共存的问题,有一些package在ius中的包名有一些改动
+sudo yum install git2u sudo yum install python35u  一般的命名规则是
+{name}{major_version}{minor_version}u
+这样就可以在CentOS上使用较新的软件啦.</description>
+    </item>
+    
+    <item>
+      <title>Linux后台命令</title>
+      <link>https://memwey.github.io/2016/linux-backgroud/</link>
+      <pubDate>Tue, 14 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://memwey.github.io/2016/linux-backgroud/</guid>
+      <description>最近在跑DHT网络拟真的时候涉及到一些linux后台运行的一些东西,现在总结一下
+例如
+nohup ../src/OverSim -cChordChurn -uCmdenv &amp;gt; out.file 2&amp;gt;&amp;amp;1 &amp;amp;  使得 ../src/OverSim -cChordChurn -uCmdenv 命令在后台运行,并将stderr重定向到stdout中然后再将stdout重定向到out.file,并且在当前终端关闭时仍然运行
+具体说一下吧
+nohup 退出终端的时候,一般在终端中运行的进程会随之关闭,因为此时终端中的子进程会收到SIGHUP信号.而nohup使得进程忽略所有SIGHUP信号.stdout默认会重定向到nohup.out文件中
+&amp;amp; 在命令中末尾加入&amp;amp;符号,使进程在后台运行
+2&amp;gt;&amp;amp;1 放在&amp;gt;后面的&amp;amp;,表示重定向的目标不是一个文件,而是一个文件描述符,文件描述符
+ 1 =&amp;gt; stdout 2 =&amp;gt; stderr 0 =&amp;gt; stdin  其他一些命令和操作 Control+z可以发出SIGSTOP信号,使当前前台进程暂停并放入后台
+fg [job_id]使进程在前台运行
+bg [job_id]使进程在后台运行
+jobs 查看后台进程</description>
+    </item>
+    
+  </channel>
+</rss>

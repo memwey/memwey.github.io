@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on Mem.Wey&#39;s Github Pages</title>
+    <link>https://memwey.github.io/tags/linux/</link>
+    <description>Recent content in Linux on Mem.Wey&#39;s Github Pages</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-hans</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Fri, 14 Dec 2018 23:34:15 +0800</lastBuildDate>
+    
+	<atom:link href="https://memwey.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Yes</title>
+      <link>https://memwey.github.io/posts/programming/yes/</link>
+      <pubDate>Fri, 14 Dec 2018 23:34:15 +0800</pubDate>
+      
+      <guid>https://memwey.github.io/posts/programming/yes/</guid>
+      <description>最近看到一个有趣的GNU/Linux命令, yes 先man一下 YES(1) BSD General Commands Manual YES(1) NAME yes -- be repetitively affirmative SYNOPSIS yes [expletive] DESCRIPTION yes outputs expletive, or, by default, ``y&amp;#39;&amp;#39;, forever. HISTORY The yes command appeared in 4.0BSD. 4th Berkeley Distribution June 6, 1993 4th Berkeley Distribution (END) e</description>
+    </item>
+    
+    <item>
+      <title>在CentOS上使用较新的软件</title>
+      <link>https://memwey.github.io/posts/programming/centos-latest-software/</link>
+      <pubDate>Tue, 02 Aug 2016 23:30:33 +0800</pubDate>
+      
+      <guid>https://memwey.github.io/posts/programming/centos-latest-software/</guid>
+      <description>公司的服务器都是CentOS的,带的软件都比较旧,让我这个不更新会死星人很难过啊. 开玩笑的,主要问题是git版本太旧, clone的时候会报错</description>
+    </item>
+    
+    <item>
+      <title>Linux后台命令</title>
+      <link>https://memwey.github.io/posts/programming/linux-backgroud/</link>
+      <pubDate>Wed, 15 Jun 2016 23:28:24 +0800</pubDate>
+      
+      <guid>https://memwey.github.io/posts/programming/linux-backgroud/</guid>
+      <description>最近在跑DHT网络拟真的时候涉及到一些linux后台运行的一些东西,现在总结一下 例如 nohup ../src/OverSim -c ChordChurn -u Cmdenv &amp;gt; out.file 2&amp;gt;&amp;amp;1 &amp;amp; 使得 ../src/OverSim -c ChordChurn -u Cmdenv 命令在后台运行,并将s</description>
+    </item>
+    
+  </channel>
+</rss>
