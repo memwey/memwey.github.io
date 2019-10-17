@@ -14,10 +14,10 @@
     
     <item>
       <title>红黑树笔记</title>
-      <link>https://memwey.github.io/posts/programming/red-black-tree/</link>
+      <link>https://memwey.github.io/posts/code/red-black-tree/</link>
       <pubDate>Tue, 13 Sep 2016 23:32:27 +0800</pubDate>
       
-      <guid>https://memwey.github.io/posts/programming/red-black-tree/</guid>
+      <guid>https://memwey.github.io/posts/code/red-black-tree/</guid>
       <description>最近研究了一下红黑树的一些性质和思想,在这里记录一下. Map,或者在Python等一些语言中叫做dictionary的常用的以键值对形式储存</description>
     </item>
     

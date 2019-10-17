@@ -3,27 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://memwey.github.io/tags/database/</loc>
-    <lastmod>2019-09-21T15:22:58+08:00</lastmod>
+    <loc>https://memwey.github.io/friends/</loc>
+    <lastmod>2019-10-17T20:31:04+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://memwey.github.io/</loc>
-    <lastmod>2019-09-21T15:22:58+08:00</lastmod>
+    <lastmod>2019-10-17T20:31:04+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://memwey.github.io/posts/programming/oh-mysql-in-subquery/</loc>
-    <lastmod>2019-09-21T15:22:58+08:00</lastmod>
+    <loc>https://memwey.github.io/tags/database/</loc>
+    <lastmod>2019-10-14T11:12:33+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://memwey.github.io/posts/code/oh-mysql-emoji/</loc>
+    <lastmod>2019-10-14T11:12:33+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://memwey.github.io/posts/</loc>
-    <lastmod>2019-09-21T15:22:58+08:00</lastmod>
+    <lastmod>2019-10-14T11:12:33+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://memwey.github.io/tags/</loc>
+    <lastmod>2019-10-14T11:12:33+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://memwey.github.io/posts/code/oh-mysql-in-subquery/</loc>
     <lastmod>2019-09-21T15:22:58+08:00</lastmod>
   </url>
   
@@ -33,7 +43,7 @@
   </url>
   
   <url>
-    <loc>https://memwey.github.io/posts/programming/yes/</loc>
+    <loc>https://memwey.github.io/posts/code/yes/</loc>
     <lastmod>2018-12-14T23:34:15+08:00</lastmod>
   </url>
   
@@ -58,17 +68,17 @@
   </url>
   
   <url>
-    <loc>https://memwey.github.io/posts/programming/red-black-tree/</loc>
+    <loc>https://memwey.github.io/posts/code/red-black-tree/</loc>
     <lastmod>2016-09-13T23:32:27+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://memwey.github.io/posts/programming/centos-latest-software/</loc>
+    <loc>https://memwey.github.io/posts/code/centos-latest-software/</loc>
     <lastmod>2016-08-02T23:30:33+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://memwey.github.io/posts/programming/linux-backgroud/</loc>
+    <loc>https://memwey.github.io/posts/code/linux-backgroud/</loc>
     <lastmod>2016-06-15T23:28:24+08:00</lastmod>
   </url>
   
