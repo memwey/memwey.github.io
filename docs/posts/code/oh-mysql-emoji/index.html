@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#494f5c">
+	<meta name="msapplication-TileColor" content="#494f5c">
+<meta itemprop="name" content="Oh MySQL Emoji">
+<meta itemprop="description" content="又是关于 MySQL 的, 标题来自于 &lt;轮到你了&gt; 这部烂尾日剧, 里面非常魔性的 Oh~my~Ju~lia~ 在MySQL里面如何保存 Emoji, 这个问题搜一搜很容易找到答案, 设置 CHARSET">
+<meta itemprop="datePublished" content="2019-10-14T11:12:33+08:00" />
+<meta itemprop="dateModified" content="2020-11-24T21:09:59+08:00" />
+<meta itemprop="wordCount" content="1955">
+
+
+
+<meta itemprop="keywords" content="Database," />
+<meta property="og:title" content="Oh MySQL Emoji" />
+<meta property="og:description" content="又是关于 MySQL 的, 标题来自于 &lt;轮到你了&gt; 这部烂尾日剧, 里面非常魔性的 Oh~my~Ju~lia~ 在MySQL里面如何保存 Emoji, 这个问题搜一搜很容易找到答案, 设置 CHARSET" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://memwey.github.io/posts/code/oh-mysql-emoji/" />
+<meta property="article:published_time" content="2019-10-14T11:12:33+08:00" />
+<meta property="article:modified_time" content="2020-11-24T21:09:59+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Oh MySQL Emoji"/>
+<meta name="twitter:description" content="又是关于 MySQL 的, 标题来自于 &lt;轮到你了&gt; 这部烂尾日剧, 里面非常魔性的 Oh~my~Ju~lia~ 在MySQL里面如何保存 Emoji, 这个问题搜一搜很容易找到答案, 设置 CHARSET"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Oh MySQL Emoji</title>
+	<link rel="stylesheet" href="https://memwey.github.io/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css" integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin="anonymous">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://memwey.github.io/">Mem.Wey&#39;s Github Pages</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+				<a href="https://memwey.github.io/posts/">Posts</a>
+				<a href="https://memwey.github.io/friends/">Friends</a>
+				<a href="https://memwey.github.io/about/">About</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/memwey" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://twitter.com/Mem_Wey" target="_blank" rel="noopener me" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://www.linkedin.com/in/memwey" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://memwey.github.io/posts/">Posts</a></li>
+			<li><a href="https://memwey.github.io/friends/">Friends</a></li>
+			<li><a href="https://memwey.github.io/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 14, 2019</span></div>
+				<h1>Oh MySQL Emoji</h1>
+			</header>
+			<div class="content">
+				<p>又是关于 <code>MySQL</code> 的, 标题来自于 &lt;轮到你了&gt; 这部<del>烂尾</del>日剧, 里面非常魔性的 Oh~my~Ju~lia~</p>
+<p>在MySQL里面如何保存 <a href="https://en.wikipedia.org/wiki/Emoji">Emoji</a>, 这个问题搜一搜很容易找到答案, 设置 <strong>CHARSET</strong> 为 <code>utf8mb4</code>, 看来天下苦 <code>MySQL</code> 久矣.</p>
+<h2 id="基础知识">基础知识<a href="#基础知识" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>计算机最早是美国人发明的, 那时的编码都是 <code>ASCII</code> 码, 毕竟英文字符加上标点符号也就那么多嘛, 一个字节绰绰有余.</p>
+<p>但是随着计算机的发展, 计算机面向的国家和语言越来越多, 一个字节根本不够用了, 于是就有了很多面向特定语言的编码, 比如汉字的<code>GBK</code>, <code>Big5</code>, 韩文的 <code>EUC-KR</code>, 日文的 <code>Shift_JIS</code> 什么的. 总体思想是, 既然一个字节不够用, 那就多几个字节就是了嘛.</p>
+<p>但是问题又出现了, 同一个编码在不同语言中会有不同的含义,比如韩文编码 <code>EUC-KR</code> 中 <code>한국어</code> 的编码值正好对应着汉字编码 <code>GBK</code> 中的 <code>茄惫绢</code>. 还有那个著名的 <code>瓣B变巨肚</code>, 也正是同样的原因. 这样仿佛就变成了巴别塔的故事. 人们虽然用着同样的二进制编码, 但是却表达着不同的意思; 就像人们虽然同样发出声带的震动, 但是却无法互相理解对方的话语.</p>
+<p><a href="https://en.wikipedia.org/wiki/International_Organization_for_Standardization">国际标准化组织</a> 和 <a href="https://en.wikipedia.org/wiki/Unicode_Consortium">统一码联盟</a> 意识到, 这样下去是不行的, 不如搞一个超大的字符集, 然后把人类所有字符都弄进去, 这样人类都可以用同一个标准了. 于是, 他们分别制定了 <a href="https://en.wikipedia.org/wiki/Universal_Coded_Character_Set">USC</a> 和 <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a>. 当然, 如果两个标准各搞各的, 那就和他们最初的想法背道而驰了, 所以目前这两个字符集在实际使用中是一致的. 一般还是把这个字符集叫 <code>Unicode</code>.</p>
+<p><code>Unicode</code> 的范围上限是 <code>0x10FFFF</code>, 换算成十进制就是 <code>1,114,111</code> 这么多. 所以如果以后外星人的文字太多, 说不定这个范围就不够了.</p>
+<p>其实这里悄悄的偷换了一个概念, 之前在说编码, 现在变成了字符集了. 在很多之前提到的编码中, 这些编码既是字符集, 又是直接的编码. 而在 <code>Unicode</code> 中, 字符集实际上是与编码分开的两个概念, 而对应的编码, 实际上就是我们经常见到的 <code>UTF</code>. 其中 <code>UTF-8</code> 是我们最常见的一种编码了.</p>
+<p><code>UTF-8</code> 最大的特点, 就是它是一种变长的编码方式, 而且完全兼容 <code>ASCII</code>码.</p>
+<p><code>UTF-8</code> 的编码规则也很简单，只有二条:</p>
+<ul>
+<li>
+<p>对于单字节的符号, 字节的第一位设为<code>0</code>, 后面7位为这个符号的 Unicode 码. 对于 <code>0 - 127</code> 位的字符，UTF-8 编码和 ASCII 码是完全相同的.</p>
+</li>
+<li>
+<p>对于 <code>n</code> 字节的符号 <code>(n &gt; 1)</code> , 第一个字节的前 <code>n</code> 位都设为 <code>1</code>, 第 <code>n + 1</code> 位设为 <code>0</code>, 后面字节的前两位一律设为 <code>10</code>. 剩下的没有提及的二进制位, 全部为这个符号的 Unicode 码.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Unicode符号范围</th>
+<th>UTF-8编码方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U+0000 - U+007F</td>
+<td>0xxxxxxx</td>
+</tr>
+<tr>
+<td>U+0080 - U+07FF</td>
+<td>110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td>U+0800 - U+FFFF</td>
+<td>1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td>U+010000 - U+10FFFF</td>
+<td>11110xxx 10xxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+</tbody>
+</table>
+<p>在这里我们发现, <code>U+0000 - U+FFFF</code> 这个<strong>平面</strong>(Plane), 即<strong>基本多文种平面</strong>, 简称 <code>BMP</code>, 用 <code>UTF-8</code> 进行编码, 只需要三个字节.</p>
+<h2 id="轮到你了">轮到你了<a href="#轮到你了" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在 <code>MySQL</code> 的 <strong>CHARSET</strong> 中, <code>utf8</code> 支持存储 1 - 3字节的字符, 即对应 <code>Unicode</code> 中 <code>BMP</code> 的部分, 而 <a href="https://en.wikipedia.org/wiki/Emoji">Emoji</a>, 则大多数在 <code>BMP</code> 之外. 所以 <code>MySQL</code> 中的 <code>utf8</code> 是假的, 是化学的成分, 是加了特技的. 如果想储存真正的 <code>UTF-8</code> 的内容, 就一定要使用 <code>utf8mb4</code>.</p>
+<p>当然, 并不是所有的 <a href="https://en.wikipedia.org/wiki/Emoji">Emoji</a> 都在 <code>BMP</code> 之外, 比如 ☺ 这个表情, 它的编码是 <code>U+263A</code>, 还有 ☹️ , 编码是 <code>U+2639</code>.</p>
+<p>当然, 也不是所有的汉字都被包含在了 <code>BMP</code> 里面了, 在 <a href="https://www.compart.com/en/unicode/block">这里</a> 可以看到字符是按照一定的规律划分为 <code>Block</code> 放进来的, 在<strong>表意文字补充平面</strong>也就是 <code>U+20000 - U+2FFFF</code> 这个<strong>平面</strong>(Plane), 还是有很多 <code>CJK</code> 命名的 <code>Block</code> 的.</p>
+<h2 id="再来一瓶">再来一瓶<a href="#再来一瓶" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>你以为坑到这里就结束了吗</p>
+<div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">emoji_test</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="nb">INT</span> <span class="n">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">emoji</span><span class="o">`</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="k">SET</span> <span class="k">NAMES</span> <span class="n">utf8mb4</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">MySQL <span class="o">[</span>test<span class="o">]</span>&gt; SELECT * FROM emoji_test<span class="p">;</span>
++----+-------+
+<span class="p">|</span> id <span class="p">|</span> emoji <span class="p">|</span>
++----+-------+
+<span class="p">|</span>  <span class="m">8</span> <span class="p">|</span> 😃      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">9</span> <span class="p">|</span> 😂      <span class="p">|</span>
+<span class="p">|</span> <span class="m">10</span> <span class="p">|</span> 🤦      <span class="p">|</span>
++----+-------+
+<span class="m">3</span> rows in <span class="nb">set</span> <span class="o">(</span>0.001 sec<span class="o">)</span>
+
+MySQL <span class="o">[</span>test<span class="o">]</span>&gt; SELECT * FROM emoji_test WHERE <span class="nv">emoji</span> <span class="o">=</span> <span class="s1">&#39;😂&#39;</span><span class="p">;</span>
++----+-------+
+<span class="p">|</span> id <span class="p">|</span> emoji <span class="p">|</span>
++----+-------+
+<span class="p">|</span>  <span class="m">8</span> <span class="p">|</span> 😃      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">9</span> <span class="p">|</span> 😂      <span class="p">|</span>
+<span class="p">|</span> <span class="m">10</span> <span class="p">|</span> 🤦      <span class="p">|</span>
++----+-------+
+<span class="m">3</span> rows in <span class="nb">set</span> <span class="o">(</span>0.001 sec<span class="o">)</span>
+</code></pre></div><p>是不是很神奇呢, 看下表的信息呢</p>
+<div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="n">MySQL</span> <span class="p">[</span><span class="n">test</span><span class="p">]</span><span class="o">&gt;</span> <span class="k">SHOW</span> <span class="k">TABLE</span> <span class="n">STATUS</span> <span class="k">WHERE</span> <span class="n">Name</span> <span class="o">=</span> <span class="s1">&#39;emoji_test&#39;</span><span class="p">;</span>
+<span class="o">+</span><span class="c1">------------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+</span><span class="c1"></span><span class="o">|</span> <span class="n">Name</span>       <span class="o">|</span> <span class="n">Engine</span> <span class="o">|</span> <span class="k">Version</span> <span class="o">|</span> <span class="n">Row_format</span> <span class="o">|</span> <span class="k">Rows</span> <span class="o">|</span> <span class="n">Avg_row_length</span> <span class="o">|</span> <span class="n">Data_length</span> <span class="o">|</span> <span class="n">Max_data_length</span> <span class="o">|</span> <span class="n">Index_length</span> <span class="o">|</span> <span class="n">Data_free</span> <span class="o">|</span> <span class="n">Auto_increment</span> <span class="o">|</span> <span class="n">Create_time</span>         <span class="o">|</span> <span class="n">Update_time</span>         <span class="o">|</span> <span class="n">Check_time</span> <span class="o">|</span> <span class="k">Collation</span>          <span class="o">|</span> <span class="n">Checksum</span> <span class="o">|</span> <span class="n">Create_options</span> <span class="o">|</span> <span class="k">Comment</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">------------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+</span><span class="c1"></span><span class="o">|</span> <span class="n">emoji_test</span> <span class="o">|</span> <span class="n">InnoDB</span> <span class="o">|</span>      <span class="mi">10</span> <span class="o">|</span> <span class="k">Dynamic</span>    <span class="o">|</span>    <span class="mi">3</span> <span class="o">|</span>           <span class="mi">5461</span> <span class="o">|</span>       <span class="mi">16384</span> <span class="o">|</span>               <span class="mi">0</span> <span class="o">|</span>            <span class="mi">0</span> <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>             <span class="mi">11</span> <span class="o">|</span> <span class="mi">2019</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">16</span> <span class="mi">11</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">28</span> <span class="o">|</span> <span class="mi">2019</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">16</span> <span class="mi">11</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">10</span> <span class="o">|</span> <span class="k">NULL</span>       <span class="o">|</span> <span class="n">utf8mb4_general_ci</span> <span class="o">|</span>     <span class="k">NULL</span> <span class="o">|</span>                <span class="o">|</span>         <span class="o">|</span>
+<span class="o">+</span><span class="c1">------------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+</span><span class="c1"></span><span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">001</span> <span class="n">sec</span><span class="p">)</span>
+</code></pre></div><p>可以看到此时默认的字符序是 <code>utf8mb4_general_ci</code>, 使用 <code>WEIGHT_STRING</code> 来查询这些 Emoji 的字符序</p>
+<div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="n">MySQL</span> <span class="p">[</span><span class="n">test</span><span class="p">]</span><span class="o">&gt;</span> <span class="k">SET</span> <span class="o">@</span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;😂&#39;</span> <span class="k">COLLATE</span> <span class="n">utf8mb4_general_ci</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="k">rows</span> <span class="n">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">003</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MySQL</span> <span class="p">[</span><span class="n">test</span><span class="p">]</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">@</span><span class="n">s</span><span class="p">,</span> <span class="n">HEX</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">),</span> <span class="n">HEX</span><span class="p">(</span><span class="n">WEIGHT_STRING</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">));</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="o">|</span> <span class="o">@</span><span class="n">s</span>   <span class="o">|</span> <span class="n">HEX</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">)</span>  <span class="o">|</span> <span class="n">HEX</span><span class="p">(</span><span class="n">WEIGHT_STRING</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">))</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="o">|</span> <span class="err">😂</span>     <span class="o">|</span> <span class="n">F09F9882</span> <span class="o">|</span> <span class="n">FFFD</span>                   <span class="o">|</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">001</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MySQL</span> <span class="p">[</span><span class="n">test</span><span class="p">]</span><span class="o">&gt;</span> <span class="k">SET</span> <span class="o">@</span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;😃&#39;</span> <span class="k">COLLATE</span> <span class="n">utf8mb4_general_ci</span><span class="p">;</span>
+<span class="n">Query</span> <span class="n">OK</span><span class="p">,</span> <span class="mi">0</span> <span class="k">rows</span> <span class="n">affected</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">001</span> <span class="n">sec</span><span class="p">)</span>
+
+<span class="n">MySQL</span> <span class="p">[</span><span class="n">test</span><span class="p">]</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">@</span><span class="n">s</span><span class="p">,</span> <span class="n">HEX</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">),</span> <span class="n">HEX</span><span class="p">(</span><span class="n">WEIGHT_STRING</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">));</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="o">|</span> <span class="o">@</span><span class="n">s</span>   <span class="o">|</span> <span class="n">HEX</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">)</span>  <span class="o">|</span> <span class="n">HEX</span><span class="p">(</span><span class="n">WEIGHT_STRING</span><span class="p">(</span><span class="o">@</span><span class="n">s</span><span class="p">))</span> <span class="o">|</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="o">|</span> <span class="err">😃</span>     <span class="o">|</span> <span class="n">F09F9883</span> <span class="o">|</span> <span class="n">FFFD</span>                   <span class="o">|</span>
+<span class="o">+</span><span class="c1">------+----------+------------------------+
+</span><span class="c1"></span><span class="mi">1</span> <span class="k">row</span> <span class="k">in</span> <span class="k">set</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">001</span> <span class="n">sec</span><span class="p">)</span>
+</code></pre></div><p>可以看到, 它们的编码虽然不同, 但是字符序的值是相同的, 都是 <code>0xFFFD</code>, 所以在匹配的时候, 它们被认为是同一个字符, 这又是 <code>MySQL</code> 的一个大坑</p>
+<p>要是想粗暴点解决问题的话, 直接使用 <code>utf8mb4_bin</code> 作为字符序就好了</p>
+<h2 id="又来一瓶">又来一瓶<a href="#又来一瓶" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>但是这还不是结束, 当业务代码连接数据库并插入一些 Emoji 时, 还是可能遇到如下错误</p>
+<pre><code>ERROR 1366: Incorrect string value: '\xF0\x9D\x8C\x86' for column 'column_name' at row 1
+</code></pre><p>这个是因为客户端到 MySQL 服务器的连接还是 utf8 而非 utf8mb4, 所以你需要在业务逻辑中做类似如下语句的事情</p>
+<pre><code>SET NAMES utf8mb4
+</code></pre><p>或者修改 MySQL 的配置文件, 当然这样不太现实, 需要重启 MySQL 进程.</p>
+<p>这样你才能终于用上 Emoji</p>
+<h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li><a href="https://stackoverflow.com/questions/41147829/how-can-i-search-by-emoji-in-mysql-using-utf8mb4">How can I search by emoji in MySQL using utf8mb4?</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html">字符编码笔记：ASCII，Unicode 和 UTF-8
+</a></li>
+<li><a href="https://www.zhihu.com/question/60072951">如何通俗地理解Unicode、UTF-8、ASCII、GBK等字符编码？</a></li>
+<li><a href="https://medium.com/@adamhooper/in-mysql-never-use-utf8-use-utf8mb4-11761243e434">In MySQL, never use “utf8”. Use “utf8mb4”.</a></li>
+<li><a href="https://mathiasbynens.be/notes/mysql-utf8mb4">How to support full Unicode in MySQL databases</a></li>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/charset-connection.html">Connection Character Sets and Collations</a></li>
+<li><a href="https://stackoverflow.com/questions/10957238/incorrect-string-value-when-trying-to-insert-utf-8-into-mysql-via-jdbc">“Incorrect string value” when trying to insert UTF-8 into MySQL via JDBC?</a></li>
+</ol>
+<h2 id="扩展阅读">扩展阅读<a href="#扩展阅读" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/53714077">其实你并不懂 Unicode</a></li>
+<li><a href="https://eev.ee/blog/2015/09/12/dark-corners-of-unicode/">Dark corners of Unicode</a></li>
+<li><a href="http://mysql.taobao.org/monthly/2017/03/06/">MySQL · 实现分析 · 对字符集和字符序支持的实现</a></li>
+<li><a href="https://docs.python.org/3.7/library/unicodedata.html">unicodedata — Unicode Database</a></li>
+</ol>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://memwey.github.io/tags/database">Database</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1955 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-10-14 11:12 &#43;0800</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"></circle><line x1="1.05" y1="12" x2="7" y2="12"></line><line x1="17.01" y1="12" x2="22.96" y2="12"></line></svg><a href="https://github.com/memwey/memwey.github.io/commit/843f4dbf7733526346a23ec15893b676610b7c30" target="_blank" rel="noopener">843f4db</a> @ 2020-11-24</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://memwey.github.io/posts/code/oh-mysql-in-subquery/">
+				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Oh MySQL IN Subquery</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "memwey" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2020 <a href="https://memwey.github.io/">Mem Wey</a> &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://memwey.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://memwey.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js" integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin="anonymous"></script>
+	
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-138801420-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
