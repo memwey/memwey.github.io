@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-hans</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 14 Oct 2019 11:12:33 +0800</lastBuildDate><atom:link href="https://memwey.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Dec 2020 00:52:03 +0800</lastBuildDate><atom:link href="https://memwey.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DELL Precision T1700 SFF</title>
+      <link>https://memwey.github.io/posts/misc/dell-t1700-sff/</link>
+      <pubDate>Fri, 04 Dec 2020 00:52:03 +0800</pubDate>
+      
+      <guid>https://memwey.github.io/posts/misc/dell-t1700-sff/</guid>
+      <description>原本的台式机, E3-1231v3 搭配上在挖矿狂潮前买的 GTX 1070, 在这个普遍挤牙膏的时期感觉再战三年不成问题. 不过既然有了自己的书房, 书房里没有电脑是万万不能的. 看</description>
+    </item>
+    
     <item>
       <title>About</title>
       <link>https://memwey.github.io/about/</link>
@@ -87,15 +96,6 @@
       
       <guid>https://memwey.github.io/posts/code/linux-backgroud/</guid>
       <description>最近在跑 DHT 网络拟真的时候涉及到一些 linux 后台运行的一些东西,现在总结一下 例如 nohup ../src/OverSim -c ChordChurn -u Cmdenv &amp;gt; out.file 2&amp;gt;&amp;amp;1 &amp;amp; 使得 ../src/OverSim -c ChordChurn -u Cmdenv 命令在后台运行,并将 stderr 重定向到 stdout 中</description>
-    </item>
-    
-    <item>
-      <title>第一篇博客</title>
-      <link>https://memwey.github.io/posts/misc/first-blog/</link>
-      <pubDate>Tue, 14 Jun 2016 23:22:32 +0800</pubDate>
-      
-      <guid>https://memwey.github.io/posts/misc/first-blog/</guid>
-      <description>其实很早就想弄个博客什么的, 觉得有些东西费了很大的力气解决了, 然后久而久之就忘了&amp;hellip;&amp;hellip;记录下来应该会好一点吧, 这样</description>
     </item>
     
   </channel>
