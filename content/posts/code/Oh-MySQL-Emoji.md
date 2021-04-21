@@ -2,7 +2,9 @@
 title: "Oh MySQL Emoji"
 date: 2019-10-14T11:12:33+08:00
 draft: false
-toc: false
+toc: true
+authors:
+  - memwey
 images:
 tags: 
   - Database

@@ -2,10 +2,12 @@
 title: "DELL Precision T1700 SFF"
 date: 2020-12-04T00:52:03+08:00
 draft: false
-toc: false
+toc: true
 images:
 tags: 
-  - device
+  - Device
+authors:
+  - memwey
 ---
 
 原本的台式机, E3-1231v3 搭配上在挖矿狂潮前买的 GTX 1070, 在这个普遍挤牙膏的时期感觉再战三年不成问题. 不过既然有了自己的书房, 书房里没有电脑是万万不能的. 看了一下自己的钱包~~和京东的无货~~, 决定用 新平台 + 老显卡, 老平台 + 入门显卡 这样的组合, 让一台电脑变成两台.

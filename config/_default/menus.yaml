@@ -1,0 +1,13 @@
+main:
+  - name: Posts
+    url: /posts/
+    weight: 10
+  - name: Tags
+    url: /tags/
+    weight: 20
+  - name: Friends
+    url: /friends/
+    weight: 30
+  - name: About
+    url: /authors/memwey
+    weight: 40

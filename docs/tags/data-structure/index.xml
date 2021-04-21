@@ -5,16 +5,26 @@
     <link>https://memwey.github.io/tags/data-structure/</link>
     <description>Recent content in Data Structure on Mem.Wey&#39;s Github Pages</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-hans</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 13 Sep 2016 23:32:27 +0800</lastBuildDate><atom:link href="https://memwey.github.io/tags/data-structure/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh</language>
+    <copyright>&amp;copy; 2021 &lt;a href=&#34;https://memwey.github.io/&#34;&gt;Mem.Wey&lt;/a&gt;
+</copyright>
+    <lastBuildDate>Fri, 25 Dec 2020 14:26:24 +0800</lastBuildDate><atom:link href="https://memwey.github.io/tags/data-structure/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis LRU</title>
+      <link>https://memwey.github.io/posts/code/redis-lru/</link>
+      <pubDate>Fri, 25 Dec 2020 14:26:24 +0800</pubDate>
+      
+      <guid>https://memwey.github.io/posts/code/redis-lru/</guid>
+      <description>基础知识 LRU (Least recently used) 是一个非常常用的缓存置换</description>
+    </item>
+    
     <item>
       <title>红黑树笔记</title>
       <link>https://memwey.github.io/posts/code/red-black-tree/</link>
       <pubDate>Tue, 13 Sep 2016 23:32:27 +0800</pubDate>
       
       <guid>https://memwey.github.io/posts/code/red-black-tree/</guid>
-      <description>最近研究了一下红黑树的一些性质和思想, 在这里记录一下. Map, 或者在 Python 等一些语言中叫做 dictionary 的常用的以键值对形式储存的数据结构一般有两种实现方式, 在 C++</description>
+      <description>最近研究了一下红黑树的一些性质和思想, 在</description>
     </item>
     
   </channel>

@@ -5,8 +5,9 @@
     <link>https://memwey.github.io/tags/database/</link>
     <description>Recent content in Database on Mem.Wey&#39;s Github Pages</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-hans</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <language>zh</language>
+    <copyright>&amp;copy; 2021 &lt;a href=&#34;https://memwey.github.io/&#34;&gt;Mem.Wey&lt;/a&gt;
+</copyright>
     <lastBuildDate>Mon, 14 Oct 2019 11:12:33 +0800</lastBuildDate><atom:link href="https://memwey.github.io/tags/database/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Oh MySQL Emoji</title>
@@ -14,7 +15,7 @@
       <pubDate>Mon, 14 Oct 2019 11:12:33 +0800</pubDate>
       
       <guid>https://memwey.github.io/posts/code/oh-mysql-emoji/</guid>
-      <description>又是关于 MySQL 的, 标题来自于 &amp;lt;轮到你了&amp;gt; 这部烂尾日剧, 里面非常魔性的 Oh~my~Ju~lia~ 在MySQL里面如何保存 Emoji, 这个问题搜一搜很容易找到答案, 设置 CHARSET</description>
+      <description>又是关于 MySQL 的, 标题来自于 &amp;lt;轮到你了</description>
     </item>
     
     <item>
@@ -23,7 +24,7 @@
       <pubDate>Sat, 21 Sep 2019 15:22:58 +0800</pubDate>
       
       <guid>https://memwey.github.io/posts/code/oh-mysql-in-subquery/</guid>
-      <description>感觉 MySQL 的坑实在是有点多,记录一下这个 MySQL 的坑, 也记录一下这个教训吧, 下次在数据库中直接操作一定要多小心 现象回放 现在有两张表, 表结构如下, 无关字</description>
+      <description>感觉 MySQL 的坑实在是有点多,记录一下这个 MySQL 的</description>
     </item>
     
   </channel>
