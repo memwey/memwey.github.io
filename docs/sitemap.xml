@@ -3,37 +3,40 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://memwey.github.io/</loc>
-    <lastmod>2021-04-21T20:30:43+08:00</lastmod>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/posts/</loc>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
+  </url><url>
+    <loc>https://memwey.github.io/posts/misc/job-hopping/</loc>
+    <lastmod>2021-06-06T23:29:39+08:00</lastmod>
+  </url><url>
+    <loc>https://memwey.github.io/tags/redis/</loc>
     <lastmod>2021-04-21T20:30:43+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/posts/code/redis-zinterstore/</loc>
     <lastmod>2021-04-21T20:30:43+08:00</lastmod>
   </url><url>
+    <loc>https://memwey.github.io/tags/</loc>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
+  </url><url>
     <loc>https://memwey.github.io/authors/</loc>
-    <lastmod>2020-12-25T14:26:24+08:00</lastmod>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/tags/data-structure/</loc>
     <lastmod>2020-12-25T14:26:24+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/authors/memwey/</loc>
-    <lastmod>2020-12-25T14:26:24+08:00</lastmod>
-  </url><url>
-    <loc>https://memwey.github.io/tags/redis/</loc>
-    <lastmod>2020-12-25T14:26:24+08:00</lastmod>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/posts/code/redis-lru/</loc>
     <lastmod>2020-12-25T14:26:24+08:00</lastmod>
   </url><url>
-    <loc>https://memwey.github.io/tags/</loc>
-    <lastmod>2020-12-25T14:26:24+08:00</lastmod>
-  </url><url>
     <loc>https://memwey.github.io/posts/misc/dell-t1700-sff/</loc>
-    <lastmod>2020-12-04T00:52:03+08:00</lastmod>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/tags/device/</loc>
-    <lastmod>2020-12-04T00:52:03+08:00</lastmod>
+    <lastmod>2021-06-06T23:29:40+08:00</lastmod>
   </url><url>
     <loc>https://memwey.github.io/friends/</loc>
     <lastmod>2019-10-17T20:31:04+08:00</lastmod>

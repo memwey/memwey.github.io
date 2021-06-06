@@ -28,16 +28,17 @@ social:
 
 ### 现在的
 
-* 后端开发工程师 @ 壁虎信息科技
+自宅警备队
 
 ### 曾经的
 
-* Senior Engineer @ BIGO
-* Python开发工程师 @ Akulaku
-* 服务器端开发工程师 @ 猎豹移动 
-* Python开发实习生 @ 广州中国科学院计算机网络信息中心
-* 学生 @ 暨南大学
-* 学生 @ 石门中学
+* 后端开发工程师 @ [壁虎科技](https://app.piaodian.cn/)
+* Senior Engineer @ [BIGO](https://www.bigo.sg/)
+* Python开发工程师 @ [akulaku](https://www.akulaku.com/)
+* 服务器端开发工程师 @ [猎豹移动](https://www.cmcm.com/) 
+* Python开发实习生 @ [广州中国科学院计算机网络信息中心](http://www.cnicg.cn/)
+* 学生 @ [暨南大学](https://www.jnu.edu.cn/)
+* 学生 @ [石门中学](http://www.shimen.org/)
 
 ## 关于技术
 
