@@ -1,44 +1,19 @@
-baseURL: https://memwey.github.io/
+baseurl: https://memwey.github.io/
+languageCode: zh-cn
+theme: hugo-theme-stack
+paginate: 8
 title: Mem.Wey's Github Pages
 
-# Comment when installing using Hugo Modules
-# theme: eureka
-# Uncomment when installing using Hugo Modules
-theme: eureka
+# Change it to your Disqus shortname before using
+disqusShortname: memwey
 
-paginate: 8
-publishDir: docs
-copyright: >
-  &copy; 2021 <a href="https://memwey.github.io/">Mem.Wey</a>
-enableEmoji: true
-enableGitInfo: false
-summaryLength: 20
-
-defaultContentLanguage: zh
-hasCJKLanguage: true # Set `true` for Chinese/Japanese/Korean.
-defaultContentLanguageInSubdir: false
-
-# Uncomment for google analytics
+# GA Tracking ID
 googleAnalytics: UA-138801420-1
 
-markup:
-  # Do not modify markup.highlight
-  highlight:
-    codeFences: false
-    noClasses: false
-  tableOfContents:
-    startLevel: 2
-    endLevel: 6
-    ordered: false
-  goldmark:
-    renderer:
-      unsafe: true
+# Theme i18n support
+# Available values: ar, ca, de, el, en, es, fr, id, it, ja, ko, nl, pt-br, th, uk, zh-cn, zh-hk, zh-tw
+DefaultContentLanguage: zh-cn
 
-taxonomies:
-  category: categories
-  tag: tags
-  series: series
-  author: authors
-
-build:
-  useResourceCacheWhen: always
+# Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
+# This will make .Summary and .WordCount behave correctly for CJK languages.
+hasCJKLanguage: true

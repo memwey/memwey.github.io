@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='基础知识 LRU (Least recently used) 是一个非常常用的缓存置换算法. 在缓存空间有限的情况下, 在新的数据写入时, 需要淘汰一些旧数据. 一般期望最不可能被继续访问的数据'><title>Redis LRU</title>
+
+<link rel='canonical' href='https://memwey.github.io/p/redis-lru/'>
+
+<link rel="stylesheet" href="/scss/style.min.450926226e724574a6b936335ea06111f8aeb253d932c86cb2cc807341cd2889.css"><meta property='og:title' content='Redis LRU'>
+<meta property='og:description' content='基础知识 LRU (Least recently used) 是一个非常常用的缓存置换算法. 在缓存空间有限的情况下, 在新的数据写入时, 需要淘汰一些旧数据. 一般期望最不可能被继续访问的数据'>
+<meta property='og:url' content='https://memwey.github.io/p/redis-lru/'>
+<meta property='og:site_name' content='Mem.Wey&#39;s Github Pages'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Data Structure' /><meta property='article:tag' content='Redis' /><meta property='article:published_time' content='2020-12-25T14:26:24&#43;08:00'/><meta property='article:modified_time' content='2020-12-25T14:26:24&#43;08:00'/>
+<meta name="twitter:title" content="Redis LRU">
+<meta name="twitter:description" content="基础知识 LRU (Least recently used) 是一个非常常用的缓存置换算法. 在缓存空间有限的情况下, 在新的数据写入时, 需要淘汰一些旧数据. 一般期望最不可能被继续访问的数据">
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-138801420-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu109d970523bfd6d8b9f9391f47601bf2_295604_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Mem.Wey&#39;s Github Pages</a></h1>
+            <h2 class="site-description">This may be the last time we can meet.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/memwey'
+                        target="_blank"
+                        title="GitHub"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com/Mem_Wey'
+                        target="_blank"
+                        title="Twitter"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/redis-lru/">Redis LRU</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 25, 2020</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="基础知识">基础知识</h2>
+<p><code>LRU (Least recently used)</code> 是一个非常常用的缓存置换算法.</p>
+<p>在缓存空间有限的情况下, 在新的数据写入时, 需要淘汰一些旧数据. 一般期望最不可能被继续访问的数据淘汰. 由于无法对未来的情况进行预测, 只能基于现有的信息推测.</p>
+<p><code>LRU</code> 基于这样一个假定, 在一个时间点上, 如果一个数据距离上次被访问的时间越长, 则这个数据在未来被访问的可能性越小. 所以, 应该淘汰掉距离上次被访问的时间最久的数据.</p>
+<p>常见的 <code>LRU</code> 实现是使用一个双向链表, 当 Item 被访问时, 将其移动到链表的头部. 当缓存不足时, 从链表的尾部开始淘汰.</p>
+<p>单纯的双向链表的实现实际上是不太符合现实的. 一般的, 我们希望缓存可以尽快被检索到, 而在双向链表中检索 Item 的效率是 O(n), 特别是检索的 Item 在链表中不存在时, 效率稳定的是 O(n). 这样, 在缓存系统中维护这个双向链表的成本是非常高的. 一般的, 会将 <code>哈希表</code> 或者 <code>二叉搜索树</code> 和双向链表组合起来, 在更高效率的数据结构中记录 <code>Key</code>, 并在 <code>Key</code> 中记录 Item 在双向链表中的指针.</p>
+<p>另外的, 在并发量较大的时候, 双向链表中的操作需要加锁, 否则链表很容易出问题.</p>
+<h2 id="具体实现">具体实现</h2>
+<h3 id="redis-28">Redis 2.8</h3>
+<p>在较早版本的 <code>Redis</code> 上, 并没有实现 <code>LRU</code>. 在后续 2.8 添加的时候, 并没有使用常见的双向链表的方式来实现 <code>LRU</code>, 而使用了一个近似的实现.</p>
+<p>从空间和时间上考虑, <code>Redis</code> 中的 <code>Key</code> 的数量可能非常的多, 双向链表可能会非常大, 占用内存非常多; 另一方面, <code>Redis</code> 中的操作可能也非常频繁, 每一次访问都需要操作一次双向链表, 在时间上也显得非常不划算.</p>
+<p><code>Antirez</code> 在 <code>Redis Object</code> 中挤出了 24 个位元 bits, 并用其存储按秒计算的 <code>unix timestamp</code> 的低 24 位. 这个被称为 <code>LRU clock</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* https://github.com/redis/redis/blob/3.0/src/redis.h#L420 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* A redis object, that is a type able to hold a string / list / set */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* The actual Redis Object */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define REDIS_LRU_BITS 24
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define REDIS_LRU_CLOCK_MAX ((1&lt;&lt;REDIS_LRU_BITS)-1) </span><span class="cm">/* Max value of obj-&gt;lru */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define REDIS_LRU_CLOCK_RESOLUTION 1000 </span><span class="cm">/* LRU clock resolution in ms */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">redisObject</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="nl">type</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="nl">encoding</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="nl">lru</span><span class="p">:</span><span class="n">REDIS_LRU_BITS</span><span class="p">;</span> <span class="cm">/* lru time (relative to server.lruclock) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">refcount</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">robj</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>24 个 bits 明显不够存储一个完整的时间戳, 当第二十四位向前进位的时候, 就会发生溢出. 此时, 最近被访问的 Item 的 <code>LRU clock</code> 反而较小, 更容易被淘汰. 考虑到这个溢出需要 194 天, 而 <code>Redis</code> 中的操作应该比较频繁, 所以 <code>antirez</code> 认为这个问题可以接受.</p>
+<p>理论上, 可以精心构造一些数据, 让 <code>Redis</code> 的 <code>LRU</code> 失效. 比如, 总是在溢出前访问一个 Item, 这个 Item 的 <code>LRU clock</code> 总是很大, 虽然这个 Item 的访问周期总是 194 天才访问一次, 但是它总不会被淘汰.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* https://github.com/redis/redis/blob/3.0/src/db.c#L43 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">robj</span> <span class="o">*</span><span class="nf">lookupKey</span><span class="p">(</span><span class="n">redisDb</span> <span class="o">*</span><span class="n">db</span><span class="p">,</span> <span class="n">robj</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dictEntry</span> <span class="o">*</span><span class="n">de</span> <span class="o">=</span> <span class="n">dictFind</span><span class="p">(</span><span class="n">db</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span><span class="n">key</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">de</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">robj</span> <span class="o">*</span><span class="n">val</span> <span class="o">=</span> <span class="n">dictGetVal</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="cm">/* Update the access time for the ageing algorithm.
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * Don&#39;t do it if we have a saving child, as this will trigger
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * a copy on write madness. */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">rdb_child_pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">server</span><span class="p">.</span><span class="n">aof_child_pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">val</span><span class="o">-&gt;</span><span class="n">lru</span> <span class="o">=</span> <span class="n">LRU_CLOCK</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">val</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>接下来的问题在于如何找到最久没有被访问的 Item. 如果一定要找到最久没有被访问到的 Item, 那么需要遍历所有的 <code>Key</code>, 而且在遍历的过程中, 要么禁止在这期间做任何的访问操作, 要么可能出现找到的 <code>Key</code> 恰好又刚刚被访问到的问题.</p>
+<p><code>Antirez</code> 在这里又使用了一个近似的实现, 随机选取 3 个 <code>Key</code>, 把他们之中最久没有被访问到的淘汰. 随后, 这个数值变成了可配置项 <code>maxmemory-samples</code> , 默认值是 5. 考虑到选出的结果不一定是最好的, 但是很大可能不是一个坏的结果, 即选出一个非常近被访问的 Item, 这个实现还算可以接受.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* https://github.com/redis/redis/blob/2.8/src/redis.c#L2982 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* volatile-lru and allkeys-lru policy */</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_policy</span> <span class="o">==</span> <span class="n">REDIS_MAXMEMORY_ALLKEYS_LRU</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server</span><span class="p">.</span><span class="n">maxmemory_policy</span> <span class="o">==</span> <span class="n">REDIS_MAXMEMORY_VOLATILE_LRU</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">server</span><span class="p">.</span><span class="n">maxmemory_samples</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sds</span> <span class="n">thiskey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">thisval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">robj</span> <span class="o">*</span><span class="n">o</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">de</span> <span class="o">=</span> <span class="n">dictGetRandomKey</span><span class="p">(</span><span class="n">dict</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">thiskey</span> <span class="o">=</span> <span class="n">dictGetKey</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/* When policy is volatile-lru we need an additional lookup
+</span></span></span><span class="line"><span class="cl"><span class="cm">          * to locate the real key, as dict is set to db-&gt;expires. */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_policy</span> <span class="o">==</span> <span class="n">REDIS_MAXMEMORY_VOLATILE_LRU</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">de</span> <span class="o">=</span> <span class="n">dictFind</span><span class="p">(</span><span class="n">db</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span> <span class="n">thiskey</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">o</span> <span class="o">=</span> <span class="n">dictGetVal</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">thisval</span> <span class="o">=</span> <span class="n">estimateObjectIdleTime</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="cm">/* Higher idle time is better candidate for deletion */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">bestkey</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">thisval</span> <span class="o">&gt;</span> <span class="n">bestval</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">bestkey</span> <span class="o">=</span> <span class="n">thiskey</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">bestval</span> <span class="o">=</span> <span class="n">thisval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="redis-30">Redis 3.0</h3>
+<p><code>Antirez</code> 在 3.0 版本中进一步提升了近似算法的准确性. 一个显而易见的方法是, 通过过去累计的信息来提升准确性.</p>
+<p><code>Redis</code> 中维护了一个默认大小为 16 的 <code>pool</code>, 里面存储了备选的 <code>Key</code>. 当需要淘汰时, 从随机选择的 N 个 <code>Key</code> 中与 <code>pool</code> 中的 <code>Key</code> 做对比, 在 <code>pool</code> 中维护其中最久没有被访问到的 16 个 <code>Key</code>, 然后在 <code>pool</code> 中淘汰其中最久没有被访问到的 Item. 这个 <code>pool</code> 非常类似于小顶堆.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* https://github.com/redis/redis/blob/3.0/src/redis.c#L3275 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* volatile-lru and allkeys-lru policy */</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_policy</span> <span class="o">==</span> <span class="n">REDIS_MAXMEMORY_ALLKEYS_LRU</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server</span><span class="p">.</span><span class="n">maxmemory_policy</span> <span class="o">==</span> <span class="n">REDIS_MAXMEMORY_VOLATILE_LRU</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">evictionPoolEntry</span> <span class="o">*</span><span class="n">pool</span> <span class="o">=</span> <span class="n">db</span><span class="o">-&gt;</span><span class="n">eviction_pool</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">while</span><span class="p">(</span><span class="n">bestkey</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">evictionPoolPopulate</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">db</span><span class="o">-&gt;</span><span class="n">dict</span><span class="p">,</span> <span class="n">db</span><span class="o">-&gt;</span><span class="n">eviction_pool</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/* Go backward from best to worst element to evict. */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">de</span> <span class="o">=</span> <span class="n">dictFind</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Remove the entry from the pool. */</span>
+</span></span><span class="line"><span class="cl">            <span class="n">sdsfree</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Shift all elements on its right to left. */</span>
+</span></span><span class="line"><span class="cl">            <span class="n">memmove</span><span class="p">(</span><span class="n">pool</span><span class="o">+</span><span class="n">k</span><span class="p">,</span><span class="n">pool</span><span class="o">+</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="k">sizeof</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Clear the element on the right which is empty
+</span></span></span><span class="line"><span class="cl"><span class="cm">              * since we shifted one position to the left.  */</span>
+</span></span><span class="line"><span class="cl">            <span class="n">pool</span><span class="p">[</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">key</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">pool</span><span class="p">[</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">idle</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="cm">/* If the key exists, is our pick. Otherwise it is
+</span></span></span><span class="line"><span class="cl"><span class="cm">              * a ghost and we need to try the next element. */</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">de</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">bestkey</span> <span class="o">=</span> <span class="n">dictGetKey</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="cm">/* Ghost... */</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>pool</code> 中排序操作的核心代码在 <code>evictionPoolPopulate</code> 函数中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* https://github.com/redis/redis/blob/3.0/src/redis.c#L3145 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define EVICTION_SAMPLES_ARRAY_SIZE 16
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">void</span> <span class="nf">evictionPoolPopulate</span><span class="p">(</span><span class="n">dict</span> <span class="o">*</span><span class="n">sampledict</span><span class="p">,</span> <span class="n">dict</span> <span class="o">*</span><span class="n">keydict</span><span class="p">,</span> <span class="k">struct</span> <span class="n">evictionPoolEntry</span> <span class="o">*</span><span class="n">pool</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dictEntry</span> <span class="o">*</span><span class="n">_samples</span><span class="p">[</span><span class="n">EVICTION_SAMPLES_ARRAY_SIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dictEntry</span> <span class="o">**</span><span class="n">samples</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Try to use a static buffer: this function is a big hit...
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Note: it was actually measured that this helps. */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_samples</span> <span class="o">&lt;=</span> <span class="n">EVICTION_SAMPLES_ARRAY_SIZE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">samples</span> <span class="o">=</span> <span class="n">_samples</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">samples</span> <span class="o">=</span> <span class="n">zmalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_samples</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">count</span> <span class="o">=</span> <span class="n">dictGetSomeKeys</span><span class="p">(</span><span class="n">sampledict</span><span class="p">,</span><span class="n">samples</span><span class="p">,</span><span class="n">server</span><span class="p">.</span><span class="n">maxmemory_samples</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">idle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sds</span> <span class="n">key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">robj</span> <span class="o">*</span><span class="n">o</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dictEntry</span> <span class="o">*</span><span class="n">de</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">de</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">key</span> <span class="o">=</span> <span class="n">dictGetKey</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/* If the dictionary we are sampling from is not the main
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * dictionary (but the expires one) we need to lookup the key
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * again in the key dictionary to obtain the value object. */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">sampledict</span> <span class="o">!=</span> <span class="n">keydict</span><span class="p">)</span> <span class="n">de</span> <span class="o">=</span> <span class="n">dictFind</span><span class="p">(</span><span class="n">keydict</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">o</span> <span class="o">=</span> <span class="n">dictGetVal</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">idle</span> <span class="o">=</span> <span class="n">estimateObjectIdleTime</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="cm">/* Insert the element inside the pool.
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * First, find the first empty bucket or the first populated
+</span></span></span><span class="line"><span class="cl"><span class="cm">         * bucket that has an idle time smaller than our idle time. */</span>
+</span></span><span class="line"><span class="cl">        <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">REDIS_EVICTION_POOL_SIZE</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">               <span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">               <span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">idle</span> <span class="o">&lt;</span> <span class="n">idle</span><span class="p">)</span> <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pool</span><span class="p">[</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">key</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Can&#39;t insert if the element is &lt; the worst element we have
+</span></span></span><span class="line"><span class="cl"><span class="cm">             * and there are no empty buckets. */</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">REDIS_EVICTION_POOL_SIZE</span> <span class="o">&amp;&amp;</span> <span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Inserting into empty position. No setup needed before insert. */</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/* Inserting in the middle. Now k points to the first element
+</span></span></span><span class="line"><span class="cl"><span class="cm">             * greater than the element to insert.  */</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="mi">1</span><span class="p">].</span><span class="n">key</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="cm">/* Free space on the right? Insert at k shifting
+</span></span></span><span class="line"><span class="cl"><span class="cm">                 * all the elements from k to end to the right. */</span>
+</span></span><span class="line"><span class="cl">                <span class="n">memmove</span><span class="p">(</span><span class="n">pool</span><span class="o">+</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">pool</span><span class="o">+</span><span class="n">k</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">sizeof</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">REDIS_EVICTION_POOL_SIZE</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="cm">/* No free space on right? Insert at k-1 */</span>
+</span></span><span class="line"><span class="cl">                <span class="n">k</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="cm">/* Shift all elements on the left of k (included) to the
+</span></span></span><span class="line"><span class="cl"><span class="cm">                 * left, so we discard the element with smaller idle time. */</span>
+</span></span><span class="line"><span class="cl">                <span class="n">sdsfree</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">memmove</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="n">pool</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">k</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">key</span> <span class="o">=</span> <span class="n">sdsdup</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">pool</span><span class="p">[</span><span class="n">k</span><span class="p">].</span><span class="n">idle</span> <span class="o">=</span> <span class="n">idle</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">samples</span> <span class="o">!=</span> <span class="n">_samples</span><span class="p">)</span> <span class="n">zfree</span><span class="p">(</span><span class="n">samples</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a class="link" href="http://antirez.com/news/109"  target="_blank" rel="noopener"
+    >Random notes on improving the Redis LRU algorithm</a></li>
+<li><a class="link" href="https://redis.io/topics/lru-cache"  target="_blank" rel="noopener"
+    >Using Redis as an LRU cache</a></li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/data-structure/">Data Structure</a>
+        
+            <a href="/tags/redis/">Redis</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2022 Mem.Wey&#39;s Github Pages
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.11.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#基础知识">基础知识</a></li>
+    <li><a href="#具体实现">具体实现</a>
+      <ol>
+        <li><a href="#redis-28">Redis 2.8</a></li>
+        <li><a href="#redis-30">Redis 3.0</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

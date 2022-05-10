@@ -1,51 +1,149 @@
 mainSections:
-  - posts
-description: Eureka is a elegant and powerful theme for Hugo.
+  - post
+featuredImageField: image
+rssFullContent: true
+favicon:
 
-repoURL:
-# If it is a Github repo, leave blank
-repoEditURL:
+footer:
+  since: 2020
+  customText:
 
 dateFormat:
+  published: Jan 02, 2006
+  lastUpdated: Jan 02, 2006 15:04 MST
 
-titleSeparator:
+sidebar:
+  emoji:
+  subtitle: This may be the last time we can meet.
+  avatar:
+    enabled: true
+    local: true
+    src: img/avatar.jpeg
 
-# Options: auto, light and dark. Default is auto.
+article:
+  math: false
+  toc: false
+  readingTime: false
+  license:
+    enabled: true
+    default: Licensed under CC BY-NC-SA 4.0
+
+comments:
+  enabled: false
+  provider: disqus
+
+  disqusjs:
+    shortname:
+    apiUrl:
+    apiKey:
+    admin:
+    adminLabel:
+
+  utterances:
+    repo:
+    issueTerm: pathname
+    label:
+
+  remark42:
+    host:
+    site:
+    locale:
+
+  vssue:
+    platform:
+    owner:
+    repo:
+    clientId:
+    clientSecret:
+    autoCreateIssue: false
+
+  # Waline client configuration see: https://waline.js.org/en/reference/client.html
+  waline:
+    serverURL:
+    lang:
+    visitor:
+    avatar:
+    emoji:
+      - https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo
+    requiredMeta:
+      - name
+      - email
+      - url
+    placeholder:
+    locale:
+      admin: Admin
+
+  twikoo:
+    envId:
+    region:
+    path:
+    lang:
+
+  # See https://cactus.chat/docs/reference/web-client/#configuration for description of the various options
+  cactus:
+    defaultHomeserverUrl: "https://matrix.cactus.chat:8448"
+    serverName: "cactus.chat"
+    siteName: "" # You must insert a unique identifier here matching the one you registered (See https://cactus.chat/docs/getting-started/quick-start/#register-your-site)
+
+  giscus:
+    repo:
+    repoID:
+    category:
+    categoryID:
+    mapping:
+    lightTheme:
+    darkTheme:
+    reactionsEnabled: 1
+    emitMetadata: 0
+
+  gitalk:
+    owner:
+    admin:
+    repo:
+    clientID:
+    clientSecret:
+
+  cusdis:
+    host:
+    id:
+widgets:
+  # homepage:
+  #     - type: search
+  #     - type: archives
+  #       params:
+  #           limit: 5
+  # - type: categories
+  #   params:
+  #       limit: 10
+  #     - type: tag-cloud
+  #       params:
+  #           limit: 10
+  page:
+    - type: toc
+
+opengraph:
+  twitter:
+    # Your Twitter username
+    site:
+
+    # Available values: summary, summary_large_image
+    card: summary_large_image
+
+defaultImage:
+  opengraph:
+    enabled: false
+    local: false
+    src:
+
 colorScheme:
+  # Display toggle
+  toggle: true
 
-# E.g. Person, Organization, LocalBusiness, Project, EducationalOrganization
-siteType: Person
-icon: images/icon.png
-publisherName: Mem Wey
-publisherLogo:
+  # Available values: auto, light, dark
+  default: auto
 
-highlight:
-  handler: highlightjs
-  
-  highlightjs:
-    # highlight.js doesn't bundle every language. So please specify additional languages you want here.
-    # See https://github.com/highlightjs/cdn-release/tree/master/build/languages for available languages.
-    languages:
-      - dart
-    # See https://github.com/highlightjs/cdn-release/tree/master/build/styles for available styles.
-    style: solarized-light
-
-math:
-  handler: katex
-
-  # katex:
-  #   # Browse https://katex.org/docs/options.html to see the options available.
-  #   # KaTeX's Auto-render ignores `displayMode` property of the options, so this property will not work.
-  #   # You can list the key and value you want as below.
-  #   leqno:
-
-comment:
-  # Options: disqus and commento.
-  platform: disqus
-
-  disqus:
-    shortname: memwey
-
-  commento:
-    # If self-hosting, please enter the url (e.g. https://commento.example.com) here. Otherwise leave empty.
-    url:
+imageProcessing:
+  cover:
+    enabled: true
+  content:
+    enabled: true
