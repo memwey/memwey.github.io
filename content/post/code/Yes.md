@@ -1,5 +1,6 @@
 ---
 title: "Yes"
+description: 一个有趣的 GNU/Linux 命令
 date: 2018-12-14T23:34:15+08:00
 draft: false
 toc: false

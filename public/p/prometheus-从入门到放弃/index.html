@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='我已经放弃了, 你呢'><title>Prometheus 从入门到放弃</title>
+
+<link rel='canonical' href='https://memwey.github.io/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/'>
+
+<link rel="stylesheet" href="/scss/style.min.450926226e724574a6b936335ea06111f8aeb253d932c86cb2cc807341cd2889.css"><meta property='og:title' content='Prometheus 从入门到放弃'>
+<meta property='og:description' content='我已经放弃了, 你呢'>
+<meta property='og:url' content='https://memwey.github.io/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/'>
+<meta property='og:site_name' content='Mem.Wey&#39;s Github Pages'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Prometheus' /><meta property='article:tag' content='Database' /><meta property='article:published_time' content='2022-04-17T16:30:08&#43;08:00'/><meta property='article:modified_time' content='2022-04-17T16:30:08&#43;08:00'/><meta property='og:image' content='https://memwey.github.io/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Prometheus.svg' />
+<meta name="twitter:title" content="Prometheus 从入门到放弃">
+<meta name="twitter:description" content="我已经放弃了, 你呢"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://memwey.github.io/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Prometheus.svg' />
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-138801420-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu109d970523bfd6d8b9f9391f47601bf2_295604_300x0_resize_q75_box.jpeg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Mem.Wey&#39;s Github Pages</a></h1>
+            <h2 class="site-description">This may be the last time we can meet.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/memwey'
+                        target="_blank"
+                        title="GitHub"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com/Mem_Wey'
+                        target="_blank"
+                        title="Twitter"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/">
+                
+                    <img src="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Prometheus.svg" loading="lazy" alt="Featured image of post Prometheus 从入门到放弃" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/">Prometheus 从入门到放弃</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            我已经放弃了, 你呢
+        </h3>
+        
+    </div>
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 17, 2022</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="基本概念">基本概念</h2>
+<p>Prometheus 是一个开源的监控方案, <a class="link" href="https://cncf.io/"  target="_blank" rel="noopener"
+    >CNCF</a> 的毕业项目, 云原生监控的事实标准. Prometheus 以时间序列数据的形式收集和存储 <code>metrics</code>. <code>Metrics</code> 信息与被称为标签的可选的键值对和记录时间一起保存.</p>
+<p>Prometheus 的主要功能特点有</p>
+<ul>
+<li>由 <code>metric</code> 的名称以及 Key/Value 对标签标识的<code>时间序列</code>数据组成的多维<a class="link" href="https://prometheus.io/docs/concepts/data_model/"  target="_blank" rel="noopener"
+    >数据模型</a></li>
+<li>灵活的查询语言 <a class="link" href="https://prometheus.io/docs/prometheus/latest/querying/basics/"  target="_blank" rel="noopener"
+    >PromQL</a></li>
+<li>不依赖分布式存储; 单服务节点自治能力</li>
+<li>服务端通过 HTTP 协议拉取获得的时间序列数据</li>
+<li>支持通过中间网关<a class="link" href="https://prometheus.io/docs/instrumenting/pushing/"  target="_blank" rel="noopener"
+    >推送时间序列数据</a></li>
+<li>通过服务发现或静态配置文件发现监控目标</li>
+<li>支持多种类型的图表和仪表盘</li>
+</ul>
+<p>Prometheus 以拉取的模式获取获取监控数据, 而不是由业务方向监控服务器推送. 这对于被监控的业务来说, 极大的减少了监控部分在系统中的耦合. 通常, 业务暴露出一个 HTTP 端口以暴露数据, 供 Prometheus server 抓取即可.</p>
+<h3 id="metric">Metric</h3>
+<p>一般来说, <code>Metric</code> 是数值形式的标量单位, 它是与时间一起被记录的时间序列. 在不同应用中用户期望记录不同的 <code>Metric</code>. Web server 可能要希望请求数和一些指标信息, 数据库可能希望记录活跃连接数和活跃查询数之类的.</p>
+<h3 id="系统架构">系统架构</h3>
+<ul>
+<li>主要的 <a class="link" href="https://github.com/prometheus/prometheus"  target="_blank" rel="noopener"
+    >Prometheus server</a> 收集和存储时间序列数据</li>
+<li><a class="link" href="https://prometheus.io/docs/instrumenting/clientlibs/"  target="_blank" rel="noopener"
+    >客户端库</a> 用以监测应用程序代码</li>
+<li><a class="link" href="https://github.com/prometheus/pushgateway"  target="_blank" rel="noopener"
+    >push gateway</a> 用以支持短期运行的任务</li>
+<li>用以监控 HAProxy, StatsD, Graphite 等常用服务的 <a class="link" href="https://prometheus.io/docs/instrumenting/exporters/"  target="_blank" rel="noopener"
+    >exporters</a></li>
+<li>用以处理告警的 <a class="link" href="https://github.com/prometheus/alertmanager"  target="_blank" rel="noopener"
+    >alertmanager</a></li>
+<li>其他各种支持工具</li>
+</ul>
+<p><img src="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/architecture.png"
+	width="1351"
+	height="811"
+	srcset="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/architecture_hud5ed5663cc35a882862e3f8b09e662f5_96834_480x0_resize_box_3.png 480w, /p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/architecture_hud5ed5663cc35a882862e3f8b09e662f5_96834_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="系统架构图"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="166"
+		data-flex-basis="399px"
+	
+></p>
+<h3 id="适用场景">适用场景</h3>
+<p>Prometheus 适合记录任何纯数值的时间序列。它既适合以机器为中心的监控, 也适合监控高度动态的面向服务的体系结构. 它对多维数据收集和查询的支持在微服务的场景中拥有特别的优势.</p>
+<p>Prometheus 基于可靠性设计, 以保证在出现问题时可以快速进行问题诊断. 每个 Prometheus server 都是独立的, 不依赖于网络存储或其他远程服务. 当基础设施的其他部分出现故障时, 这种架构非常可靠, 另一方面, 它不需要配置大量的基础设施.</p>
+<p>Prometheus 不适合需要 100% 的准确性的场景, 例如记录单个的计费请求, 收集的数据可能不够详细和完整. 在这种情况下应使用其他系统来收集和分析计费数据, 使用 Prometheus 进行其余的监控.</p>
+<p>这里说的比较笼统, 从构建系统可观测性的监控来说, 我们有 <code>Metrics</code> , <code>Tracing</code> 和 <code>Logging</code>. 它们有各自的特点, <code>Metrics</code> 的特点是可聚合的, 它们是组成一个量计, 计数器或者直方图的最小单位. <code>Logging</code> 处理一系列离散事件. 而 <code>Tracing</code> 处理整个请求范围内的信息, 数据或元数据应当绑定到系统中单个事务对象的生命周期中.</p>
+<p><img src="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Obervation-Venn.png"
+	width="613"
+	height="400"
+	srcset="/p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Obervation-Venn_hu978fc4ba5ca8099ba5a40052f6a592e4_83358_480x0_resize_box_3.png 480w, /p/prometheus-%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/images/Obervation-Venn_hu978fc4ba5ca8099ba5a40052f6a592e4_83358_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="可观测性韦恩图"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="153"
+		data-flex-basis="367px"
+	
+></p>
+<p>Prometheus 是个典型的 <code>Metrics</code> 系统, 它为系统打点, 追踪系统整体的运行情况. 比如, 记录 Web 系统中的所有请求的 HTTP 状态码, 当一段时间中 500 错误大量出现时, 可以通过配置的聚合和趋势分析发现问题并提供告警, 但它没有记录具体的请求内容, 想要复现错误的请求, 则需要 <code>Tracing</code> 和 <code>Logging</code> 系统进行进一步的诊断.</p>
+<h2 id="快速入门">快速入门</h2>
+<h3 id="数据模型">数据模型</h3>
+<h4 id="metric-and-label">Metric and Label</h4>
+<p>Prometheus 在底层将所有属于同一指标名称, 同一标签集合的, 有时间戳标记的数据流存储为时间序列数据.</p>
+<p>数据模型的表示方式为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>且有以下规则</p>
+<h5 id="metric-name">metric name</h5>
+<p>匹配正则 <code>[a-zA-Z_:][a-zA-Z0-9_:]*</code>, 其中 <code>:</code> 是用户自定义记录规则的标记, 不应该用在业务暴露的指标中</p>
+<h5 id="label-name">label name</h5>
+<p>匹配正则 <code>[a-zA-Z_][a-zA-Z0-9_]*</code>, 其中以 <code>__</code> 开头的是系统保留命名</p>
+<h4 id="sample">Sample</h4>
+<p>Sample 的 value 总是为一个 float64 值</p>
+<p>以关系型数据库来类比, metric_name 相当于表名, label_name 相当于列名, label_value 相当某一字段的值, 而 metric_value 和 timestamp 的列是系统自动生成的.</p>
+<p>比如如下名为 <code>api_http_requests_total</code> 指标表示了 API 所有的 HTTP 请求数, 其中标签 <code>method</code> 指定了方法, <code>handler</code> 指定了路径, 分别为 <code>method=&quot;POST&quot;</code> 和 <code>handler=&quot;/messages&quot;</code>, 此样本的值为 11</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">api_http_requests_total{method=&#34;POST&#34;, handler=&#34;/messages&#34;} 11
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">api_http_requests_total</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">`</span><span class="k">timestamp</span><span class="o">`</span><span class="w"> </span><span class="k">timestamp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">`</span><span class="k">method</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">`</span><span class="k">handler</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">`</span><span class="n">value</span><span class="o">`</span><span class="w"> </span><span class="n">double</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">api_http_requests_total</span><span class="o">`</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------+--------+-----------+-------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="k">timestamp</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="k">method</span><span class="w"> </span><span class="o">|</span><span class="w">  </span><span class="k">handler</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------+--------+-----------+-------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="mi">1649235184</span><span class="w"> </span><span class="o">|</span><span class="w">  </span><span class="n">POST</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="o">/</span><span class="n">messages</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">11</span><span class="w">  </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">------------+--------+-----------+-------+
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="metric-1">Metric</h3>
+<p>Prometheus 提供了以下一些类型 <code>metrics</code> 类型</p>
+<h4 id="counter">Counter</h4>
+<p>Counter 类型代表一种样本数据单调递增的指标, 即除非监控系统发生了重置, 只增不减.</p>
+<p>例子: 系统接受的请求数, 系统错误数, 系统 uptime</p>
+<h4 id="gauge">Gauge</h4>
+<p>Gauge 类型代表一种样本数据可以任意变化的指标, 即可增可减.</p>
+<p>例子: 当前实例线程数, 当前系统负载</p>
+<h4 id="histogram-和-summary">Histogram 和 Summary</h4>
+<p>Histogram 和 Summary 用以对数据进行采样并储存其分布情况. 不同的是, Histogram 指定其配置的区间, 而 Summary 配置其分位数.</p>
+<p>举一个具体的例子, 假设需要统计某个 WEB 页面的响应时间, 使用 Histogram 时, 需要配置其响应时间区间, &lt;10ms, 10ms-100ms, 100ms-1000ms, &gt;1000ms, 返回的数据如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">http_response_latency_range_bucket{le=&#34;0.01&#34;} 123
+</span></span><span class="line"><span class="cl">http_response_latency_range_bucket{le=&#34;0.1&#34;} 214
+</span></span><span class="line"><span class="cl">http_response_latency_range_bucket{le=&#34;1&#34;} 215
+</span></span><span class="line"><span class="cl">http_response_latency_range_bucket{le=&#34;+Inf&#34;} 216
+</span></span><span class="line"><span class="cl">http_response_latency_range_sum 2.888716127000002
+</span></span><span class="line"><span class="cl">http_response_latency_range_count 216
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用 Summary 时, 则配置 0.5, 0.9, 0.99, 代表了其50分位, 即中位数, 90分位, 99分位的值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">http_response_latency{quantile=&#34;0.5&#34;} 0.012352463
+</span></span><span class="line"><span class="cl">http_response_latency{quantile=&#34;0.9&#34;} 0.014458005
+</span></span><span class="line"><span class="cl">http_response_latency{quantile=&#34;0.99&#34;} 0.017316173
+</span></span><span class="line"><span class="cl">http_response_latency_sum 2.888716127000002
+</span></span><span class="line"><span class="cl">http_response_latency_count 216
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此时可以看到, 这个 HTTP 接口一共接受了 216 次请求, 一共耗时使用了 2.88s, Histogram 展示了具体数值分布, 123 个在 10ms 内, 有 216 - 215 = 1 个请求耗时超过了 1000ms. Summary 展示了分布的百分位, 中位数是 0.012s, 99分位是 0.017s.</p>
+<p>通常我们使用 Histogram 即可, Summary 会使用较多的内存构造一个滑动窗口来做统计.</p>
+<h2 id="注意事项">注意事项</h2>
+<p>每个键值标签对的唯一组合都代表一个新的时间序列, 这会显著增加暴露的指标数和存储的数据量. 不要使用标签存储具有高基数, 即拥有许多不同的标签值的维度, 例如用户id, restful 的实际路径参数等.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">// Good
+</span></span><span class="line"><span class="cl">http_request_total{path=&#34;users/{:user_id}/info&#34;}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Bad
+</span></span><span class="line"><span class="cl">http_request_total{path=&#34;users/1/info&#34;}
+</span></span><span class="line"><span class="cl">http_request_total{path=&#34;users/2/info&#34;}
+</span></span><span class="line"><span class="cl">http_request_total{path=&#34;users/3/info&#34;}
+</span></span><span class="line"><span class="cl">http_request_total{path=&#34;users/4/info&#34;}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Good
+</span></span><span class="line"><span class="cl">crawler_failure_total{target=&#34;tiktok&#34;,scope=&#34;user&#34;}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Bad
+</span></span><span class="line"><span class="cl">crawler_failure_total{target=&#34;tiktok&#34;,user=&#34;damonlvu&#34;}
+</span></span><span class="line"><span class="cl">crawler_failure_total{target=&#34;tiktok&#34;,user=&#34;77777777777ge&#34;}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 Prometheus 中, Metric 和 Label 的命名应该总是使用 <code>snake_case</code> 形式, 以便后续的处理归类分割等操作.</p>
+<p>一个 Metric 的前缀总应该使用应用名, 可以理解为一个命名空间, 例如</p>
+<ul>
+<li><strong>prometheus</strong>_notifications_total (Prometheus 的内部指标)</li>
+<li><strong>doris</strong>_consumption_latency_seconds (doris 的消费延时)</li>
+<li><strong>crawler</strong>_failure_total (爬虫的总失败数)</li>
+<li><strong>crawler</strong>_request_total (爬虫的总请求数)</li>
+</ul>
+<p>一个 Metric 总应该以其单位的复数形式为后缀, 并且单位应该尽量统一, 如果是一个累积的计数, 总应该使用 <code>total</code></p>
+<ul>
+<li>node_memory_usage_<strong>bytes</strong></li>
+<li>http_requests_<strong>total</strong></li>
+<li>process_cpu_<strong>seconds_total</strong></li>
+</ul>
+<h2 id="抓取设置">抓取设置</h2>
+<p>通过 <code>Prometheus Operator</code> 的 <code>ServiceMonitor</code> 对象, 可以相对便捷的, 通过不直接修改 prometheus config 的方式添加抓取目标.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">monitoring.coreos.com/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ServiceMonitor</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example-service-monitor</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">team</span><span class="p">:</span><span class="w"> </span><span class="l">ops</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">svc-label-key</span><span class="p">:</span><span class="w"> </span><span class="l">svc-label-value</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">endpoints</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/metrics</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>上面的实例指定了一个名为 example-service-monitor 的 <code>ServiceMonitor</code>, 它会选择所有 svc-label-key 的值为 svc-label-value 的 Service 进行监控, 目标端口为 80, HTTP 路径为 /metrics. Service 背后可能存在超过一个的无状态的 Pod, 他们会被自动发现.</p>
+<p><code>Prometheus Operator</code> 会解析 <code>ServiceMonitor</code> 对象, 生成相应的抓取设置到 prometheus config.</p>
+<h2 id="指标选择">指标选择</h2>
+<p>一般 exporter 会采集很多的指标, 比如 jvm 的运行情况, http 请求情况等等. Google 在 <code>SRE Handbook</code> 中提出了四个黄金信号: 延迟, 流量, 错误数, 饱和度. 实际操作中可以使用 <code>USE</code> 或 <code>RED</code> 方法作为指导, <code>USE(Utilization, Saturation, Errors)</code> 用于资源, <code>RED(Rate, Errors, Duration)</code> 用于服务.</p>
+<p>一般的在线服务, 比如 Web 服务, 数据库等, 一般关心请求速率, 延迟和错误率, 使用 RED 方法; 一般的离线服务, 如日志处理, 消息队列等, 一般关注队列数量, 进行中的数量, 处理速度以及发生的错误, 使用 USE 方法.</p>
+<h3 id="rate-速率">Rate 速率</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sum(rate(http_server_requests_seconds_count[5m])) by (method, uri, job)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>统计访问的 QPS</p>
+<h3 id="errors-错误">Errors 错误</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">rate(http_server_requests_seconds_count{status=~&#34;^5..$&#34;}[5m]) / rate(http_server_requests_seconds_count[5m])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>统计 HTTP 状态码为 5xx 的比例</p>
+<h3 id="duration-请求时间">Duration 请求时间</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sum by (job, uri, method) (rate(http_server_requests_seconds_sum[5m]) / rate(http_server_requests_seconds_count[5m]))
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>统计平均请求时间</p>
+<h2 id="参考资料">参考资料</h2>
+<p><a class="link" href="https://prometheus.io/docs/introduction/overview/"  target="_blank" rel="noopener"
+    >What is Prometheus?</a></p>
+<p><a class="link" href="https://peter.bourgon.org/blog/2017/02/21/metrics-tracing-and-logging.html"  target="_blank" rel="noopener"
+    >Metrics, tracing, and logging</a></p>
+<p><a class="link" href="https://yasongxu.gitbook.io/container-monitor/"  target="_blank" rel="noopener"
+    >container-monitor-book</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/prometheus/">Prometheus</a>
+        
+            <a href="/tags/database/">Database</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-contents--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-contents">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/prometheus-%E6%89%8B%E6%8A%8A%E6%89%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Prometheus 手把手</h2>
+        </div>
+    </a>
+</article>
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2022 Mem.Wey&#39;s Github Pages
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.11.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#基本概念">基本概念</a>
+      <ol>
+        <li><a href="#metric">Metric</a></li>
+        <li><a href="#系统架构">系统架构</a></li>
+        <li><a href="#适用场景">适用场景</a></li>
+      </ol>
+    </li>
+    <li><a href="#快速入门">快速入门</a>
+      <ol>
+        <li><a href="#数据模型">数据模型</a>
+          <ol>
+            <li><a href="#metric-and-label">Metric and Label</a></li>
+            <li><a href="#sample">Sample</a></li>
+          </ol>
+        </li>
+        <li><a href="#metric-1">Metric</a>
+          <ol>
+            <li><a href="#counter">Counter</a></li>
+            <li><a href="#gauge">Gauge</a></li>
+            <li><a href="#histogram-和-summary">Histogram 和 Summary</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#注意事项">注意事项</a></li>
+    <li><a href="#抓取设置">抓取设置</a></li>
+    <li><a href="#指标选择">指标选择</a>
+      <ol>
+        <li><a href="#rate-速率">Rate 速率</a></li>
+        <li><a href="#errors-错误">Errors 错误</a></li>
+        <li><a href="#duration-请求时间">Duration 请求时间</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
