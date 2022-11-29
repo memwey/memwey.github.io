@@ -46,7 +46,10 @@
 &lt;/ul&gt;
 &lt;h2 id=&#34;关于本人&#34;&gt;关于本人&lt;/h2&gt;
 &lt;h3 id=&#34;现在的&#34;&gt;现在的&lt;/h3&gt;
-&lt;p&gt;自宅警备队&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;開発 @ &lt;a class=&#34;link&#34; href=&#34;https://www.netstars.co.jp/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;株式会社ネットスターズ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3 id=&#34;曾经的&#34;&gt;曾经的&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;中级运维开发工程师 @ &lt;a class=&#34;link&#34; href=&#34;https://www.datastory.com.cn/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -57,11 +60,11 @@
     &gt;壁虎科技&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Senior Engineer @ &lt;a class=&#34;link&#34; href=&#34;https://www.bigo.sg/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;BIGO&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Python开发工程师 @ &lt;a class=&#34;link&#34; href=&#34;https://www.akulaku.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;li&gt;Python Engineer @ &lt;a class=&#34;link&#34; href=&#34;https://www.akulaku.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Akulaku&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;服务器端开发工程师 @ &lt;a class=&#34;link&#34; href=&#34;https://www.cmcm.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;猎豹移动&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Python开发实习生 @ &lt;a class=&#34;link&#34; href=&#34;http://www.cnicg.cn/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;li&gt;Python 开发实习生 @ &lt;a class=&#34;link&#34; href=&#34;http://www.cnicg.cn/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;广州中国科学院计算机网络信息中心&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;学生 @ &lt;a class=&#34;link&#34; href=&#34;https://www.jnu.edu.cn/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;暨南大学&lt;/a&gt;&lt;/li&gt;

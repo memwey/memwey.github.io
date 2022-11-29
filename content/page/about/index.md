@@ -21,7 +21,7 @@ menu:
 
 ### 现在的
 
-自宅警备队
+* 開発 @ [株式会社ネットスターズ](https://www.netstars.co.jp/)
 
 ### 曾经的
 
@@ -29,9 +29,9 @@ menu:
 * 后端开发工程师 @ [画音](https://huayinapp.com/)
 * 后端开发工程师 @ [壁虎科技](https://app.piaodian.cn/)
 * Senior Engineer @ [BIGO](https://www.bigo.sg/)
-* Python开发工程师 @ [Akulaku](https://www.akulaku.com/)
+* Python Engineer @ [Akulaku](https://www.akulaku.com/)
 * 服务器端开发工程师 @ [猎豹移动](https://www.cmcm.com/) 
-* Python开发实习生 @ [广州中国科学院计算机网络信息中心](http://www.cnicg.cn/)
+* Python 开发实习生 @ [广州中国科学院计算机网络信息中心](http://www.cnicg.cn/)
 * 学生 @ [暨南大学](https://www.jnu.edu.cn/)
 * 学生 @ [石门中学](http://www.shimen.org/)
 
