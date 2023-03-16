@@ -1,6 +1,5 @@
 baseurl: https://memwey.github.io/
 languageCode: zh-cn
-theme: hugo-theme-stack
 paginate: 8
 title: Mem.Wey's Github Pages
 
