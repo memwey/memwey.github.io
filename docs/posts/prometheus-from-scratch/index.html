@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Prometheus 从入门到放弃
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Prometheus 从入门到放弃" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="我已经放弃了, 你呢" />
+        
+    
+
+    
+        
+            <meta name="description" content="我已经放弃了, 你呢" />
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Prometheus 从入门到放弃
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2022-04-17</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/prometheus/"
+                                   class="post-tag">Prometheus</a>
+                            
+                                <a href="https://memwey.github.io/tags/database/"
+                                   class="post-tag">Database</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <h2 id="ji-ben-gai-nian"><a class="zola-anchor" href="#ji-ben-gai-nian" aria-label="Anchor link for: ji-ben-gai-nian">基本概念</a></h2>
+<p>Prometheus 是一个开源的监控方案, <a href="https://cncf.io/">CNCF</a> 的毕业项目, 云原生监控的事实标准. Prometheus 以时间序列数据的形式收集和存储 <code>metrics</code>. <code>Metrics</code> 信息与被称为标签的可选的键值对和记录时间一起保存.</p>
+<p>Prometheus 的主要功能特点有</p>
+<ul>
+<li>由 <code>metric</code> 的名称以及 Key/Value 对标签标识的<code>时间序列</code>数据组成的多维<a href="https://prometheus.io/docs/concepts/data_model/">数据模型</a></li>
+<li>灵活的查询语言 <a href="https://prometheus.io/docs/prometheus/latest/querying/basics/">PromQL</a></li>
+<li>不依赖分布式存储; 单服务节点自治能力</li>
+<li>服务端通过 HTTP 协议拉取获得的时间序列数据</li>
+<li>支持通过中间网关<a href="https://prometheus.io/docs/instrumenting/pushing/">推送时间序列数据</a></li>
+<li>通过服务发现或静态配置文件发现监控目标</li>
+<li>支持多种类型的图表和仪表盘</li>
+</ul>
+<p>Prometheus 以拉取的模式获取获取监控数据, 而不是由业务方向监控服务器推送. 这对于被监控的业务来说, 极大的减少了监控部分在系统中的耦合. 通常, 业务暴露出一个 HTTP 端口以暴露数据, 供 Prometheus server 抓取即可.</p>
+<h3 id="metric"><a class="zola-anchor" href="#metric" aria-label="Anchor link for: metric">Metric</a></h3>
+<p>一般来说, <code>Metric</code> 是数值形式的标量单位, 它是与时间一起被记录的时间序列. 在不同应用中用户期望记录不同的 <code>Metric</code>. Web server 可能要希望请求数和一些指标信息, 数据库可能希望记录活跃连接数和活跃查询数之类的.</p>
+<h3 id="xi-tong-jia-gou"><a class="zola-anchor" href="#xi-tong-jia-gou" aria-label="Anchor link for: xi-tong-jia-gou">系统架构</a></h3>
+<ul>
+<li>主要的 <a href="https://github.com/prometheus/prometheus">Prometheus server</a> 收集和存储时间序列数据</li>
+<li><a href="https://prometheus.io/docs/instrumenting/clientlibs/">客户端库</a> 用以监测应用程序代码</li>
+<li><a href="https://github.com/prometheus/pushgateway">push gateway</a> 用以支持短期运行的任务</li>
+<li>用以监控 HAProxy, StatsD, Graphite 等常用服务的 <a href="https://prometheus.io/docs/instrumenting/exporters/">exporters</a></li>
+<li>用以处理告警的 <a href="https://github.com/prometheus/alertmanager">alertmanager</a></li>
+<li>其他各种支持工具</li>
+</ul>
+<p><img src="https://memwey.github.io/posts/prometheus-from-scratch/images/architecture.png" alt="系统架构图" /></p>
+<h3 id="gua-yong-chang-jing"><a class="zola-anchor" href="#gua-yong-chang-jing" aria-label="Anchor link for: gua-yong-chang-jing">适用场景</a></h3>
+<p>Prometheus 适合记录任何纯数值的时间序列。它既适合以机器为中心的监控, 也适合监控高度动态的面向服务的体系结构. 它对多维数据收集和查询的支持在微服务的场景中拥有特别的优势.</p>
+<p>Prometheus 基于可靠性设计, 以保证在出现问题时可以快速进行问题诊断. 每个 Prometheus server 都是独立的, 不依赖于网络存储或其他远程服务. 当基础设施的其他部分出现故障时, 这种架构非常可靠, 另一方面, 它不需要配置大量的基础设施.</p>
+<p>Prometheus 不适合需要 100% 的准确性的场景, 例如记录单个的计费请求, 收集的数据可能不够详细和完整. 在这种情况下应使用其他系统来收集和分析计费数据, 使用 Prometheus 进行其余的监控.</p>
+<p>这里说的比较笼统, 从构建系统可观测性的监控来说, 我们有 <code>Metrics</code> , <code>Tracing</code> 和 <code>Logging</code>. 它们有各自的特点, <code>Metrics</code> 的特点是可聚合的, 它们是组成一个量计, 计数器或者直方图的最小单位. <code>Logging</code> 处理一系列离散事件. 而 <code>Tracing</code> 处理整个请求范围内的信息, 数据或元数据应当绑定到系统中单个事务对象的生命周期中.</p>
+<p><img src="https://memwey.github.io/posts/prometheus-from-scratch/images/Obervation-Venn.png" alt="可观测性韦恩图" /></p>
+<p>Prometheus 是个典型的 <code>Metrics</code> 系统, 它为系统打点, 追踪系统整体的运行情况. 比如, 记录 Web 系统中的所有请求的 HTTP 状态码, 当一段时间中 500 错误大量出现时, 可以通过配置的聚合和趋势分析发现问题并提供告警, 但它没有记录具体的请求内容, 想要复现错误的请求, 则需要 <code>Tracing</code> 和 <code>Logging</code> 系统进行进一步的诊断.</p>
+<h2 id="kuai-su-ru-men"><a class="zola-anchor" href="#kuai-su-ru-men" aria-label="Anchor link for: kuai-su-ru-men">快速入门</a></h2>
+<h3 id="shu-ju-mo-xing"><a class="zola-anchor" href="#shu-ju-mo-xing" aria-label="Anchor link for: shu-ju-mo-xing">数据模型</a></h3>
+<h4 id="metric-and-label"><a class="zola-anchor" href="#metric-and-label" aria-label="Anchor link for: metric-and-label">Metric and Label</a></h4>
+<p>Prometheus 在底层将所有属于同一指标名称, 同一标签集合的, 有时间戳标记的数据流存储为时间序列数据.</p>
+<p>数据模型的表示方式为</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;metric name&gt;{&lt;label name&gt;=&lt;label value&gt;, ...}
+</span></code></pre>
+<p>且有以下规则</p>
+<h5 id="metric-name"><a class="zola-anchor" href="#metric-name" aria-label="Anchor link for: metric-name">metric name</a></h5>
+<p>匹配正则 <code>[a-zA-Z_:][a-zA-Z0-9_:]*</code>, 其中 <code>:</code> 是用户自定义记录规则的标记, 不应该用在业务暴露的指标中</p>
+<h5 id="label-name"><a class="zola-anchor" href="#label-name" aria-label="Anchor link for: label-name">label name</a></h5>
+<p>匹配正则 <code>[a-zA-Z_][a-zA-Z0-9_]*</code>, 其中以 <code>__</code> 开头的是系统保留命名</p>
+<h4 id="sample"><a class="zola-anchor" href="#sample" aria-label="Anchor link for: sample">Sample</a></h4>
+<p>Sample 的 value 总是为一个 float64 值</p>
+<p>以关系型数据库来类比, metric_name 相当于表名, label_name 相当于列名, label_value 相当某一字段的值, 而 metric_value 和 timestamp 的列是系统自动生成的.</p>
+<p>比如如下名为 <code>api_http_requests_total</code> 指标表示了 API 所有的 HTTP 请求数, 其中标签 <code>method</code> 指定了方法, <code>handler</code> 指定了路径, 分别为 <code>method="POST"</code> 和 <code>handler="/messages"</code>, 此样本的值为 11</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>api_http_requests_total{method=&quot;POST&quot;, handler=&quot;/messages&quot;} 11
+</span></code></pre>
+<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#b48ead;">CREATE TABLE </span><span>`</span><span style="color:#8fa1b3;">api_http_requests_total</span><span>` (
+</span><span>    `</span><span style="color:#a3be8c;">timestamp</span><span>` </span><span style="color:#b48ead;">timestamp</span><span>,
+</span><span>    `</span><span style="color:#a3be8c;">method</span><span>` </span><span style="color:#b48ead;">varchar</span><span>(</span><span style="color:#d08770;">255</span><span>),
+</span><span>    `</span><span style="color:#a3be8c;">handler</span><span>` </span><span style="color:#b48ead;">varchar</span><span>(</span><span style="color:#d08770;">255</span><span>),
+</span><span>    `</span><span style="color:#a3be8c;">value</span><span>` double
+</span><span>);
+</span><span>
+</span><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM </span><span>`</span><span style="color:#a3be8c;">api_http_requests_total</span><span>`;
+</span><span>
+</span><span>+</span><span style="color:#65737e;">------------+--------+-----------+-------+
+</span><span>| </span><span style="color:#b48ead;">timestamp</span><span>  | method |  handler  | value |
+</span><span>+</span><span style="color:#65737e;">------------+--------+-----------+-------+
+</span><span>| </span><span style="color:#d08770;">1649235184</span><span> |  POST  | /messages |   </span><span style="color:#d08770;">11</span><span>  |
+</span><span>+</span><span style="color:#65737e;">------------+--------+-----------+-------+
+</span><span>
+</span></code></pre>
+<h3 id="metric-1"><a class="zola-anchor" href="#metric-1" aria-label="Anchor link for: metric-1">Metric</a></h3>
+<p>Prometheus 提供了以下一些类型 <code>metrics</code> 类型</p>
+<h4 id="counter"><a class="zola-anchor" href="#counter" aria-label="Anchor link for: counter">Counter</a></h4>
+<p>Counter 类型代表一种样本数据单调递增的指标, 即除非监控系统发生了重置, 只增不减.</p>
+<p>例子: 系统接受的请求数, 系统错误数, 系统 uptime</p>
+<h4 id="gauge"><a class="zola-anchor" href="#gauge" aria-label="Anchor link for: gauge">Gauge</a></h4>
+<p>Gauge 类型代表一种样本数据可以任意变化的指标, 即可增可减.</p>
+<p>例子: 当前实例线程数, 当前系统负载</p>
+<h4 id="histogram-he-summary"><a class="zola-anchor" href="#histogram-he-summary" aria-label="Anchor link for: histogram-he-summary">Histogram 和 Summary</a></h4>
+<p>Histogram 和 Summary 用以对数据进行采样并储存其分布情况. 不同的是, Histogram 指定其配置的区间, 而 Summary 配置其分位数.</p>
+<p>举一个具体的例子, 假设需要统计某个 WEB 页面的响应时间, 使用 Histogram 时, 需要配置其响应时间区间, &lt;10ms, 10ms-100ms, 100ms-1000ms, &gt;1000ms, 返回的数据如下</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>http_response_latency_range_bucket{le=&quot;0.01&quot;} 123
+</span><span>http_response_latency_range_bucket{le=&quot;0.1&quot;} 214
+</span><span>http_response_latency_range_bucket{le=&quot;1&quot;} 215
+</span><span>http_response_latency_range_bucket{le=&quot;+Inf&quot;} 216
+</span><span>http_response_latency_range_sum 2.888716127000002
+</span><span>http_response_latency_range_count 216
+</span></code></pre>
+<p>使用 Summary 时, 则配置 0.5, 0.9, 0.99, 代表了其50分位, 即中位数, 90分位, 99分位的值</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>http_response_latency{quantile=&quot;0.5&quot;} 0.012352463
+</span><span>http_response_latency{quantile=&quot;0.9&quot;} 0.014458005
+</span><span>http_response_latency{quantile=&quot;0.99&quot;} 0.017316173
+</span><span>http_response_latency_sum 2.888716127000002
+</span><span>http_response_latency_count 216
+</span></code></pre>
+<p>此时可以看到, 这个 HTTP 接口一共接受了 216 次请求, 一共耗时使用了 2.88s, Histogram 展示了具体数值分布, 123 个在 10ms 内, 有 216 - 215 = 1 个请求耗时超过了 1000ms. Summary 展示了分布的百分位, 中位数是 0.012s, 99分位是 0.017s.</p>
+<p>通常我们使用 Histogram 即可, Summary 会使用较多的内存构造一个滑动窗口来做统计.</p>
+<h2 id="zhu-yi-shi-xiang"><a class="zola-anchor" href="#zhu-yi-shi-xiang" aria-label="Anchor link for: zhu-yi-shi-xiang">注意事项</a></h2>
+<p>每个键值标签对的唯一组合都代表一个新的时间序列, 这会显著增加暴露的指标数和存储的数据量. 不要使用标签存储具有高基数, 即拥有许多不同的标签值的维度, 例如用户id, restful 的实际路径参数等.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>// Good
+</span><span>http_request_total{path=&quot;users/{:user_id}/info&quot;}
+</span><span>
+</span><span>// Bad
+</span><span>http_request_total{path=&quot;users/1/info&quot;}
+</span><span>http_request_total{path=&quot;users/2/info&quot;}
+</span><span>http_request_total{path=&quot;users/3/info&quot;}
+</span><span>http_request_total{path=&quot;users/4/info&quot;}
+</span><span>
+</span><span>// Good
+</span><span>crawler_failure_total{target=&quot;tiktok&quot;,scope=&quot;user&quot;}
+</span><span>
+</span><span>// Bad
+</span><span>crawler_failure_total{target=&quot;tiktok&quot;,user=&quot;damonlvu&quot;}
+</span><span>crawler_failure_total{target=&quot;tiktok&quot;,user=&quot;77777777777ge&quot;}
+</span></code></pre>
+<p>在 Prometheus 中, Metric 和 Label 的命名应该总是使用 <code>snake_case</code> 形式, 以便后续的处理归类分割等操作.</p>
+<p>一个 Metric 的前缀总应该使用应用名, 可以理解为一个命名空间, 例如</p>
+<ul>
+<li><strong>prometheus</strong>_notifications_total (Prometheus 的内部指标)</li>
+<li><strong>doris</strong>_consumption_latency_seconds (doris 的消费延时)</li>
+<li><strong>crawler</strong>_failure_total (爬虫的总失败数)</li>
+<li><strong>crawler</strong>_request_total (爬虫的总请求数)</li>
+</ul>
+<p>一个 Metric 总应该以其单位的复数形式为后缀, 并且单位应该尽量统一, 如果是一个累积的计数, 总应该使用 <code>total</code></p>
+<ul>
+<li>node_memory_usage_<strong>bytes</strong></li>
+<li>http_requests_<strong>total</strong></li>
+<li>process_cpu_<strong>seconds_total</strong></li>
+</ul>
+<h2 id="zhua-qu-she-zhi"><a class="zola-anchor" href="#zhua-qu-she-zhi" aria-label="Anchor link for: zhua-qu-she-zhi">抓取设置</a></h2>
+<p>通过 <code>Prometheus Operator</code> 的 <code>ServiceMonitor</code> 对象, 可以相对便捷的, 通过不直接修改 prometheus config 的方式添加抓取目标.</p>
+<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">apiVersion</span><span>: </span><span style="color:#a3be8c;">monitoring.coreos.com/v1
+</span><span style="color:#bf616a;">kind</span><span>: </span><span style="color:#a3be8c;">ServiceMonitor
+</span><span style="color:#bf616a;">metadata</span><span>:
+</span><span>  </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">example-service-monitor
+</span><span>  </span><span style="color:#bf616a;">labels</span><span>:
+</span><span>    </span><span style="color:#bf616a;">team</span><span>: </span><span style="color:#a3be8c;">ops
+</span><span style="color:#bf616a;">spec</span><span>:
+</span><span>  </span><span style="color:#bf616a;">selector</span><span>:
+</span><span>    </span><span style="color:#bf616a;">matchLabels</span><span>:
+</span><span>      </span><span style="color:#bf616a;">svc-label-key</span><span>: </span><span style="color:#a3be8c;">svc-label-value
+</span><span>  </span><span style="color:#bf616a;">endpoints</span><span>:
+</span><span>  - </span><span style="color:#bf616a;">port</span><span>: </span><span style="color:#d08770;">80
+</span><span>  - </span><span style="color:#bf616a;">path</span><span>: </span><span style="color:#a3be8c;">/metrics
+</span></code></pre>
+<p>上面的实例指定了一个名为 example-service-monitor 的 <code>ServiceMonitor</code>, 它会选择所有 svc-label-key 的值为 svc-label-value 的 Service 进行监控, 目标端口为 80, HTTP 路径为 /metrics. Service 背后可能存在超过一个的无状态的 Pod, 他们会被自动发现.</p>
+<p><code>Prometheus Operator</code> 会解析 <code>ServiceMonitor</code> 对象, 生成相应的抓取设置到 prometheus config.</p>
+<h2 id="zhi-biao-xuan-ze"><a class="zola-anchor" href="#zhi-biao-xuan-ze" aria-label="Anchor link for: zhi-biao-xuan-ze">指标选择</a></h2>
+<p>一般 exporter 会采集很多的指标, 比如 jvm 的运行情况, http 请求情况等等. Google 在 <code>SRE Handbook</code> 中提出了四个黄金信号: 延迟, 流量, 错误数, 饱和度. 实际操作中可以使用 <code>USE</code> 或 <code>RED</code> 方法作为指导, <code>USE(Utilization, Saturation, Errors)</code> 用于资源, <code>RED(Rate, Errors, Duration)</code> 用于服务.</p>
+<p>一般的在线服务, 比如 Web 服务, 数据库等, 一般关心请求速率, 延迟和错误率, 使用 RED 方法; 一般的离线服务, 如日志处理, 消息队列等, 一般关注队列数量, 进行中的数量, 处理速度以及发生的错误, 使用 USE 方法.</p>
+<h3 id="rate-su-lu"><a class="zola-anchor" href="#rate-su-lu" aria-label="Anchor link for: rate-su-lu">Rate 速率</a></h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>sum(rate(http_server_requests_seconds_count[5m])) by (method, uri, job)
+</span></code></pre>
+<p>统计访问的 QPS</p>
+<h3 id="errors-cuo-wu"><a class="zola-anchor" href="#errors-cuo-wu" aria-label="Anchor link for: errors-cuo-wu">Errors 错误</a></h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>rate(http_server_requests_seconds_count{status=~&quot;^5..$&quot;}[5m]) / rate(http_server_requests_seconds_count[5m])
+</span></code></pre>
+<p>统计 HTTP 状态码为 5xx 的比例</p>
+<h3 id="duration-qing-qiu-shi-jian"><a class="zola-anchor" href="#duration-qing-qiu-shi-jian" aria-label="Anchor link for: duration-qing-qiu-shi-jian">Duration 请求时间</a></h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>sum by (job, uri, method) (rate(http_server_requests_seconds_sum[5m]) / rate(http_server_requests_seconds_count[5m]))
+</span></code></pre>
+<p>统计平均请求时间</p>
+<h2 id="can-kao-zi-liao"><a class="zola-anchor" href="#can-kao-zi-liao" aria-label="Anchor link for: can-kao-zi-liao">参考资料</a></h2>
+<p><a href="https://prometheus.io/docs/introduction/overview/">What is Prometheus?</a></p>
+<p><a href="https://peter.bourgon.org/blog/2017/02/21/metrics-tracing-and-logging.html">Metrics, tracing, and logging</a></p>
+<p><a href="https://yasongxu.gitbook.io/container-monitor/">container-monitor-book</a></p>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#ji-ben-gai-nian">基本概念</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#metric">Metric</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#xi-tong-jia-gou">系统架构</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#gua-yong-chang-jing">适用场景</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#kuai-su-ru-men">快速入门</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#shu-ju-mo-xing">数据模型</a>
+                        </li>
+
+                        
+                            <ul>
+                                
+                                    <li>
+                                        <a href="https://memwey.github.io/posts/prometheus-from-scratch/#metric-and-label">Metric and Label</a>
+                                    </li>
+                                
+                                    <li>
+                                        <a href="https://memwey.github.io/posts/prometheus-from-scratch/#sample">Sample</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#metric-1">Metric</a>
+                        </li>
+
+                        
+                            <ul>
+                                
+                                    <li>
+                                        <a href="https://memwey.github.io/posts/prometheus-from-scratch/#counter">Counter</a>
+                                    </li>
+                                
+                                    <li>
+                                        <a href="https://memwey.github.io/posts/prometheus-from-scratch/#gauge">Gauge</a>
+                                    </li>
+                                
+                                    <li>
+                                        <a href="https://memwey.github.io/posts/prometheus-from-scratch/#histogram-he-summary">Histogram 和 Summary</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#zhu-yi-shi-xiang">注意事项</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#zhua-qu-she-zhi">抓取设置</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#zhi-biao-xuan-ze">指标选择</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#rate-su-lu">Rate 速率</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#errors-cuo-wu">Errors 错误</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/prometheus-from-scratch/#duration-qing-qiu-shi-jian">Duration 请求时间</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-from-scratch/#can-kao-zi-liao">参考资料</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>

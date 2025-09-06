@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Prometheus 手把手
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Prometheus 手把手" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="面向开发, 手把手教还不会的话, 直接打死" />
+        
+    
+
+    
+        
+            <meta name="description" content="面向开发, 手把手教还不会的话, 直接打死" />
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Prometheus 手把手
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2022-05-10</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/prometheus/"
+                                   class="post-tag">Prometheus</a>
+                            
+                                <a href="https://memwey.github.io/tags/database/"
+                                   class="post-tag">Database</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <p>因为 Prometheus 在应用中一共只有四种 metric 类型, 只要根据需要监测的目标选择了 metrics 类型, 后续的告警以及可视化配置就有固定的套路了.</p>
+<h3 id="counter"><a class="zola-anchor" href="#counter" aria-label="Anchor link for: counter">Counter</a></h3>
+<p>Counter 用来监控单调递增的量, 当发生重置时 Prometheus 会自动处理归零的数据. 这是一个非常基本的类型, 一个系统中很多数据都可以通过此类型进行计数, 比如系统接受的请求数, 系统发生的错误数, 再比如对第三方接口的调用数, 第三方接口返回的错误数.</p>
+<p>业务代码如下</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">from </span><span>prometheus_client </span><span style="color:#b48ead;">import </span><span>Counter
+</span><span>c = </span><span style="color:#bf616a;">Counter</span><span>(
+</span><span>    &#39;</span><span style="color:#a3be8c;">web_request_total</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">web request total counter</span><span>&#39;,
+</span><span>    [&#39;</span><span style="color:#a3be8c;">method</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">endpoint</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">status_code</span><span>&#39;]
+</span><span>)
+</span><span>c.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">get</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">/</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">200</span><span>&#39;).</span><span style="color:#bf616a;">inc</span><span>()
+</span><span>c.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">post</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">/submit</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">500</span><span>&#39;).</span><span style="color:#bf616a;">inc</span><span>()
+</span></code></pre>
+<p>此时在业务暴露出来的端点上会有这样两条记录</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>web_request_total{method=&quot;/submit&quot;,method=&quot;post&quot;,status_code=&quot;500&quot;} 1
+</span><span>web_request_total{method=&quot;/&quot;,method=&quot;get&quot;,status_code=&quot;200&quot;} 1
+</span></code></pre>
+<p>对于 Counter 我们一般看增长量和增长速率</p>
+<ul>
+<li><code>sum(increase(web_request_total[5m]))</code> 五分钟内总请求数</li>
+<li><code>sum(increase(web_request_total{status_code!~"^2.."}[1m]))</code> 一分钟内状态码不为2xx的总请求数</li>
+<li><code>sum(irate(web_request_total[1m]))</code> 一分钟内总请求数增长率</li>
+</ul>
+<p>告警则一般设置为</p>
+<ul>
+<li>一分钟内总请求中有有超过 5% 的 5xx 错误, 持续一分钟</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>expr: sum(rate(web_request_total{status_code=~&quot;^5..&quot;}[1m])) / sum(rate(web_request_total[1m])) * 100 &gt; 5
+</span><span>for: 1m
+</span></code></pre>
+<ul>
+<li>一分钟内 5xx 错误的请求增长率高于 100%, 持续一分钟</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>expr: sum(irate(web_request_total{status_code=~&quot;^5..&quot;}[1m])) &gt; 100
+</span><span>for: 1m
+</span></code></pre>
+<h3 id="gauge"><a class="zola-anchor" href="#gauge" aria-label="Anchor link for: gauge">Gauge</a></h3>
+<p>Gauge 是一个瞬时量, 在时间上来看是可增可减的, 用以记录系统在某个时刻的当前状态, 比如当前实例线程数, 当前系统负载, 某个队列的长度, 某个队列的消费延时等.</p>
+<p>业务代码如下</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">from </span><span>prometheus_client </span><span style="color:#b48ead;">import </span><span>Gauge
+</span><span>g1 = </span><span style="color:#bf616a;">Gauge</span><span>(
+</span><span>    &#39;</span><span style="color:#a3be8c;">kafka_consumer_lag_seconds</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">kafka consume lag in second</span><span>&#39;,
+</span><span>    [&#39;</span><span style="color:#a3be8c;">topic</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">consumer_group</span><span>&#39;]
+</span><span>)
+</span><span>g1.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">k-test</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">grp1</span><span>&#39;).</span><span style="color:#bf616a;">set</span><span>(</span><span style="color:#d08770;">233</span><span>)
+</span><span>g2 = </span><span style="color:#bf616a;">Gauge</span><span>(
+</span><span>    &#39;</span><span style="color:#a3be8c;">redis_connection_pool_count</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">redis connection poll count</span><span>&#39;,
+</span><span>    [&#39;</span><span style="color:#a3be8c;">state</span><span>&#39;]
+</span><span>)
+</span><span>g2.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">idle</span><span>&#39;).</span><span style="color:#bf616a;">set</span><span>(</span><span style="color:#d08770;">10</span><span>)
+</span><span>g2.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">active</span><span>&#39;).</span><span style="color:#bf616a;">set</span><span>(</span><span style="color:#d08770;">22</span><span>)
+</span><span>g2.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">total</span><span>&#39;).</span><span style="color:#bf616a;">set</span><span>(</span><span style="color:#d08770;">32</span><span>)
+</span></code></pre>
+<p>此时在业务暴露出来的端点上会有这样的记录</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>kafka_consumer_lag_seconds{topic=&quot;k-test&quot;,consumer_group=&quot;grp1&quot;} 233
+</span><span>redis_connection_pool_count{state=&quot;idle&quot;} 10
+</span><span>redis_connection_pool_count{state=&quot;active&quot;} 22
+</span><span>redis_connection_pool_count{state=&quot;total&quot;} 32
+</span></code></pre>
+<p>对于 Gauge 我们一般直接看其值或者其值的百分比</p>
+<ul>
+<li>
+<p><code>kafka_consumer_lag_seconds{topic="k-test"}</code> 查看 k-test 这个 topic 最新的消费延迟</p>
+</li>
+<li>
+<p><code>avg_over_time(kafka_consumer_lag_seconds[1m])</code> 查看应用全部 kafka 队列一分钟的平均消费延时</p>
+</li>
+<li>
+<p><code>max_over_time(kafka_consumer_lag_seconds[1m])</code> 查看应用全部 kafka 队列每一分钟内的最大消费延时</p>
+</li>
+<li>
+<p><code>redis_connection_pool_count{state="active"} / ignoring(state) redis_connection_pool_count{state="total"}</code> 查看应用 redis 连接池的使用百分比</p>
+</li>
+</ul>
+<p>告警则一般设置为</p>
+<ul>
+<li>一分钟内队列的平均消费延时大于 10min, 持续一分钟</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>expr: avg_over_time(kafka_consumer_lag_seconds[1m]) &gt; 600
+</span><span>for: 1m
+</span></code></pre>
+<ul>
+<li>Redis 连接池平均占用超过 90%, 持续一分钟</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>expr: avg_over_time(redis_connection_pool_count{state=&quot;active&quot;}[1m]) /  ignoring(state) avg_over_time(redis_connection_pool_count{state=&quot;total&quot;}[1m]) * 100 &gt; 90
+</span><span>for: 1m
+</span></code></pre>
+<h3 id="histogram-he-summary"><a class="zola-anchor" href="#histogram-he-summary" aria-label="Anchor link for: histogram-he-summary">Histogram 和 Summary</a></h3>
+<p>Histogram 可以看作是一个复合的 Counter 类型, 它会将数值按区间计数, 常用于记录 P99, P95 类的数据. 可以用来记录比如接口响应耗时情况, 接口返回数据大小情况等.</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">from </span><span>prometheus_client </span><span style="color:#b48ead;">import </span><span>Histogram
+</span><span>h = </span><span style="color:#bf616a;">Histogram</span><span>(
+</span><span>    &#39;</span><span style="color:#a3be8c;">http_request_duration_seconds</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">Api requests response time in seconds</span><span>&#39;,
+</span><span>    [&#39;</span><span style="color:#a3be8c;">api</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">method</span><span>&#39;], (</span><span style="color:#d08770;">0.1</span><span>, </span><span style="color:#d08770;">0.25</span><span>, </span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">4</span><span>, </span><span style="color:#d08770;">10</span><span>)
+</span><span>)
+</span><span>h.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">/products</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">post</span><span>&#39;).</span><span style="color:#bf616a;">observe</span><span>(</span><span style="color:#d08770;">0.0923</span><span>)
+</span><span>h.</span><span style="color:#bf616a;">labels</span><span>(&#39;</span><span style="color:#a3be8c;">/products</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">post</span><span>&#39;).</span><span style="color:#bf616a;">observe</span><span>(</span><span style="color:#d08770;">0.3672</span><span>)
+</span></code></pre>
+<p>此时在业务暴露出来的端点上会有这样的记录, 产生了多条数据, 其中 <code>_sum</code> 是值的总和, <code>_count</code> 是值的计数, <code>_bucket</code> 中有一个命名为 <code>le</code> 特殊的 label, 其中的区间值是我们在代码中配置的, 是值在区间内的计数.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>http_request_duration_seconds_sum{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;} 0.4595
+</span><span>http_request_duration_seconds_count{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;} 2
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;0.1&quot;} 1
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;0.25&quot;} 1
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;1&quot;} 2
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;4&quot;} 2
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;10&quot;} 2
+</span><span>http_request_duration_seconds_bucket{api=&quot;/products&quot;, &quot;method&quot;=&quot;post&quot;, le=&quot;+Inf&quot;} 2
+</span></code></pre>
+<p>对于 Histogram 一般可以求均值或者 P95, P99 之类的值, 也可以做普通的 Counter 使用</p>
+<ul>
+<li><code>rate(http_request_duration_seconds_sum{api="/products", "method"="post"}[5m]) / rate(http_request_duration_seconds_count{api="/products", "method"="post"}[5m])</code> 查看 /products 端点上 POST 请求五分钟内的耗时均值</li>
+<li><code>histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{api="/products", "method"="post"}[5m]))</code> 查看 /products 端点上 POST 请求五分钟内的耗时 P99</li>
+<li><code>increase(http_request_duration_seconds_count{api="/products", "method"="post"}[1m])</code> 查看 /products 端点上 POST 请求一分钟内的请求数</li>
+</ul>
+<p>告警则一般设置为</p>
+<ul>
+<li>两分钟内某个接口 P95 大于 10s, 持续两分钟</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[2m])) by (api, method)) &gt; 10
+</span><span>for: 2m
+</span></code></pre>
+<p>一些有用的资料</p>
+<ul>
+<li><a href="https://awesome-prometheus-alerts.grep.to/rules">awesome-prometheus-alerts</a></li>
+<li><a href="https://grafana.com/blog/2020/06/23/how-to-visualize-prometheus-histograms-in-grafana/">How to visualize Prometheus histograms in Grafana</a></li>
+</ul>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-hand-over-hand/#counter">Counter</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-hand-over-hand/#gauge">Gauge</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/prometheus-hand-over-hand/#histogram-he-summary">Histogram 和 Summary</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>

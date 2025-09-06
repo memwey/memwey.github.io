@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Linux后台命令
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Linux后台命令" />
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Linux后台命令
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2016-06-15</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/linux/"
+                                   class="post-tag">Linux</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <p>最近在跑 DHT 网络拟真的时候涉及到一些 linux 后台运行的一些东西,现在总结一下</p>
+<p>例如</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">nohup</span><span> ../src/OverSim</span><span style="color:#bf616a;"> -c</span><span> ChordChurn</span><span style="color:#bf616a;"> -u</span><span> Cmdenv &gt; out.file </span><span style="color:#d08770;">2</span><span>&gt;&amp;</span><span style="color:#d08770;">1 </span><span>&amp;
+</span></code></pre>
+<p>使得 <code>../src/OverSim -c ChordChurn -u Cmdenv</code> 命令在后台运行,并将 <code>stderr</code> 重定向到 <code>stdout</code> 中然后再将 <code>stdout</code> 重定向到 <code>out.file</code>, 并且在当前终端关闭时仍然运行</p>
+<p>具体说一下吧</p>
+<h2 id="nohup"><a class="zola-anchor" href="#nohup" aria-label="Anchor link for: nohup">nohup</a></h2>
+<p>退出终端的时候,一般在终端中运行的进程会随之关闭,因为此时终端中的子进程会收到 <code>SIGHUP</code> 信号. 而 <code>nohup</code> 使得进程忽略所有 <code>SIGHUP</code> 信号. <code>stdout</code> 默认会重定向到 <code>nohup.out</code> 文件中</p>
+<h2 id=""><a class="zola-anchor" href="#" aria-label="Anchor link for: ">&amp;</a></h2>
+<p>在命令中末尾加入 <code>&amp;</code> 符号,使进程在后台运行</p>
+<h2 id="2-1"><a class="zola-anchor" href="#2-1" aria-label="Anchor link for: 2-1">2&gt;&amp;1</a></h2>
+<p>放在 <code>&gt;</code> 后面的 <code>&amp;</code>, 表示重定向的目标不是一个文件, 而是一个文件描述符, 文件描述符</p>
+<ul>
+<li><code>1 =&gt; stdout</code></li>
+<li><code>2 =&gt; stderr</code></li>
+<li><code>0 =&gt; stdin</code></li>
+</ul>
+<h2 id="qi-ta-yi-xie-ming-ling-he-cao-zuo"><a class="zola-anchor" href="#qi-ta-yi-xie-ming-ling-he-cao-zuo" aria-label="Anchor link for: qi-ta-yi-xie-ming-ling-he-cao-zuo">其他一些命令和操作</a></h2>
+<p><code>Control+z</code> 可以发出 <code>SIGSTOP</code> 信号, 使当前前台进程暂停并放入后台</p>
+<p><code>fg [job_id]</code>使进程在前台运行</p>
+<p><code>bg [job_id]</code>使进程在后台运行</p>
+<p><code>jobs</code> 查看后台进程</p>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/linux-backgroud/#nohup">nohup</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/linux-backgroud/#">&amp;</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/linux-backgroud/#2-1">2&gt;&amp;1</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/linux-backgroud/#qi-ta-yi-xie-ming-ling-he-cao-zuo">其他一些命令和操作</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>

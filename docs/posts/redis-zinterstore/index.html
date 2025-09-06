@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Redis ZINTERSTORE
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Redis ZINTERSTORE" />
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Redis ZINTERSTORE
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2021-04-21</time>
+                    
+
+
+                    
+                        :: Updated on <time>2021-04-21</time>
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/redis/"
+                                   class="post-tag">Redis</a>
+                            
+                                <a href="https://memwey.github.io/tags/database/"
+                                   class="post-tag">Database</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <h2 id="jie-gou-tui-ce"><a class="zola-anchor" href="#jie-gou-tui-ce" aria-label="Anchor link for: jie-gou-tui-ce">结构推测</a></h2>
+<p>今天与人争执的时候觉得应该探究一下 <code>Redis</code> 中 <code>ZINTERSTORE</code> 的实现. 先看文档中的描述</p>
+<blockquote>
+<p>ZINTERSTORE destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX]</p>
+</blockquote>
+<blockquote>
+<p>Available since 2.0.0.</p>
+<p>Time complexity: O(N<em>K)+O(M</em>log(M)) worst case with N being the smallest input sorted set, K being the number of input sorted sets and M being the number of elements in the resulting sorted set.</p>
+</blockquote>
+<p>大致意思就是最坏情况下时间复杂度是 <code>O(N*K)+O(M*log(M))</code>, 其中 <code>N</code> 是输入中元素最少的 <code>sorted set</code> 的元素数目, <code>K</code> 是输入的 <code>sorted set</code> 的数量, <code>M</code> 是结果中的 <code>sorted set</code> 中元素的数目.</p>
+<p>其实光从时间复杂度就能推测出来大致的操作了. <code>O(M*log(M))</code> 这个复杂度很有可能是一次排序操作, 而且和结果中的元素数目相关, 那么很有可能是先取交集之后得出 <code>M</code> 个元素, 再在 <code>M</code> 个元素中进行排序的. 当然, 也有可能是相应的, 在有序的序列中进行插入的操作.</p>
+<p>而 <code>N</code> 是最小的 <code>sorted set</code> 的元素个数. 这个一开始我有点想不明白, 难道不应该是最大的才对吗, 因为这里我还是想着去遍历其他的 <code>sorted set</code> 进行比较. 但是思考一下, <code>sorted set</code> 也是 <code>set</code> 嘛, 完全可以使用 <code>O(1)</code> 的效率在其中进行查找. 这样实际就变成了分别在 (K - 1) 个 <code>sorted set</code> 中寻找 <code>N</code> 个元素, 这样自然就是 <code>O(N*K)</code> 了.</p>
+<h2 id="yuan-ma-fen-xi"><a class="zola-anchor" href="#yuan-ma-fen-xi" aria-label="Anchor link for: yuan-ma-fen-xi">源码分析</a></h2>
+<p>以下源码基于 <code>Redis 3.0</code> 分析, 实际的函数操作为</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L1905 */
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">zunionInterGenericCommand</span><span>(redisClient *</span><span style="color:#bf616a;">c</span><span>, robj *</span><span style="color:#bf616a;">dstkey</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">op</span><span>)
+</span></code></pre>
+<p>这里我们可以看到, 在 <code>Redis</code> 的源码中将 <code>ZINTERSTORE</code> 和 <code>ZUNIONSTORE</code> 放在了一起处理, 使用 <code>op</code> 做区分.</p>
+<p>随后是一段漫长的代码, 主要是处理输入参数的, 比如要操作的 <code>sorted set</code> 的列表, 存到了 <code>src</code> 中; 然后处理 <code>WEIGHTS</code> 和 <code>AGGREGATE</code>. 代码比较长而且逻辑也很简单.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L1993 */
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/* sort sets from the smallest to largest, this will improve our
+</span><span style="color:#65737e;">     * algorithm&#39;s performance */
+</span><span>    </span><span style="color:#bf616a;">qsort</span><span>(src,setnum,sizeof(zsetopsrc),zuiCompareByCardinality);
+</span></code></pre>
+<p>然后这里把所有 <code>sorted set</code> 按元素的个数从小到大排列, 以提高效率. 随后是具体的取交集的代码.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L2001 */
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(op == REDIS_OP_INTER) {
+</span><span>        </span><span style="color:#65737e;">/* Skip everything if the smallest input is empty. */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">zuiLength</span><span>(&amp;src[</span><span style="color:#d08770;">0</span><span>]) &gt; </span><span style="color:#d08770;">0</span><span>) {
+</span><span>            </span><span style="color:#65737e;">/* Precondition: as src[0] is non-empty and the inputs are ordered
+</span><span style="color:#65737e;">             * by size, all src[i &gt; 0] are non-empty too. */
+</span><span>            </span><span style="color:#bf616a;">zuiInitIterator</span><span>(&amp;src[</span><span style="color:#d08770;">0</span><span>]);
+</span><span>            </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#bf616a;">zuiNext</span><span>(&amp;src[</span><span style="color:#d08770;">0</span><span>],&amp;zval)) {
+</span><span>                </span><span style="color:#b48ead;">double</span><span> score, value;
+</span><span>
+</span><span>                score = src[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">weight </span><span>* zval.</span><span style="color:#bf616a;">score</span><span>;
+</span><span>                </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#96b5b4;">isnan</span><span>(score)) score = </span><span style="color:#d08770;">0</span><span>;
+</span><span>
+</span><span>                </span><span style="color:#b48ead;">for </span><span>(j = </span><span style="color:#d08770;">1</span><span>; j &lt; setnum; j++) {
+</span><span>                    </span><span style="color:#65737e;">/* It is not safe to access the zset we are
+</span><span style="color:#65737e;">                     * iterating, so explicitly check for equal object. */
+</span><span>                    </span><span style="color:#b48ead;">if </span><span>(src[j].</span><span style="color:#bf616a;">subject </span><span>== src[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">subject</span><span>) {
+</span><span>                        value = zval.</span><span style="color:#bf616a;">score</span><span>*src[j].</span><span style="color:#bf616a;">weight</span><span>;
+</span><span>                        </span><span style="color:#bf616a;">zunionInterAggregate</span><span>(&amp;score,value,aggregate);
+</span><span>                    } </span><span style="color:#b48ead;">else if </span><span>(</span><span style="color:#bf616a;">zuiFind</span><span>(&amp;src[j],&amp;zval,&amp;value)) {
+</span><span>                        value *= src[j].</span><span style="color:#bf616a;">weight</span><span>;
+</span><span>                        </span><span style="color:#bf616a;">zunionInterAggregate</span><span>(&amp;score,value,aggregate);
+</span><span>                    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                        </span><span style="color:#b48ead;">break</span><span>;
+</span><span>                    }
+</span><span>                }
+</span><span>
+</span><span>                </span><span style="color:#65737e;">/* Only continue when present in every input. */
+</span><span>                </span><span style="color:#b48ead;">if </span><span>(j == setnum) {
+</span><span>                    tmp = </span><span style="color:#bf616a;">zuiObjectFromValue</span><span>(&amp;zval);
+</span><span>                    znode = </span><span style="color:#bf616a;">zslInsert</span><span>(dstzset-&gt;zsl,score,tmp);
+</span><span>                    </span><span style="color:#bf616a;">incrRefCount</span><span>(tmp); </span><span style="color:#65737e;">/* added to skiplist */
+</span><span>                    </span><span style="color:#bf616a;">dictAdd</span><span>(dstzset-&gt;dict,tmp,&amp;znode-&gt;score);
+</span><span>                    </span><span style="color:#bf616a;">incrRefCount</span><span>(tmp); </span><span style="color:#65737e;">/* added to dictionary */
+</span><span>
+</span><span>                    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">sdsEncodedObject</span><span>(tmp)) {
+</span><span>                        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">sdslen</span><span>(tmp-&gt;ptr) &gt; maxelelen)
+</span><span>                            maxelelen = </span><span style="color:#bf616a;">sdslen</span><span>(tmp-&gt;ptr);
+</span><span>                    }
+</span><span>                }
+</span><span>            }
+</span><span>            </span><span style="color:#bf616a;">zuiClearIterator</span><span>(&amp;src[</span><span style="color:#d08770;">0</span><span>]);
+</span><span>        }
+</span><span>    }
+</span><span>
+</span></code></pre>
+<p>当然, 如果按元素数从小到大排序的第一个 <code>sorted set</code> 元素数为 0, 那就可以直接返回了, 随后在此 <code>sorted set</code> 上建立一个 <code>Iterator</code>, 主要就是帮助在 <code>sorted set</code> 上做遍历的, 因为在 <code>sorted set</code> 中, 遍历不是一个常用操作, 排序才是.</p>
+<p>然后就是通过 <code>while (zuiNext(&amp;src[0],&amp;zval))</code> 取出第一个 <code>sorted set</code> 中的每一个元素, 再用 <code>for (j = 1; j &lt; setnum; j++)</code> 将其在每一个其他的 <code>sorted set</code> 中查找一遍.</p>
+<p>当两个 <code>sorted set</code> 指向同一个对象是, 那么毫无疑问一定会有同样的元素. 否则就在 <code>src[j]</code> 中查找当前元素. <code>zuiFind(&amp;src[j],&amp;zval,&amp;value)</code> 实现了这个操作. 具体的代码在后面分析. 如果找不到的话, 则没有必要继续找下去了, 跳出即可.</p>
+<p>查找的过程中也使用了 <code>zunionInterAggregate(&amp;score,value,aggregate)</code> 来更新当前元素的 <code>score</code>, 具体的 <code>score</code> 更新规则是根据 <code>AGGREGATE</code> 参数来定的.</p>
+<p>当元素在所有的 <code>sorted set</code> 中时, 就可以把这个元素添加进结果的 <code>sorted set</code> 中了. 这里就是根据 <code>zval</code> 和 <code>score</code> 往 <code>dstzset</code> 里面插入元素. 因为 <code>sorted set</code> 里面既有 <code>dict</code> 也有 <code>skiplist</code>, 所以两个都要添加.</p>
+<p>这里还有一个操作就是更新最大元素的长度, 这个和 <code>sorted set</code> 的内部优化有关.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L2119 */
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dbDelete</span><span>(c-&gt;db,dstkey)) {
+</span><span>        </span><span style="color:#bf616a;">signalModifiedKey</span><span>(c-&gt;db,dstkey);
+</span><span>        touched = </span><span style="color:#d08770;">1</span><span>;
+</span><span>        server.</span><span style="color:#bf616a;">dirty</span><span>++;
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(dstzset-&gt;zsl-&gt;length) {
+</span><span>        </span><span style="color:#65737e;">/* Convert to ziplist when in limits. */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(dstzset-&gt;zsl-&gt;length &lt;= server.</span><span style="color:#bf616a;">zset_max_ziplist_entries </span><span>&amp;&amp;
+</span><span>            maxelelen &lt;= server.</span><span style="color:#bf616a;">zset_max_ziplist_value</span><span>)
+</span><span>                </span><span style="color:#bf616a;">zsetConvert</span><span>(dstobj,REDIS_ENCODING_ZIPLIST);
+</span><span>
+</span><span>        </span><span style="color:#bf616a;">dbAdd</span><span>(c-&gt;db,dstkey,dstobj);
+</span><span>        </span><span style="color:#bf616a;">addReplyLongLong</span><span>(c,</span><span style="color:#bf616a;">zsetLength</span><span>(dstobj));
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(!touched) </span><span style="color:#bf616a;">signalModifiedKey</span><span>(c-&gt;db,dstkey);
+</span><span>        </span><span style="color:#bf616a;">notifyKeyspaceEvent</span><span>(REDIS_NOTIFY_ZSET,
+</span><span>            (op == REDIS_OP_UNION) ? &quot;</span><span style="color:#a3be8c;">zunionstore</span><span>&quot; : &quot;</span><span style="color:#a3be8c;">zinterstore</span><span>&quot;,
+</span><span>            dstkey,c-&gt;db-&gt;id);
+</span><span>        server.</span><span style="color:#bf616a;">dirty</span><span>++;
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        </span><span style="color:#bf616a;">decrRefCount</span><span>(dstobj);
+</span><span>        </span><span style="color:#bf616a;">addReply</span><span>(c,shared.</span><span style="color:#bf616a;">czero</span><span>);
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(touched)
+</span><span>            </span><span style="color:#bf616a;">notifyKeyspaceEvent</span><span>(REDIS_NOTIFY_GENERIC,&quot;</span><span style="color:#a3be8c;">del</span><span>&quot;,dstkey,c-&gt;db-&gt;id);
+</span><span>    }
+</span><span>    </span><span style="color:#bf616a;">zfree</span><span>(src);
+</span></code></pre>
+<p>随后就是收尾工作. 如果目标的坑上已经有值了, 就毫不犹豫的干掉它. 然后再看作为结果的 <code>sorted set</code>. 如果它满足转化为 <code>ziplist</code> 的条件, 就可以把它转化为 <code>ziplist</code>. 后面是一些 <code>hook</code> 的通知, 可以暂时忽略. 如果结果为空, <code>Integer reply</code> 会返回 0, 否则会返回结果中元素的个数.</p>
+<p>至此大致流程已经结束了. 如同推测的那样, 算法复杂度完美的反映了操作的内部过程和数据结构. 不过, 我们还有几个问题没有解决. <code>zuiFind</code> 中的具体操作是什么, <code>ziplist</code> 又是什么.</p>
+<h2 id="ge-zhe-ge-zhe"><a class="zola-anchor" href="#ge-zhe-ge-zhe" aria-label="Anchor link for: ge-zhe-ge-zhe">搁这搁这</a></h2>
+<p>这个标题充分提现了递归的思想. 学习新东西, 然后发现另一些新东西, 然后再学习这些新东西, 然后......</p>
+<p>首先来看 <code>zuiFind</code></p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L1826 */
+</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">zuiFind</span><span>(zsetopsrc *</span><span style="color:#bf616a;">op</span><span>, zsetopval *</span><span style="color:#bf616a;">val</span><span>, </span><span style="color:#b48ead;">double </span><span>*</span><span style="color:#bf616a;">score</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(op-&gt;subject == </span><span style="color:#d08770;">NULL</span><span>)
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(op-&gt;type == REDIS_SET) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(op-&gt;encoding == REDIS_ENCODING_INTSET) {
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">zuiLongLongFromValue</span><span>(val) &amp;&amp;
+</span><span>                </span><span style="color:#bf616a;">intsetFind</span><span>(op-&gt;subject-&gt;ptr,val-&gt;ell))
+</span><span>            {
+</span><span>                *score = </span><span style="color:#d08770;">1.0</span><span>;
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>            }
+</span><span>        } </span><span style="color:#b48ead;">else if </span><span>(op-&gt;encoding == REDIS_ENCODING_HT) {
+</span><span>            dict *ht = op-&gt;subject-&gt;ptr;
+</span><span>            </span><span style="color:#bf616a;">zuiObjectFromValue</span><span>(val);
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dictFind</span><span>(ht,val-&gt;ele) != </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>                *score = </span><span style="color:#d08770;">1.0</span><span>;
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>            }
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            </span><span style="color:#bf616a;">redisPanic</span><span>(&quot;</span><span style="color:#a3be8c;">Unknown set encoding</span><span>&quot;);
+</span><span>        }
+</span><span>    } </span><span style="color:#b48ead;">else if </span><span>(op-&gt;type == REDIS_ZSET) {
+</span><span>        </span><span style="color:#bf616a;">zuiObjectFromValue</span><span>(val);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(op-&gt;encoding == REDIS_ENCODING_ZIPLIST) {
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">zzlFind</span><span>(op-&gt;subject-&gt;ptr,val-&gt;ele,score) != </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>                </span><span style="color:#65737e;">/* Score is already set by zzlFind. */
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>            }
+</span><span>        } </span><span style="color:#b48ead;">else if </span><span>(op-&gt;encoding == REDIS_ENCODING_SKIPLIST) {
+</span><span>            zset *zs = op-&gt;subject-&gt;ptr;
+</span><span>            dictEntry *de;
+</span><span>            </span><span style="color:#b48ead;">if </span><span>((de = </span><span style="color:#bf616a;">dictFind</span><span>(zs-&gt;dict,val-&gt;ele)) != </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>                *score = *(</span><span style="color:#b48ead;">double</span><span>*)</span><span style="color:#bf616a;">dictGetVal</span><span>(de);
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">1</span><span>;
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;
+</span><span>            }
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            </span><span style="color:#bf616a;">redisPanic</span><span>(&quot;</span><span style="color:#a3be8c;">Unknown sorted set encoding</span><span>&quot;);
+</span><span>        }
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        </span><span style="color:#bf616a;">redisPanic</span><span>(&quot;</span><span style="color:#a3be8c;">Unsupported type</span><span>&quot;);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>先忽略掉 <code>set</code> 的操作, 来看 <code>sorted set</code>. 我们又见到了收尾工作时出现过的 <code>ziplist</code>.</p>
+<blockquote>
+<p>The ziplist is a specially encoded dually linked list that is designed to be very memory efficient. It stores both strings and integer values, where integers are encoded as actual integers instead of a series of characters. It allows push and pop operations on either side of the list in O(1) time. However, because every operation requires a reallocation of the memory used by the ziplist, the actual complexity is related to the amount of memory used by the ziplist.</p>
+</blockquote>
+<p>查了一下资料, 这是 <code>Redis</code> 在面对小元素时可以做的一个内存优化, 本体是一个经过特殊编码的双向链表. 经过特殊编码后的数据会变得更加紧凑, 连续的内存使用也对于缓存更加友好. 有两个配置决定了 <code>sorted set</code> 中使用 <code>ziplist</code> 的阈值.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#b48ead;">#define </span><span>REDIS_ZSET_MAX_ZIPLIST_ENTRIES </span><span style="color:#d08770;">128
+</span><span style="color:#b48ead;">#define </span><span>REDIS_ZSET_MAX_ZIPLIST_VALUE </span><span style="color:#d08770;">64
+</span></code></pre>
+<p><img src="https://memwey.github.io/posts/redis-zinterstore/images/zset.svg" alt="有序集合" />
+图. 有序集合</p>
+<p>然后我们尴尬的发现, 在 <code>ziplist</code> 查找一个元素实际上是一个遍历, 时间复杂度为 <code>O(N)</code>, 如下</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/t_zset.c#L915 */
+</span><span>
+</span><span style="color:#b48ead;">unsigned char </span><span>*</span><span style="color:#8fa1b3;">zzlFind</span><span>(</span><span style="color:#b48ead;">unsigned char </span><span>*</span><span style="color:#bf616a;">zl</span><span>, robj *</span><span style="color:#bf616a;">ele</span><span>, </span><span style="color:#b48ead;">double </span><span>*</span><span style="color:#bf616a;">score</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">unsigned char </span><span>*eptr = </span><span style="color:#bf616a;">ziplistIndex</span><span>(zl,</span><span style="color:#d08770;">0</span><span>), *sptr;
+</span><span>
+</span><span>    ele = </span><span style="color:#bf616a;">getDecodedObject</span><span>(ele);
+</span><span>    </span><span style="color:#b48ead;">while </span><span>(eptr != </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>        sptr = </span><span style="color:#bf616a;">ziplistNext</span><span>(zl,eptr);
+</span><span>        </span><span style="color:#bf616a;">redisAssertWithInfo</span><span>(</span><span style="color:#d08770;">NULL</span><span>,ele,sptr != </span><span style="color:#d08770;">NULL</span><span>);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">ziplistCompare</span><span>(eptr,ele-&gt;ptr,</span><span style="color:#bf616a;">sdslen</span><span>(ele-&gt;ptr))) {
+</span><span>            </span><span style="color:#65737e;">/* Matching element, pull out score. */
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(score != </span><span style="color:#d08770;">NULL</span><span>) *score = </span><span style="color:#bf616a;">zzlGetScore</span><span>(sptr);
+</span><span>            </span><span style="color:#bf616a;">decrRefCount</span><span>(ele);
+</span><span>            </span><span style="color:#b48ead;">return</span><span> eptr;
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#65737e;">/* Move to next element. */
+</span><span>        eptr = </span><span style="color:#bf616a;">ziplistNext</span><span>(zl,sptr);
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#bf616a;">decrRefCount</span><span>(ele);
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">NULL</span><span>;
+</span><span>}
+</span></code></pre>
+<p>不过当 <code>zset</code> 使用 <code>REDIS_ENCODING_SKIPLIST</code> 作为 encoding 的时候, 使用 <code>Hash table</code> 做查询的时间复杂度是 <code>O(1)</code> 这是肯定的.</p>
+<p>当然, 这里面其实还有很多细节没有说到, 比如 <code>ziplist</code> 的内部表示, 和 <code>zset</code> 混在一起的 <code>set</code>, <code>zset</code> 中的 <code>dict</code> 和 <code>skiplist</code> 的详细分析等等. 下次有机会的吧.</p>
+<h2 id="can-kao-zi-liao"><a class="zola-anchor" href="#can-kao-zi-liao" aria-label="Anchor link for: can-kao-zi-liao">参考资料</a></h2>
+<ol>
+<li><a href="https://redislabs.com/ebook/part-2-core-concepts/01chapter-9-reducing-memory-use/9-1-short-structures/9-1-1-the-ziplist-representation/">The ziplist representation</a></li>
+<li><a href="https://redisbook.readthedocs.io/en/latest/compress-datastruct/ziplist.html">压缩列表 — Redis 设计与实现</a></li>
+</ol>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-zinterstore/#jie-gou-tui-ce">结构推测</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-zinterstore/#yuan-ma-fen-xi">源码分析</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-zinterstore/#ge-zhe-ge-zhe">搁这搁这</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-zinterstore/#can-kao-zi-liao">参考资料</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>

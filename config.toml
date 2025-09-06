@@ -1,0 +1,24 @@
+# For theme github.com/not-matthias/apollo
+theme = "apollo"
+taxonomies = [{ name = "tags" }]
+
+# The URL the site will be built for
+base_url = "https://memwey.github.io"
+
+[markdown]
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = true
+
+[extra]
+theme = "toggle"
+menu = [
+    { name = "/posts", url = "/posts", weight = 1 },
+    { name = "/tags", url = "/tags", weight = 2 },
+    { name = "/about", url = "/about", weight = 3 },
+]
+socials = [
+    { name = "twitter", url = "https://x.com/Mem_Wey", icon = "twitter" },
+    { name = "github", url = "https://github.com/memwey", icon = "github" },
+]
+toc = true

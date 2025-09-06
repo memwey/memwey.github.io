@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Yes
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Yes" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="一个有趣的 GNU&#x2F;Linux 命令" />
+        
+    
+
+    
+        
+            <meta name="description" content="一个有趣的 GNU&#x2F;Linux 命令" />
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Yes
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2018-12-14</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/linux/"
+                                   class="post-tag">Linux</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <p>最近看到一个有趣的 <code>GNU/Linux</code> 命令, <code>yes</code></p>
+<p>先 <code>man</code> 一下</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">YES</span><span>(1)                    </span><span style="color:#bf616a;">BSD</span><span> General Commands Manual                   YES(1)
+</span><span>
+</span><span style="color:#bf616a;">NAME
+</span><span>     </span><span style="color:#bf616a;">yes</span><span> -- be repetitively affirmative
+</span><span>
+</span><span style="color:#bf616a;">SYNOPSIS
+</span><span>     </span><span style="color:#bf616a;">yes </span><span style="color:#b48ead;">[</span><span>expletive</span><span style="color:#b48ead;">]
+</span><span>
+</span><span style="color:#bf616a;">DESCRIPTION
+</span><span>     </span><span style="color:#bf616a;">yes</span><span> outputs expletive, or, by default, ``y&#39;&#39;, forever.
+</span><span>
+</span><span style="color:#bf616a;">HISTORY
+</span><span>     </span><span style="color:#bf616a;">The</span><span> yes command appeared in 4.0BSD.
+</span><span>
+</span><span style="color:#bf616a;">4th</span><span> Berkeley Distribution        June 6, 1993        4th Berkeley Distribution
+</span><span>(</span><span style="color:#bf616a;">END</span><span>)
+</span></code></pre>
+<p>emmmmm, 在 <code>macOS</code> 下并没有 <code>--help</code> 或者 <code>-h</code> 的选项</p>
+<p>试试 <code>Linux</code> 下呢</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">➜</span><span>  / yes</span><span style="color:#bf616a;"> --help
+</span><span style="color:#bf616a;">Usage:</span><span> yes </span><span style="color:#b48ead;">[</span><span>STRING</span><span style="color:#b48ead;">]</span><span>...
+</span><span>  </span><span style="color:#bf616a;">or:</span><span>  yes OPTION
+</span><span style="color:#bf616a;">Repeatedly</span><span> output a line with all specified STRING(s)</span><span style="color:#bf616a;">,</span><span> or &#39;</span><span style="color:#a3be8c;">y</span><span>&#39;.
+</span><span>
+</span><span>      </span><span style="color:#bf616a;">--help</span><span>     display this help and exit
+</span><span>      </span><span style="color:#bf616a;">--version</span><span>  output version information and exit
+</span><span>
+</span><span style="color:#bf616a;">GNU</span><span> coreutils online help: &lt;https://www.gnu.org/software/coreutils/&gt;
+</span><span style="color:#bf616a;">Full</span><span> documentation at: &lt;https://www.gnu.org/software/coreutils/yes&gt;
+</span><span style="color:#bf616a;">or</span><span> available locally via: info &#39;</span><span style="color:#a3be8c;">(coreutils) yes invocation</span><span>&#39;
+</span></code></pre>
+<p>有了</p>
+<p>简单来说这个命令就是可以反复的输出一个字符串, 这个字符串的默认值是 <code>y</code></p>
+<p>于是有了一些特别的用法, 比如, 注意这里没有 <code>f</code></p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">yes </span><span>| </span><span style="color:#bf616a;">rm -r</span><span> /
+</span></code></pre>
+<p>还有</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">yes </span><span>$(</span><span style="color:#bf616a;">yes</span><span> yes)
+</span></code></pre>
+<p>好孩子不要乱试</p>
+<p>当然这个命令的效果其实一般都有替代, 比如加上 <code>-f</code>, <code>-y</code> 什么的, 生成一个大文件也可以用 <code>/dev/urandom</code> 来做</p>
+<p>还可以在冬天做暖手宝, 噗</p>
+<p>最后, 跟我一起在命令行输入</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">yes </span><span>&#39;</span><span style="color:#a3be8c;">AMD, yes!</span><span>&#39;
+</span></code></pre>
+<p>果然人类的本质就是复读机</p>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+
+        </div>
+    </body>
+
+</html>

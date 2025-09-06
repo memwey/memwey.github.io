@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Redis LRU
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Redis LRU" />
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Redis LRU
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2020-12-25</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/data-structure/"
+                                   class="post-tag">Data Structure</a>
+                            
+                                <a href="https://memwey.github.io/tags/redis/"
+                                   class="post-tag">Redis</a>
+                            
+                                <a href="https://memwey.github.io/tags/database/"
+                                   class="post-tag">Database</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <h2 id="ji-chu-zhi-shi"><a class="zola-anchor" href="#ji-chu-zhi-shi" aria-label="Anchor link for: ji-chu-zhi-shi">基础知识</a></h2>
+<p><code>LRU (Least recently used)</code> 是一个非常常用的缓存置换算法.</p>
+<p>在缓存空间有限的情况下, 在新的数据写入时, 需要淘汰一些旧数据. 一般期望最不可能被继续访问的数据淘汰. 由于无法对未来的情况进行预测, 只能基于现有的信息推测.</p>
+<p><code>LRU</code> 基于这样一个假定, 在一个时间点上, 如果一个数据距离上次被访问的时间越长, 则这个数据在未来被访问的可能性越小. 所以, 应该淘汰掉距离上次被访问的时间最久的数据.</p>
+<p>常见的 <code>LRU</code> 实现是使用一个双向链表, 当 Item 被访问时, 将其移动到链表的头部. 当缓存不足时, 从链表的尾部开始淘汰.</p>
+<p>单纯的双向链表的实现实际上是不太符合现实的. 一般的, 我们希望缓存可以尽快被检索到, 而在双向链表中检索 Item 的效率是 O(n), 特别是检索的 Item 在链表中不存在时, 效率稳定的是 O(n). 这样, 在缓存系统中维护这个双向链表的成本是非常高的. 一般的, 会将 <code>哈希表</code> 或者 <code>二叉搜索树</code> 和双向链表组合起来, 在更高效率的数据结构中记录 <code>Key</code>, 并在 <code>Key</code> 中记录 Item 在双向链表中的指针.</p>
+<p>另外的, 在并发量较大的时候, 双向链表中的操作需要加锁, 否则链表很容易出问题.</p>
+<h2 id="ju-ti-shi-xian"><a class="zola-anchor" href="#ju-ti-shi-xian" aria-label="Anchor link for: ju-ti-shi-xian">具体实现</a></h2>
+<h3 id="redis-2-8"><a class="zola-anchor" href="#redis-2-8" aria-label="Anchor link for: redis-2-8">Redis 2.8</a></h3>
+<p>在较早版本的 <code>Redis</code> 上, 并没有实现 <code>LRU</code>. 在后续 2.8 添加的时候, 并没有使用常见的双向链表的方式来实现 <code>LRU</code>, 而使用了一个近似的实现.</p>
+<p>从空间和时间上考虑, <code>Redis</code> 中的 <code>Key</code> 的数量可能非常的多, 双向链表可能会非常大, 占用内存非常多; 另一方面, <code>Redis</code> 中的操作可能也非常频繁, 每一次访问都需要操作一次双向链表, 在时间上也显得非常不划算.</p>
+<p><code>Antirez</code> 在 <code>Redis Object</code> 中挤出了 24 个位元 bits, 并用其存储按秒计算的 <code>unix timestamp</code> 的低 24 位. 这个被称为 <code>LRU clock</code>.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/redis.h#L420 */
+</span><span>
+</span><span style="color:#65737e;">/* A redis object, that is a type able to hold a string / list / set */
+</span><span>
+</span><span style="color:#65737e;">/* The actual Redis Object */
+</span><span style="color:#b48ead;">#define </span><span>REDIS_LRU_BITS </span><span style="color:#d08770;">24
+</span><span style="color:#b48ead;">#define </span><span>REDIS_LRU_CLOCK_MAX ((</span><span style="color:#d08770;">1</span><span>&lt;&lt;REDIS_LRU_BITS)-</span><span style="color:#d08770;">1</span><span>) </span><span style="color:#65737e;">/* Max value of obj-&gt;lru */
+</span><span style="color:#b48ead;">#define </span><span>REDIS_LRU_CLOCK_RESOLUTION </span><span style="color:#d08770;">1000 </span><span style="color:#65737e;">/* LRU clock resolution in ms */
+</span><span style="color:#b48ead;">typedef struct</span><span> redisObject {
+</span><span>    </span><span style="color:#b48ead;">unsigned</span><span> type:</span><span style="color:#d08770;">4</span><span>;
+</span><span>    </span><span style="color:#b48ead;">unsigned</span><span> encoding:</span><span style="color:#d08770;">4</span><span>;
+</span><span>    </span><span style="color:#b48ead;">unsigned</span><span> lru:REDIS_LRU_BITS; </span><span style="color:#65737e;">/* lru time (relative to server.lruclock) */
+</span><span>    </span><span style="color:#b48ead;">int</span><span> refcount;
+</span><span>    </span><span style="color:#b48ead;">void </span><span>*ptr;
+</span><span>} robj;
+</span></code></pre>
+<p>24 个 bits 明显不够存储一个完整的时间戳, 当第二十四位向前进位的时候, 就会发生溢出. 此时, 最近被访问的 Item 的 <code>LRU clock</code> 反而较小, 更容易被淘汰. 考虑到这个溢出需要 194 天, 而 <code>Redis</code> 中的操作应该比较频繁, 所以 <code>antirez</code> 认为这个问题可以接受.</p>
+<p>理论上, 可以精心构造一些数据, 让 <code>Redis</code> 的 <code>LRU</code> 失效. 比如, 总是在溢出前访问一个 Item, 这个 Item 的 <code>LRU clock</code> 总是很大, 虽然这个 Item 的访问周期总是 194 天才访问一次, 但是它总不会被淘汰.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/db.c#L43 */
+</span><span>
+</span><span>robj *</span><span style="color:#8fa1b3;">lookupKey</span><span>(redisDb *</span><span style="color:#bf616a;">db</span><span>, robj *</span><span style="color:#bf616a;">key</span><span>) {
+</span><span>    dictEntry *de = </span><span style="color:#bf616a;">dictFind</span><span>(db-&gt;dict,key-&gt;ptr);
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(de) {
+</span><span>        robj *val = </span><span style="color:#bf616a;">dictGetVal</span><span>(de);
+</span><span>
+</span><span>        </span><span style="color:#65737e;">/* Update the access time for the ageing algorithm.
+</span><span style="color:#65737e;">         * Don&#39;t do it if we have a saving child, as this will trigger
+</span><span style="color:#65737e;">         * a copy on write madness. */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(server.</span><span style="color:#bf616a;">rdb_child_pid </span><span>== -</span><span style="color:#d08770;">1 </span><span>&amp;&amp; server.</span><span style="color:#bf616a;">aof_child_pid </span><span>== -</span><span style="color:#d08770;">1</span><span>)
+</span><span>            val-&gt;lru = </span><span style="color:#bf616a;">LRU_CLOCK</span><span>();
+</span><span>        </span><span style="color:#b48ead;">return</span><span> val;
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">NULL</span><span>;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>接下来的问题在于如何找到最久没有被访问的 Item. 如果一定要找到最久没有被访问到的 Item, 那么需要遍历所有的 <code>Key</code>, 而且在遍历的过程中, 要么禁止在这期间做任何的访问操作, 要么可能出现找到的 <code>Key</code> 恰好又刚刚被访问到的问题.</p>
+<p><code>Antirez</code> 在这里又使用了一个近似的实现, 随机选取 3 个 <code>Key</code>, 把他们之中最久没有被访问到的淘汰. 随后, 这个数值变成了可配置项 <code>maxmemory-samples</code> , 默认值是 5. 考虑到选出的结果不一定是最好的, 但是很大可能不是一个坏的结果, 即选出一个非常近被访问的 Item, 这个实现还算可以接受.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/2.8/src/redis.c#L2982 */
+</span><span>
+</span><span style="color:#65737e;">/* volatile-lru and allkeys-lru policy */
+</span><span style="color:#b48ead;">else if </span><span>(server.</span><span style="color:#bf616a;">maxmemory_policy </span><span>== REDIS_MAXMEMORY_ALLKEYS_LRU ||
+</span><span>    server.</span><span style="color:#bf616a;">maxmemory_policy </span><span>== REDIS_MAXMEMORY_VOLATILE_LRU)
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(k = </span><span style="color:#d08770;">0</span><span>; k &lt; server.</span><span style="color:#bf616a;">maxmemory_samples</span><span>; k++) {
+</span><span>        sds thiskey;
+</span><span>        </span><span style="color:#b48ead;">long</span><span> thisval;
+</span><span>        robj *o;
+</span><span>
+</span><span>        de = </span><span style="color:#bf616a;">dictGetRandomKey</span><span>(dict);
+</span><span>        thiskey = </span><span style="color:#bf616a;">dictGetKey</span><span>(de);
+</span><span>        </span><span style="color:#65737e;">/* When policy is volatile-lru we need an additional lookup
+</span><span style="color:#65737e;">          * to locate the real key, as dict is set to db-&gt;expires. */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(server.</span><span style="color:#bf616a;">maxmemory_policy </span><span>== REDIS_MAXMEMORY_VOLATILE_LRU)
+</span><span>            de = </span><span style="color:#bf616a;">dictFind</span><span>(db-&gt;dict, thiskey);
+</span><span>        o = </span><span style="color:#bf616a;">dictGetVal</span><span>(de);
+</span><span>        thisval = </span><span style="color:#bf616a;">estimateObjectIdleTime</span><span>(o);
+</span><span>
+</span><span>        </span><span style="color:#65737e;">/* Higher idle time is better candidate for deletion */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(bestkey == </span><span style="color:#d08770;">NULL </span><span>|| thisval &gt; bestval) {
+</span><span>            bestkey = thiskey;
+</span><span>            bestval = thisval;
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<h3 id="redis-3-0"><a class="zola-anchor" href="#redis-3-0" aria-label="Anchor link for: redis-3-0">Redis 3.0</a></h3>
+<p><code>Antirez</code> 在 3.0 版本中进一步提升了近似算法的准确性. 一个显而易见的方法是, 通过过去累计的信息来提升准确性.</p>
+<p><code>Redis</code> 中维护了一个默认大小为 16 的 <code>pool</code>, 里面存储了备选的 <code>Key</code>. 当需要淘汰时, 从随机选择的 N 个 <code>Key</code> 中与 <code>pool</code> 中的 <code>Key</code> 做对比, 在 <code>pool</code> 中维护其中最久没有被访问到的 16 个 <code>Key</code>, 然后在 <code>pool</code> 中淘汰其中最久没有被访问到的 Item. 这个 <code>pool</code> 非常类似于小顶堆.</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/redis.c#L3275 */
+</span><span>
+</span><span style="color:#65737e;">/* volatile-lru and allkeys-lru policy */
+</span><span style="color:#b48ead;">else if </span><span>(server.</span><span style="color:#bf616a;">maxmemory_policy </span><span>== REDIS_MAXMEMORY_ALLKEYS_LRU ||
+</span><span>    server.</span><span style="color:#bf616a;">maxmemory_policy </span><span>== REDIS_MAXMEMORY_VOLATILE_LRU)
+</span><span>{
+</span><span>    </span><span style="color:#b48ead;">struct</span><span> evictionPoolEntry *pool = db-&gt;eviction_pool;
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">while</span><span>(bestkey == </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>        </span><span style="color:#bf616a;">evictionPoolPopulate</span><span>(dict, db-&gt;dict, db-&gt;eviction_pool);
+</span><span>        </span><span style="color:#65737e;">/* Go backward from best to worst element to evict. */
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(k = REDIS_EVICTION_POOL_SIZE-</span><span style="color:#d08770;">1</span><span>; k &gt;= </span><span style="color:#d08770;">0</span><span>; k--) {
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(pool[k].</span><span style="color:#bf616a;">key </span><span>== </span><span style="color:#d08770;">NULL</span><span>) </span><span style="color:#b48ead;">continue</span><span>;
+</span><span>            de = </span><span style="color:#bf616a;">dictFind</span><span>(dict,pool[k].</span><span style="color:#bf616a;">key</span><span>);
+</span><span>
+</span><span>            </span><span style="color:#65737e;">/* Remove the entry from the pool. */
+</span><span>            </span><span style="color:#bf616a;">sdsfree</span><span>(pool[k].</span><span style="color:#bf616a;">key</span><span>);
+</span><span>            </span><span style="color:#65737e;">/* Shift all elements on its right to left. */
+</span><span>            </span><span style="color:#96b5b4;">memmove</span><span>(pool+k,pool+k+</span><span style="color:#d08770;">1</span><span>,
+</span><span>                sizeof(pool[</span><span style="color:#d08770;">0</span><span>])*(REDIS_EVICTION_POOL_SIZE-k-</span><span style="color:#d08770;">1</span><span>));
+</span><span>            </span><span style="color:#65737e;">/* Clear the element on the right which is empty
+</span><span style="color:#65737e;">              * since we shifted one position to the left.  */
+</span><span>            pool[REDIS_EVICTION_POOL_SIZE-</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">key </span><span>= </span><span style="color:#d08770;">NULL</span><span>;
+</span><span>            pool[REDIS_EVICTION_POOL_SIZE-</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">idle </span><span>= </span><span style="color:#d08770;">0</span><span>;
+</span><span>
+</span><span>            </span><span style="color:#65737e;">/* If the key exists, is our pick. Otherwise it is
+</span><span style="color:#65737e;">              * a ghost and we need to try the next element. */
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(de) {
+</span><span>                bestkey = </span><span style="color:#bf616a;">dictGetKey</span><span>(de);
+</span><span>                </span><span style="color:#b48ead;">break</span><span>;
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#65737e;">/* Ghost... */
+</span><span>                </span><span style="color:#b48ead;">continue</span><span>;
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p><code>pool</code> 中排序操作的核心代码在 <code>evictionPoolPopulate</code> 函数中</p>
+<pre data-lang="C" style="background-color:#2b303b;color:#c0c5ce;" class="language-C "><code class="language-C" data-lang="C"><span>
+</span><span style="color:#65737e;">/* https://github.com/redis/redis/blob/3.0/src/redis.c#L3145 */
+</span><span>
+</span><span style="color:#b48ead;">#define </span><span>EVICTION_SAMPLES_ARRAY_SIZE </span><span style="color:#d08770;">16
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">evictionPoolPopulate</span><span>(dict *</span><span style="color:#bf616a;">sampledict</span><span>, dict *</span><span style="color:#bf616a;">keydict</span><span>, </span><span style="color:#b48ead;">struct</span><span> evictionPoolEntry *</span><span style="color:#bf616a;">pool</span><span>) {
+</span><span>    </span><span style="color:#b48ead;">int</span><span> j, k, count;
+</span><span>    dictEntry *_samples[EVICTION_SAMPLES_ARRAY_SIZE];
+</span><span>    dictEntry **samples;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/* Try to use a static buffer: this function is a big hit...
+</span><span style="color:#65737e;">     * Note: it was actually measured that this helps. */
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(server.</span><span style="color:#bf616a;">maxmemory_samples </span><span>&lt;= EVICTION_SAMPLES_ARRAY_SIZE) {
+</span><span>        samples = _samples;
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>        samples = </span><span style="color:#bf616a;">zmalloc</span><span>(sizeof(samples[</span><span style="color:#d08770;">0</span><span>])*server.</span><span style="color:#bf616a;">maxmemory_samples</span><span>);
+</span><span>    }
+</span><span>
+</span><span>    count = </span><span style="color:#bf616a;">dictGetSomeKeys</span><span>(sampledict,samples,server.</span><span style="color:#bf616a;">maxmemory_samples</span><span>);
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(j = </span><span style="color:#d08770;">0</span><span>; j &lt; count; j++) {
+</span><span>        </span><span style="color:#b48ead;">unsigned long long</span><span> idle;
+</span><span>        sds key;
+</span><span>        robj *o;
+</span><span>        dictEntry *de;
+</span><span>
+</span><span>        de = samples[j];
+</span><span>        key = </span><span style="color:#bf616a;">dictGetKey</span><span>(de);
+</span><span>        </span><span style="color:#65737e;">/* If the dictionary we are sampling from is not the main
+</span><span style="color:#65737e;">         * dictionary (but the expires one) we need to lookup the key
+</span><span style="color:#65737e;">         * again in the key dictionary to obtain the value object. */
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(sampledict != keydict) de = </span><span style="color:#bf616a;">dictFind</span><span>(keydict, key);
+</span><span>        o = </span><span style="color:#bf616a;">dictGetVal</span><span>(de);
+</span><span>        idle = </span><span style="color:#bf616a;">estimateObjectIdleTime</span><span>(o);
+</span><span>
+</span><span>        </span><span style="color:#65737e;">/* Insert the element inside the pool.
+</span><span style="color:#65737e;">         * First, find the first empty bucket or the first populated
+</span><span style="color:#65737e;">         * bucket that has an idle time smaller than our idle time. */
+</span><span>        k = </span><span style="color:#d08770;">0</span><span>;
+</span><span>        </span><span style="color:#b48ead;">while </span><span>(k &lt; REDIS_EVICTION_POOL_SIZE &amp;&amp;
+</span><span>               pool[k].</span><span style="color:#bf616a;">key </span><span>&amp;&amp;
+</span><span>               pool[k].</span><span style="color:#bf616a;">idle </span><span>&lt; idle) k++;
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(k == </span><span style="color:#d08770;">0 </span><span>&amp;&amp; pool[REDIS_EVICTION_POOL_SIZE-</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">key </span><span>!= </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>            </span><span style="color:#65737e;">/* Can&#39;t insert if the element is &lt; the worst element we have
+</span><span style="color:#65737e;">             * and there are no empty buckets. */
+</span><span>            </span><span style="color:#b48ead;">continue</span><span>;
+</span><span>        } </span><span style="color:#b48ead;">else if </span><span>(k &lt; REDIS_EVICTION_POOL_SIZE &amp;&amp; pool[k].</span><span style="color:#bf616a;">key </span><span>== </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>            </span><span style="color:#65737e;">/* Inserting into empty position. No setup needed before insert. */
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            </span><span style="color:#65737e;">/* Inserting in the middle. Now k points to the first element
+</span><span style="color:#65737e;">             * greater than the element to insert.  */
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(pool[REDIS_EVICTION_POOL_SIZE-</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">key </span><span>== </span><span style="color:#d08770;">NULL</span><span>) {
+</span><span>                </span><span style="color:#65737e;">/* Free space on the right? Insert at k shifting
+</span><span style="color:#65737e;">                 * all the elements from k to end to the right. */
+</span><span>                </span><span style="color:#96b5b4;">memmove</span><span>(pool+k+</span><span style="color:#d08770;">1</span><span>,pool+k,
+</span><span>                    sizeof(pool[</span><span style="color:#d08770;">0</span><span>])*(REDIS_EVICTION_POOL_SIZE-k-</span><span style="color:#d08770;">1</span><span>));
+</span><span>            } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                </span><span style="color:#65737e;">/* No free space on right? Insert at k-1 */
+</span><span>                k--;
+</span><span>                </span><span style="color:#65737e;">/* Shift all elements on the left of k (included) to the
+</span><span style="color:#65737e;">                 * left, so we discard the element with smaller idle time. */
+</span><span>                </span><span style="color:#bf616a;">sdsfree</span><span>(pool[</span><span style="color:#d08770;">0</span><span>].</span><span style="color:#bf616a;">key</span><span>);
+</span><span>                </span><span style="color:#96b5b4;">memmove</span><span>(pool,pool+</span><span style="color:#d08770;">1</span><span>,sizeof(pool[</span><span style="color:#d08770;">0</span><span>])*k);
+</span><span>            }
+</span><span>        }
+</span><span>        pool[k].</span><span style="color:#bf616a;">key </span><span>= </span><span style="color:#bf616a;">sdsdup</span><span>(key);
+</span><span>        pool[k].</span><span style="color:#bf616a;">idle </span><span>= idle;
+</span><span>    }
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(samples != _samples) </span><span style="color:#bf616a;">zfree</span><span>(samples);
+</span><span>}
+</span></code></pre>
+<h2 id="can-kao-zi-liao"><a class="zola-anchor" href="#can-kao-zi-liao" aria-label="Anchor link for: can-kao-zi-liao">参考资料</a></h2>
+<ol>
+<li><a href="http://antirez.com/news/109">Random notes on improving the Redis LRU algorithm</a></li>
+<li><a href="https://redis.io/topics/lru-cache">Using Redis as an LRU cache</a></li>
+</ol>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-lru/#ji-chu-zhi-shi">基础知识</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-lru/#ju-ti-shi-xian">具体实现</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-lru/#redis-2-8">Redis 2.8</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-lru/#redis-3-0">Redis 3.0</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-lru/#can-kao-zi-liao">参考资料</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>
