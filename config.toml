@@ -22,3 +22,9 @@ socials = [
     { name = "github", url = "https://github.com/memwey", icon = "github" },
 ]
 toc = true
+
+[extra.analytics]
+enabled = true
+
+[extra.analytics.google]
+tracking_id = "G-VLQ5DBCKGT"
