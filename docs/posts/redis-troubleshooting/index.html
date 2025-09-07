@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
+
+    
+
+    
+    
+    
+        <title>
+            
+                Redis 查询偶尔超时问题排查
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Redis 查询偶尔超时问题排查" />
+        
+    
+
+    
+        
+    
+
+    
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    <script defer src=https://memwey.github.io/js/toc.js></script>
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://memwey.github.io/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://memwey.github.io/js/themetoggle.js></script>
+
+        
+            <script>setTheme(getSavedTheme());</script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://memwey.github.io/main.css" />
+
+    
+
+    </head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
+        
+
+
+        <div class="socials">
+            
+                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
+                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
+                </a>
+            
+                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
+                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+
+        
+
+        
+            <a id="dark-mode-toggle"
+            onclick="toggleTheme(); event.preventDefault();"
+            href="#">
+                <img src="https://memwey.github.io/icons/sun.svg"
+                    id="sun-icon"
+                    style="filter: invert(1)"
+                    alt="Light" />
+                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>updateItemToggleTheme()</script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+<div class="visible-element-observer-root" data-selector="main article p">
+    <main>
+        <article>
+            <div class="title">
+                
+                
+    
+    <div class="page-header">
+        Redis 查询偶尔超时问题排查
+    </div>
+    
+
+
+                <div class="meta">
+                    
+                        Posted on <time>2022-10-28</time>
+                    
+
+
+                    
+
+                    
+
+                    
+
+                    
+                    
+
+                    
+                    
+
+                    
+                    
+                        <span class="tags-label"> :: </span>
+                        <span class="tags">
+                                <a href="https://memwey.github.io/tags/redis/"
+                                   class="post-tag">Redis</a>
+                            
+                                <a href="https://memwey.github.io/tags/database/"
+                                   class="post-tag">Database</a>
+                            
+                        </span>
+                    
+
+                    
+
+                </div>
+            </div>
+
+            
+
+            <section class="body">
+                <h2 id="biao-xian"><a class="zola-anchor" href="#biao-xian" aria-label="Anchor link for: biao-xian">表现</a></h2>
+<p>业务上 Redis 做去重使用, 量大但是操作简单, 超时均设置为 10ms, 偶尔有超时情况报错, 超时错误分布与业务流量正相关. Redis 由 <code>AWS</code> 的 <code>ElasticCache</code> 服务提供. 其中典型操作如下</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>SET key value expiration
+</span><span>GET key
+</span><span>MGET key1 key2 ...
+</span></code></pre>
+<h2 id="redis-ke-hu-duan-ce-shi-shu-ju"><a class="zola-anchor" href="#redis-ke-hu-duan-ce-shi-shu-ju" aria-label="Anchor link for: redis-ke-hu-duan-ce-shi-shu-ju">Redis 客户端测试数据</a></h2>
+<h3 id="latency-history"><a class="zola-anchor" href="#latency-history" aria-label="Anchor link for: latency-history">latency-history</a></h3>
+<p><code>Redis</code> 的 <code>latency-history</code> 选项将 <code>PING</code> 命令发送到 <code>Redis</code> 实例, 并测量响应时间, 统计时间以毫秒为单位.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># date
+</span><span>Fri Oct 28 10:49:58 JST 2022
+</span><span># redis-cli -h {host} -p {port} --latency-history -i 5
+</span><span>min: 1, max: 5, avg: 1.92 (418 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 5, avg: 1.93 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 5, avg: 1.93 (417 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 7, avg: 1.98 (416 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 4, avg: 1.94 (417 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 3, avg: 1.93 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 3, avg: 1.92 (418 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 3, avg: 1.94 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 3, avg: 1.95 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 17, avg: 2.08 (412 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 5, avg: 2.00 (416 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 4, avg: 1.94 (417 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 5, avg: 1.89 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 3, avg: 1.91 (418 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 13, avg: 2.01 (415 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 12, avg: 2.12 (411 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 5, avg: 1.96 (416 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 8, avg: 2.07 (413 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 7, avg: 1.97 (415 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 5, avg: 1.93 (417 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 8, avg: 1.99 (416 samples) -- 5.01 seconds range
+</span><span>min: 1, max: 6, avg: 2.04 (413 samples) -- 5.00 seconds range
+</span><span>min: 1, max: 3, avg: 2.03 (79 samples)^C
+</span><span># date
+</span><span>Fri Oct 28 10:52:16 JST 2022
+</span></code></pre>
+<p>可以看到, 对于 <code>PING</code> 这样可以说没有任何性能负担的命令, 依然有少数情况响应时间大于 10ms</p>
+<h3 id="shi-yong-benchmark-ce-shi-jian-dan-cao-zuo"><a class="zola-anchor" href="#shi-yong-benchmark-ce-shi-jian-dan-cao-zuo" aria-label="Anchor link for: shi-yong-benchmark-ce-shi-jian-dan-cao-zuo">使用 benchmark 测试简单操作</a></h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># redis-benchmark -h {host} -t set,get -c 50 -d 64
+</span><span>====== SET ======
+</span><span>  100000 requests completed in 4.51 seconds
+</span><span>  50 parallel clients
+</span><span>  64 bytes payload
+</span><span>  keep alive: 1
+</span><span>
+</span><span>0.00% &lt;= 1 milliseconds
+</span><span>20.53% &lt;= 2 milliseconds
+</span><span>95.87% &lt;= 3 milliseconds
+</span><span>98.53% &lt;= 4 milliseconds
+</span><span>99.24% &lt;= 5 milliseconds
+</span><span>99.72% &lt;= 6 milliseconds
+</span><span>99.75% &lt;= 7 milliseconds
+</span><span>99.75% &lt;= 8 milliseconds
+</span><span>99.76% &lt;= 9 milliseconds
+</span><span>99.80% &lt;= 10 milliseconds
+</span><span>99.85% &lt;= 11 milliseconds
+</span><span>99.92% &lt;= 12 milliseconds
+</span><span>99.98% &lt;= 13 milliseconds
+</span><span>100.00% &lt;= 13 milliseconds
+</span><span>22187.71 requests per second
+</span><span>
+</span><span>====== GET ======
+</span><span>  100000 requests completed in 5.78 seconds
+</span><span>  50 parallel clients
+</span><span>  64 bytes payload
+</span><span>  keep alive: 1
+</span><span>
+</span><span>0.00% &lt;= 1 milliseconds
+</span><span>6.49% &lt;= 2 milliseconds
+</span><span>76.89% &lt;= 3 milliseconds
+</span><span>89.58% &lt;= 4 milliseconds
+</span><span>94.31% &lt;= 5 milliseconds
+</span><span>96.33% &lt;= 6 milliseconds
+</span><span>97.64% &lt;= 7 milliseconds
+</span><span>98.36% &lt;= 8 milliseconds
+</span><span>98.77% &lt;= 9 milliseconds
+</span><span>99.01% &lt;= 10 milliseconds
+</span><span>99.22% &lt;= 11 milliseconds
+</span><span>99.39% &lt;= 12 milliseconds
+</span><span>99.51% &lt;= 13 milliseconds
+</span><span>99.64% &lt;= 14 milliseconds
+</span><span>99.67% &lt;= 15 milliseconds
+</span><span>99.77% &lt;= 16 milliseconds
+</span><span>99.81% &lt;= 17 milliseconds
+</span><span>99.84% &lt;= 18 milliseconds
+</span><span>99.86% &lt;= 19 milliseconds
+</span><span>99.90% &lt;= 20 milliseconds
+</span><span>99.91% &lt;= 21 milliseconds
+</span><span>99.93% &lt;= 22 milliseconds
+</span><span>99.94% &lt;= 23 milliseconds
+</span><span>99.95% &lt;= 24 milliseconds
+</span><span>99.95% &lt;= 36 milliseconds
+</span><span>99.96% &lt;= 37 milliseconds
+</span><span>99.97% &lt;= 38 milliseconds
+</span><span>99.98% &lt;= 39 milliseconds
+</span><span>99.99% &lt;= 40 milliseconds
+</span><span>99.99% &lt;= 41 milliseconds
+</span><span>100.00% &lt;= 42 milliseconds
+</span><span>100.00% &lt;= 42 milliseconds
+</span><span>17310.02 requests per second
+</span><span>
+</span><span># date
+</span><span>Fri Oct 28 11:20:23 JST 2022
+</span></code></pre>
+<p>对于简单操作的情况, 两个 9 的数据可以在 10ms 以内, 但是性能仍然不对, 预期操作在毫秒以内才是 <code>Redis</code> 正常的表现.</p>
+<h3 id="shi-yong-bigkeys-jian-cha-key-qing-kuang"><a class="zola-anchor" href="#shi-yong-bigkeys-jian-cha-key-qing-kuang" aria-label="Anchor link for: shi-yong-bigkeys-jian-cha-key-qing-kuang">使用 bigkeys 检查 Key 情况</a></h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># redis-cli -h {host} --bigkeys
+</span><span>
+</span><span># Scanning the entire keyspace to find biggest keys as well as
+</span><span># average sizes per key type.  You can use -i 0.1 to sleep 0.1 sec
+</span><span># per 100 SCAN commands (not usually needed).
+</span><span>
+</span><span>[00.00%] Biggest string found so far &#39;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#39; with 1 bytes
+</span><span>[00.00%] Biggest string found so far &#39;aaaaaaaaaaaaaaaaaaa&#39; with 644 bytes
+</span><span>[00.00%] Biggest string found so far &#39;aaaaaaaaaaaaaaaaaaa&#39; with 664 bytes
+</span><span>[00.05%] Biggest string found so far &#39;aaaaaaaaaaaaaaaaaaaa&#39; with 668 bytes
+</span><span>[00.29%] Biggest string found so far &#39;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#39; with 1312 bytes
+</span><span>
+</span><span>-------- summary -------
+</span><span>
+</span><span>Sampled 269241 keys in the keyspace!
+</span><span>Total key length in bytes is 11026631 (avg len 40.95)
+</span><span>
+</span><span>Biggest string found &#39;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&#39; has 1312 bytes
+</span><span>
+</span><span>0 lists with 0 items (00.00% of keys, avg size 0.00)
+</span><span>0 hashs with 0 fields (00.00% of keys, avg size 0.00)
+</span><span>269241 strings with 45265771 bytes (100.00% of keys, avg size 168.12)
+</span><span>0 streams with 0 entries (00.00% of keys, avg size 0.00)
+</span><span>0 sets with 0 members (00.00% of keys, avg size 0.00)
+</span><span>0 zsets with 0 members (00.00% of keys, avg size 0.00)
+</span><span>
+</span><span># date
+</span><span>Fri Oct 28 11:33:23 JST 2022
+</span></code></pre>
+<p>Key 整体分布均匀, 没有特别大的 Key 的情况.</p>
+<h2 id="ya-ma-xun-shi-li-shu-ju"><a class="zola-anchor" href="#ya-ma-xun-shi-li-shu-ju" aria-label="Anchor link for: ya-ma-xun-shi-li-shu-ju">亚马逊实例数据</a></h2>
+<h3 id="slowlog-dian-xing-an-li"><a class="zola-anchor" href="#slowlog-dian-xing-an-li" aria-label="Anchor link for: slowlog-dian-xing-an-li">slowlog 典型案例</a></h3>
+<p>来自Redis 的 <code>SLOWLOG</code> 命令脱敏处理</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>{
+</span><span>    &quot;CacheClusterId&quot;: &quot;prod-rate-redis-001&quot;,
+</span><span>    &quot;CacheNodeId&quot;: &quot;0001&quot;,
+</span><span>    &quot;Id&quot;: 592,
+</span><span>    &quot;Timestamp&quot;: 1666749122,
+</span><span>    &quot;Duration (us)&quot;: 18331,
+</span><span>    &quot;Command&quot;: &quot;get ... (1 more arguments)&quot;,
+</span><span>    &quot;ClientAddress&quot;: &quot;172.22.20.210:46370&quot;
+</span><span>}
+</span></code></pre>
+<h3 id="ke-hu-duan-ce-shi-shi-cpu-zhi-biao"><a class="zola-anchor" href="#ke-hu-duan-ce-shi-shi-cpu-zhi-biao" aria-label="Anchor link for: ke-hu-duan-ce-shi-shi-cpu-zhi-biao">客户端测试时 CPU 指标</a></h3>
+<p><img src="https://memwey.github.io/posts/redis-troubleshooting/images/pic1.png" alt="pic1" /></p>
+<p>两个高峰分别是 <code>benchmark</code> 和 <code>bigkey</code> 操作引起.</p>
+<h3 id="wang-luo-zhi-biao"><a class="zola-anchor" href="#wang-luo-zhi-biao" aria-label="Anchor link for: wang-luo-zhi-biao">网络指标</a></h3>
+<p><img src="https://memwey.github.io/posts/redis-troubleshooting/images/pic2.png" alt="pic2" /></p>
+<p>可以看到, <code>Redis</code> 网络数据速度每隔一小时会有一个突增.</p>
+<h2 id="fen-xi"><a class="zola-anchor" href="#fen-xi" aria-label="Anchor link for: fen-xi">分析</a></h2>
+<p><code>Redis</code> 实例是有问题的, 简单操作耗时不能在 1ms 内返回, 99 分位在 10ms, 明显不是一个内存型数据库应有的性能.</p>
+<p>由于在性能指标上一直看到 <code>Redis</code> 的 CPU 使用率不高, 导致了错误的排查方向, 以为是我们在使用上有问题. 实际上, 问题出在 <code>aws</code> 的实例上.</p>
+<p><code>aws</code> 的 t2 的实例以 20% 为性能基准, 低于 20% 累计积分, 其中积分累计有上限; 超过 20% 减少积分直至耗尽; 积分是以小时为单位积累的. 虽然没有具体的说明, 实际上 t2 实例的网络带宽也是有相应的积分限制的, 所以体现在网络指标上, 每隔一个小时出现一个特别的波峰.</p>
+<p>另外, <code>aws</code> 标注的 t2 实例的网络性能是 <code>Low to Moderate</code>, 虽然没有官方的解释, 但是根据网友的测试, 基本上是 50Mbps 到 300Mbps. 这也解释了为何网络指标上一直在 6MB/s 左右上下浮动.</p>
+<h2 id="jie-lun"><a class="zola-anchor" href="#jie-lun" aria-label="Anchor link for: jie-lun">结论</a></h2>
+<p>使用了 <code>aws</code> 提供的 <code>t2.small</code> 实例, 在 CPU 性能, 网络性能上均有限制, 导致 <code>Redis</code> 实例出现超时的情况. 需要提高 <code>Redis</code> 实例的配置, 或者使用自建 <code>Redis</code>.</p>
+<p>谨慎使用 <code>aws</code> 的实例类型; 在性能敏感的情况下, 不要使用 <code>aws</code> 的 t 类型实例, 一方面是有性能的积分的限制, 另一方面, 也容易碰到 <a href="https://learn.microsoft.com/en-us/azure/architecture/antipatterns/noisy-neighbor/noisy-neighbor">Noisy Neighbor</a> 的问题.</p>
+<h2 id="can-kao-wen-dang"><a class="zola-anchor" href="#can-kao-wen-dang" aria-label="Anchor link for: can-kao-wen-dang">参考文档</a></h2>
+<ul>
+<li><a href="https://redis.io/docs/reference/optimization/latency/">Diagnosing latency issues</a></li>
+<li><a href="https://xie.infoq.cn/article/fbd51c19883ddc1ae19fbc96b">Redis 为什么变慢了？一文讲透如何排查 Redis 性能问题 | 万字长文</a></li>
+<li><a href="https://developer.aliyun.com/article/702247">分析网络超时问题的最佳实践</a></li>
+<li><a href="https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/TroubleshootingConnections.html">Troubleshooting</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-troubleshoot-timeouts">Troubleshoot Azure Cache for Redis latency and timeouts</a></li>
+<li><a href="https://aws.amazon.com/cn/ec2/instance-types/">Amazon EC2 实例类型</a></li>
+<li><a href="https://stackoverflow.com/questions/20663619/what-does-amazon-aws-mean-by-network-performance">What does amazon aws mean by "network performance"?</a></li>
+<li><a href="https://www.reddit.com/r/aws/comments/d35sz9/what_does_low_to_moderate_network_peformance_for/">What does 'Low to Moderate' network peformance for an ElastiCache Node Type actually mean?</a></li>
+<li><a href="https://aws.amazon.com/cn/ec2/instance-types/#Burstable_Performance_Instances">Amazon EC2 实例类型#具爆发能力的实例</a></li>
+</ul>
+<h2 id="fu-jian"><a class="zola-anchor" href="#fu-jian" aria-label="Anchor link for: fu-jian">附件</a></h2>
+<p>qa 环境下自建 Redis 性能测试</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># redis-cli -h {host} -p 6379 --latency-history -i 5
+</span><span>min: 0, max: 3, avg: 0.34 (482 samples) -- 5.00 seconds range
+</span><span>min: 0, max: 1, avg: 0.33 (482 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 1, avg: 0.32 (481 samples) -- 5.00 seconds range
+</span><span>min: 0, max: 3, avg: 0.33 (481 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 4, avg: 0.32 (482 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 3, avg: 0.31 (483 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 1, avg: 0.30 (483 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 1, avg: 0.29 (483 samples) -- 5.01 seconds range
+</span><span>min: 0, max: 1, avg: 0.31 (481 samples) -- 5.00 seconds range
+</span><span>min: 0, max: 1, avg: 0.32 (481 samples) -- 5.00 seconds range
+</span><span>min: 0, max: 1, avg: 0.28 (25 samples)^C
+</span><span># date
+</span><span>Mon Oct 31 18:47:05 JST 2022
+</span></code></pre>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># redis-benchmark -h {host} -t set,get -c 50 -d 64
+</span><span>====== SET ======
+</span><span>  100000 requests completed in 1.36 seconds
+</span><span>  50 parallel clients
+</span><span>  64 bytes payload
+</span><span>  keep alive: 1
+</span><span>
+</span><span>99.88% &lt;= 1 milliseconds
+</span><span>99.97% &lt;= 2 milliseconds
+</span><span>99.99% &lt;= 4 milliseconds
+</span><span>100.00% &lt;= 5 milliseconds
+</span><span>100.00% &lt;= 5 milliseconds
+</span><span>73313.78 requests per second
+</span><span>
+</span><span>====== GET ======
+</span><span>  100000 requests completed in 1.30 seconds
+</span><span>  50 parallel clients
+</span><span>  64 bytes payload
+</span><span>  keep alive: 1
+</span><span>
+</span><span>99.90% &lt;= 1 milliseconds
+</span><span>99.94% &lt;= 2 milliseconds
+</span><span>99.95% &lt;= 4 milliseconds
+</span><span>99.96% &lt;= 5 milliseconds
+</span><span>100.00% &lt;= 5 milliseconds
+</span><span>76628.36 requests per second
+</span><span>
+</span><span>
+</span><span># date
+</span><span>Mon Oct 31 18:48:10 JST 2022
+</span></code></pre>
+<p>99分位 10ms -&gt; 999分位 1ms</p>
+<p>不过自建 <code>Redis</code>, 由于是在 <code>EC2</code> 上的托管 Kubernetes 集群, 也需要注意 <a href="https://learn.microsoft.com/en-us/azure/architecture/antipatterns/noisy-neighbor/noisy-neighbor">Noisy Neighbor</a> 的问题.</p>
+<h2 id="redis-chang-jian-wen-ti-pai-cha-si-lu"><a class="zola-anchor" href="#redis-chang-jian-wen-ti-pai-cha-si-lu" aria-label="Anchor link for: redis-chang-jian-wen-ti-pai-cha-si-lu">Redis 常见问题排查思路</a></h2>
+<p>除了本次遇到的实例性能限制问题, 排查 <code>Redis</code> 延迟问题时, 通常还可以从以下几个常见方面入手</p>
+<h3 id="lian-jie-chi-wen-ti"><a class="zola-anchor" href="#lian-jie-chi-wen-ti" aria-label="Anchor link for: lian-jie-chi-wen-ti">连接池问题</a></h3>
+<p>Redis 配置连接池的重要参数 <code>MaxIdleOpen</code>, <code>IdleCloseTimeout</code>, 配置不当时, 查看端口占用会有大量 <code>TIME_WAIT</code>, <code>TCP</code> 的断开会有 2<a href="https://stackoverflow.com/questions/289194/what-is-maximum-segment-lifetime-msl-in-tcp">MSL</a> - MSL 在 Linux 默认 60s; 适当配置 keep-alive
+<img src="https://memwey.github.io/posts/redis-troubleshooting/images/tcp_open_close.jpeg" alt="tcp" /></p>
+<h3 id="big-key"><a class="zola-anchor" href="#big-key" aria-label="Anchor link for: big-key">Big Key</a></h3>
+<p>单个 Key 内容过大, 单线程特性, 可能阻塞整个服务</p>
+<h3 id="hao-shi-cao-zuo"><a class="zola-anchor" href="#hao-shi-cao-zuo" aria-label="Anchor link for: hao-shi-cao-zuo">耗时操作</a></h3>
+<p>O(N)操作, <code>KEYS</code>, <code>SORT</code>, <code>LINDEX</code></p>
+<h3 id="tong-shi-chao-shi"><a class="zola-anchor" href="#tong-shi-chao-shi" aria-label="Anchor link for: tong-shi-chao-shi">同时超时</a></h3>
+<p>超时淘汰方式 - lazy, active, 大量 (25%以上) Key 同时超时, 缓存预热, 超时增加随机因子</p>
+<h2 id="redis-fun-fact"><a class="zola-anchor" href="#redis-fun-fact" aria-label="Anchor link for: redis-fun-fact">Redis Fun Fact</a></h2>
+<ul>
+<li>Redis 没有"读写"的区别</li>
+<li><a href="http://antirez.com/news/109">Redis LRU 的近似实现</a></li>
+<li>ziplist, 紧凑的内存布局, 用于优化存储小数据量的 <code>list</code>, <code>hash</code>, <code>zset</code></li>
+</ul>
+
+            </section>
+        </article>
+    </main>
+</div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+        <div class="toc">
+    <div class="heading">Table of Contents</div>
+    <ul class="toc-list">
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#biao-xian">表现</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#redis-ke-hu-duan-ce-shi-shu-ju">Redis 客户端测试数据</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#latency-history">latency-history</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#shi-yong-benchmark-ce-shi-jian-dan-cao-zuo">使用 benchmark 测试简单操作</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#shi-yong-bigkeys-jian-cha-key-qing-kuang">使用 bigkeys 检查 Key 情况</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#ya-ma-xun-shi-li-shu-ju">亚马逊实例数据</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#slowlog-dian-xing-an-li">slowlog 典型案例</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#ke-hu-duan-ce-shi-shi-cpu-zhi-biao">客户端测试时 CPU 指标</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#wang-luo-zhi-biao">网络指标</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#fen-xi">分析</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#jie-lun">结论</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#can-kao-wen-dang">参考文档</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#fu-jian">附件</a>
+
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#redis-chang-jian-wen-ti-pai-cha-si-lu">Redis 常见问题排查思路</a>
+
+                
+                    <ul>
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#lian-jie-chi-wen-ti">连接池问题</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#big-key">Big Key</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#hao-shi-cao-zuo">耗时操作</a>
+                        </li>
+
+                        
+                    
+                        
+                        <li>
+                            <a href="https://memwey.github.io/posts/redis-troubleshooting/#tong-shi-chao-shi">同时超时</a>
+                        </li>
+
+                        
+                    
+                    </ul>
+                
+            </li>
+        
+            <li class="parent">
+                
+                <a href="https://memwey.github.io/posts/redis-troubleshooting/#redis-fun-fact">Redis Fun Fact</a>
+
+                
+            </li>
+        
+    </ul>
+</div>
+
+    
+
+        </div>
+    </body>
+
+</html>
