@@ -1,5 +1,5 @@
 +++
-paginate_by = 20
+paginate_by = 42
 title = "Posts"
 sort_by = "date"
 
