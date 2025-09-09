@@ -1,5 +1,4 @@
 +++
-title = "Mem.Wey's Github Pages"
 template = "homepage.html"
 +++
 

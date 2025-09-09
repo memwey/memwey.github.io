@@ -1,322 +1,68 @@
-<!DOCTYPE html>
-<html lang="en" class="dark light">
-
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="base" content="https:&#x2F;&#x2F;memwey.github.io">
-
-    
-
-    
-    
-    
-        <title>
+<!doctype html><html class="dark light" lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content=https://memwey.github.io name=base><title>
             
                 Oh MySQL IN Subquery
             
-        </title>
-
-        
-            <meta property="og:title"
-                  content="Oh MySQL IN Subquery" />
-        
-    
-
-    
-        
-    
-
-    
-        
-    
-
-    
-    
-
-    
-    
-        <link href=https://memwey.github.io/fonts.css rel="stylesheet" />
-    
-
-    
-    
-
-    
-    
-        
-
-        
-
-        
-            
-            
-            <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-VLQ5DBCKGT"></script>
-            <script>
-                window.dataLayer = window.dataLayer || [];
+        </title><meta content="Oh MySQL IN Subquery" property=og:title><meta content="Tsukkomi Lolicon's GitHub Pages Blog" property=og:description><meta content="Tsukkomi Lolicon's GitHub Pages Blog" name=description><link href=https://memwey.github.io/fonts.css rel=stylesheet><script src="https://www.googletagmanager.com/gtag/js?id=G-VLQ5DBCKGT" async></script><script>window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'G-VLQ5DBCKGT');
-            </script>
-        
-    
-
-    
-    
-
-    
-    <script defer src=https://memwey.github.io/js/toc.js></script>
-
-    
-    
-
-    
-
-    
-    
-
-
-    
-    
-        <link rel="stylesheet"
-              type="text/css"
-              href="https://memwey.github.io/theme/light.css" />
-        <link id="darkModeStyle"
-              rel="stylesheet"
-              type="text/css"
-              href="https://memwey.github.io/theme/dark.css" />
-    
-
-    <!-- Set the correct theme in the script -->
-
-    
-        <script src=https://memwey.github.io/js/themetoggle.js></script>
-
-        
-            <script>setTheme(getSavedTheme());</script>
-        
-    
-
-
-    <link rel="stylesheet"
-          type="text/css"
-          media="screen"
-          href="https://memwey.github.io/main.css" />
-
-    
-
-    </head>
-
-
-    <body>
-        <div class="left-content">
-            
-            
-        </div>
-
-        <div class="content">
-            <nav>
-    <div class="left-nav">
-        
-            <a href=https:&#x2F;&#x2F;memwey.github.io></a>
-        
-
-
-        <div class="socials">
-            
-                <a rel="me" href="https:&#x2F;&#x2F;x.com&#x2F;Mem_Wey" class="social">
-                    <img alt="twitter" src="https://memwey.github.io/icons/social/twitter.svg">
-                </a>
-            
-                <a rel="me" href="https:&#x2F;&#x2F;github.com&#x2F;memwey" class="social">
-                    <img alt="github" src="https://memwey.github.io/icons/social/github.svg">
-                </a>
-            
-        </div>
-    </div>
-
-    <div class="right-nav">
-        
-            <a href=https://memwey.github.io/posts style="margin-right: 0.5em">&#x2F;posts</a>
-        
-            <a href=https://memwey.github.io/tags style="margin-right: 0.5em">&#x2F;tags</a>
-        
-            <a href=https://memwey.github.io/about style="margin-right: 0.5em">&#x2F;about</a>
-        
-
-        
-
-        
-            <a id="dark-mode-toggle"
-            onclick="toggleTheme(); event.preventDefault();"
-            href="#">
-                <img src="https://memwey.github.io/icons/sun.svg"
-                    id="sun-icon"
-                    style="filter: invert(1)"
-                    alt="Light" />
-                <img src=https://memwey.github.io/icons/moon.svg id="moon-icon" alt="Dark" />
-            </a>
-
-            <!-- Initialize the theme toggle icons -->
-            <script>updateItemToggleTheme()</script>
-        
-    </div>
-</nav>
-
-
-            
-            
-    
-<div class="visible-element-observer-root" data-selector="main article p">
-    <main>
-        <article>
-            <div class="title">
-                
-                
-    
-    <div class="page-header">
-        Oh MySQL IN Subquery
-    </div>
-    
-
-
-                <div class="meta">
-                    
-                        Posted on <time>2019-09-21</time>
-                    
-
-
-                    
-
-                    
-
-                    
-
-                    
-                    
-
-                    
-                    
-
-                    
-                    
-                        <span class="tags-label"> :: </span>
-                        <span class="tags">
-                                <a href="https://memwey.github.io/tags/database/"
-                                   class="post-tag">Database</a>
-                            
-                                <a href="https://memwey.github.io/tags/mysql/"
-                                   class="post-tag">MySQL</a>
-                            
-                        </span>
-                    
-
-                    
-
-                </div>
-            </div>
-
-            
-
-            <section class="body">
-                <p>感觉 <code>MySQL</code> 的坑实在是有点多,记录一下这个 <code>MySQL</code> 的坑, 也记录一下这个教训吧, 下次在数据库中直接操作一定要多小心</p>
-<h2 id="xian-xiang-hui-fang"><a class="zola-anchor" href="#xian-xiang-hui-fang" aria-label="Anchor link for: xian-xiang-hui-fang">现象回放</a></h2>
-<p>现在有两张表, 表结构如下, 无关字段已经省略</p>
-<ul>
-<li>team</li>
-</ul>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>+-------------+---------------------+
+                gtag('config', 'G-VLQ5DBCKGT');</script><script defer src=https://memwey.github.io/js/toc.js></script><link title="
+    Mem.Wey's Github Pages
+" href=https://memwey.github.io/atom.xml rel=alternate type=application/atom+xml><link href=https://memwey.github.io/theme/light.css rel=stylesheet><link href=https://memwey.github.io/theme/dark.css id=darkModeStyle rel=stylesheet><script src=https://memwey.github.io/js/themetoggle.js></script><script>setTheme(getSavedTheme());</script><link href=https://memwey.github.io/main.css media=screen rel=stylesheet><body><div class=left-content></div><div class=content><nav><div class=left-nav><a href=https://memwey.github.io>Mem.Wey's Github Pages</a><div class=socials><a class=social href=https://x.com/Mem_Wey rel=me> <img alt=twitter src=https://memwey.github.io/icons/social/twitter.svg> </a><a class=social href=https://github.com/memwey rel=me> <img alt=github src=https://memwey.github.io/icons/social/github.svg> </a></div></div><div class=right-nav><a href=https://memwey.github.io/posts style=margin-right:.5em>/posts</a><a href=https://memwey.github.io/tags style=margin-right:.5em>/tags</a><a href=https://memwey.github.io/about style=margin-right:.5em>/about</a><a onclick="toggleTheme(); event.preventDefault();" href=# id=dark-mode-toggle> <img alt=Light id=sun-icon src=https://memwey.github.io/icons/sun.svg style=filter:invert()> <img alt=Dark id=moon-icon src=https://memwey.github.io/icons/moon.svg> </a><script>updateItemToggleTheme()</script></div></nav><div data-selector="main article p" class=visible-element-observer-root><main><article><div class=title><div class=page-header>Oh MySQL IN Subquery</div><div class=meta>Posted on <time>2019-09-21</time><span class=tags-label>::</span><span class=tags> <a class=post-tag href=https://memwey.github.io/tags/database/>Database</a> <a class=post-tag href=https://memwey.github.io/tags/mysql/>MySQL</a> </span></div></div><section class=body><p>感觉 <code>MySQL</code> 的坑实在是有点多,记录一下这个 <code>MySQL</code> 的坑, 也记录一下这个教训吧, 下次在数据库中直接操作一定要多小心<h2 id=xian-xiang-hui-fang><a aria-label="Anchor link for: xian-xiang-hui-fang" class=zola-anchor href=#xian-xiang-hui-fang>现象回放</a></h2><p>现在有两张表, 表结构如下, 无关字段已经省略<ul><li>team</ul><pre style=color:#c0c5ce;background-color:#2b303b><code><span>+-------------+---------------------+
 </span><span>| Field       | Type                |
 </span><span>+-------------+---------------------+
 </span><span>| id          | int(10) unsigned    |
 </span><span>| status      | tinyint(3) unsigned |
 </span><span>+-------------+---------------------+
-</span></code></pre>
-<ul>
-<li>player</li>
-</ul>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>+-------------+---------------------+
+</span></code></pre><ul><li>player</ul><pre style=color:#c0c5ce;background-color:#2b303b><code><span>+-------------+---------------------+
 </span><span>| Field       | Type                |
 </span><span>+-------------+---------------------+
 </span><span>| id          | int(10) unsigned    |
 </span><span>| team_id     | int(10) unsigned    |
 </span><span>| status      | tinyint(3) unsigned |
 </span><span>+-------------+---------------------+
-</span></code></pre>
-<p>容易理解, 这是简单的一对多的关系, 一个足球队 team 里面, 有多个球员 player</p>
-<p>现在想取出有 player 的状态为 <code>1</code> 的 team</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> team </span><span style="color:#b48ead;">WHERE</span><span> id IN (</span><span style="color:#b48ead;">SELECT</span><span> id </span><span style="color:#b48ead;">FROM</span><span> (</span><span style="color:#b48ead;">SELECT</span><span> team_id </span><span style="color:#b48ead;">FROM</span><span> player </span><span style="color:#b48ead;">WHERE</span><span> status = </span><span style="color:#d08770;">1</span><span>) AS a);
-</span></code></pre>
-<p>理论上, 这条语句是不能执行的, 注意这里</p>
-<blockquote>
-<p>...... SELECT id FROM (SELECT team_id FROM ......</p>
-</blockquote>
-<p>但是, 不知道为何, 这条语句是可以执行的, 而且等价于</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> team;
-</span></code></pre>
-<p>如果单独把最外层的 IN 里面的 subquery 取出来, <code>MySQL</code> 会报错</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT</span><span> id </span><span style="color:#b48ead;">FROM</span><span> (</span><span style="color:#b48ead;">SELECT</span><span> team_id </span><span style="color:#b48ead;">FROM</span><span> player </span><span style="color:#b48ead;">WHERE</span><span> status = </span><span style="color:#d08770;">1</span><span>) AS a;
-</span></code></pre>
-<blockquote>
-<p>ERROR 1054 (42S22): Unknown column 'id' in 'field list'</p>
-</blockquote>
-<p>再试着把 id 改为不存在的字段</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> team </span><span style="color:#b48ead;">WHERE</span><span> id IN (</span><span style="color:#b48ead;">SELECT</span><span> not_exist_field </span><span style="color:#b48ead;">FROM</span><span> (</span><span style="color:#b48ead;">SELECT</span><span> team_id </span><span style="color:#b48ead;">FROM</span><span> player </span><span style="color:#b48ead;">WHERE</span><span> status = </span><span style="color:#d08770;">1</span><span>) AS a);
-</span></code></pre>
-<blockquote>
-<p>ERROR 1054 (42S22): Unknown column 'not_exist_field' in 'field list'</p>
-</blockquote>
-<p>这样才能如预期的报错</p>
-<h2 id="wen-ti-pai-cha"><a class="zola-anchor" href="#wen-ti-pai-cha" aria-label="Anchor link for: wen-ti-pai-cha">问题排查</a></h2>
-<p>先 EXPLAIN 试试呢</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#bf616a;">*************************** </span><span style="color:#d08770;">1</span><span>. row </span><span style="color:#bf616a;">***************************
-</span><span>           id: </span><span style="color:#d08770;">1
+</span></code></pre><p>容易理解, 这是简单的一对多的关系, 一个足球队 team 里面, 有多个球员 player<p>现在想取出有 player 的状态为 <code>1</code> 的 team<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT </span><span style=color:#bf616a>* </span><span style=color:#b48ead>FROM</span><span> team </span><span style=color:#b48ead>WHERE</span><span> id IN (</span><span style=color:#b48ead>SELECT</span><span> id </span><span style=color:#b48ead>FROM</span><span> (</span><span style=color:#b48ead>SELECT</span><span> team_id </span><span style=color:#b48ead>FROM</span><span> player </span><span style=color:#b48ead>WHERE</span><span> status = </span><span style=color:#d08770>1</span><span>) AS a);
+</span></code></pre><p>理论上, 这条语句是不能执行的, 注意这里<blockquote><p>...... SELECT id FROM (SELECT team_id FROM ......</blockquote><p>但是, 不知道为何, 这条语句是可以执行的, 而且等价于<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT </span><span style=color:#bf616a>* </span><span style=color:#b48ead>FROM</span><span> team;
+</span></code></pre><p>如果单独把最外层的 IN 里面的 subquery 取出来, <code>MySQL</code> 会报错<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT</span><span> id </span><span style=color:#b48ead>FROM</span><span> (</span><span style=color:#b48ead>SELECT</span><span> team_id </span><span style=color:#b48ead>FROM</span><span> player </span><span style=color:#b48ead>WHERE</span><span> status = </span><span style=color:#d08770>1</span><span>) AS a;
+</span></code></pre><blockquote><p>ERROR 1054 (42S22): Unknown column 'id' in 'field list'</blockquote><p>再试着把 id 改为不存在的字段<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT </span><span style=color:#bf616a>* </span><span style=color:#b48ead>FROM</span><span> team </span><span style=color:#b48ead>WHERE</span><span> id IN (</span><span style=color:#b48ead>SELECT</span><span> not_exist_field </span><span style=color:#b48ead>FROM</span><span> (</span><span style=color:#b48ead>SELECT</span><span> team_id </span><span style=color:#b48ead>FROM</span><span> player </span><span style=color:#b48ead>WHERE</span><span> status = </span><span style=color:#d08770>1</span><span>) AS a);
+</span></code></pre><blockquote><p>ERROR 1054 (42S22): Unknown column 'not_exist_field' in 'field list'</blockquote><p>这样才能如预期的报错<h2 id=wen-ti-pai-cha><a aria-label="Anchor link for: wen-ti-pai-cha" class=zola-anchor href=#wen-ti-pai-cha>问题排查</a></h2><p>先 EXPLAIN 试试呢<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#bf616a>*************************** </span><span style=color:#d08770>1</span><span>. row </span><span style=color:#bf616a>***************************
+</span><span>           id: </span><span style=color:#d08770>1
 </span><span>  select_type: SIMPLE
 </span><span>        table: team
-</span><span>   partitions: </span><span style="color:#d08770;">NULL
+</span><span>   partitions: </span><span style=color:#d08770>NULL
 </span><span>         type: ALL
-</span><span>possible_keys: </span><span style="color:#d08770;">NULL
-</span><span>          key: </span><span style="color:#d08770;">NULL
-</span><span>      key_len: </span><span style="color:#d08770;">NULL
-</span><span>          ref: </span><span style="color:#d08770;">NULL
-</span><span>         rows: </span><span style="color:#d08770;">2
-</span><span>     filtered: </span><span style="color:#d08770;">100</span><span>.</span><span style="color:#d08770;">00
-</span><span>        Extra: </span><span style="color:#d08770;">NULL
-</span><span style="color:#bf616a;">*************************** </span><span style="color:#d08770;">2</span><span>. row </span><span style="color:#bf616a;">***************************
-</span><span>           id: </span><span style="color:#d08770;">1
+</span><span>possible_keys: </span><span style=color:#d08770>NULL
+</span><span>          key: </span><span style=color:#d08770>NULL
+</span><span>      key_len: </span><span style=color:#d08770>NULL
+</span><span>          ref: </span><span style=color:#d08770>NULL
+</span><span>         rows: </span><span style=color:#d08770>2
+</span><span>     filtered: </span><span style=color:#d08770>100</span><span>.</span><span style=color:#d08770>00
+</span><span>        Extra: </span><span style=color:#d08770>NULL
+</span><span style=color:#bf616a>*************************** </span><span style=color:#d08770>2</span><span>. row </span><span style=color:#bf616a>***************************
+</span><span>           id: </span><span style=color:#d08770>1
 </span><span>  select_type: SIMPLE
 </span><span>        table: player
-</span><span>   partitions: </span><span style="color:#d08770;">NULL
+</span><span>   partitions: </span><span style=color:#d08770>NULL
 </span><span>         type: ALL
-</span><span>possible_keys: </span><span style="color:#d08770;">NULL
-</span><span>          key: </span><span style="color:#d08770;">NULL
-</span><span>      key_len: </span><span style="color:#d08770;">NULL
-</span><span>          ref: </span><span style="color:#d08770;">NULL
-</span><span>         rows: </span><span style="color:#d08770;">5
-</span><span>     filtered: </span><span style="color:#d08770;">20</span><span>.</span><span style="color:#d08770;">00
-</span><span>        Extra: </span><span style="color:#b48ead;">Using where</span><span>; FirstMatch(team); </span><span style="color:#b48ead;">Using join</span><span> buffer (Block Nested Loop)
-</span><span style="color:#d08770;">2</span><span> rows in </span><span style="color:#b48ead;">set</span><span>, </span><span style="color:#d08770;">2</span><span> warnings (</span><span style="color:#d08770;">0</span><span>.</span><span style="color:#d08770;">001</span><span> sec)
-</span></code></pre>
-<p>好像看不出来什么问题呢, 不过有 warnings, 看一下呢</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span>SHOW WARNINGS\G
-</span></code></pre>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>*************************** 1. row ***************************
+</span><span>possible_keys: </span><span style=color:#d08770>NULL
+</span><span>          key: </span><span style=color:#d08770>NULL
+</span><span>      key_len: </span><span style=color:#d08770>NULL
+</span><span>          ref: </span><span style=color:#d08770>NULL
+</span><span>         rows: </span><span style=color:#d08770>5
+</span><span>     filtered: </span><span style=color:#d08770>20</span><span>.</span><span style=color:#d08770>00
+</span><span>        Extra: </span><span style=color:#b48ead>Using where</span><span>; FirstMatch(team); </span><span style=color:#b48ead>Using join</span><span> buffer (Block Nested Loop)
+</span><span style=color:#d08770>2</span><span> rows in </span><span style=color:#b48ead>set</span><span>, </span><span style=color:#d08770>2</span><span> warnings (</span><span style=color:#d08770>0</span><span>.</span><span style=color:#d08770>001</span><span> sec)
+</span></code></pre><p>好像看不出来什么问题呢, 不过有 warnings, 看一下呢<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span>SHOW WARNINGS\G
+</span></code></pre><pre style=color:#c0c5ce;background-color:#2b303b><code><span>*************************** 1. row ***************************
 </span><span>  Level: Note
 </span><span>   Code: 1276
-</span><span>Message: Field or reference &#39;test.team.id&#39; of SELECT #2 was resolved in SELECT #1
+</span><span>Message: Field or reference 'test.team.id' of SELECT #2 was resolved in SELECT #1
 </span><span>*************************** 2. row ***************************
 </span><span>  Level: Note
 </span><span>   Code: 1003
 </span><span>Message: /* select#1 */ select `test`.`team`.`id` AS `id`,`test`.`team`.`status` AS `status` from `test`.`team` semi join (`test`.`player`) where (`test`.`player`.`status` = 1)
 </span><span>2 rows in set (0.001 sec)
-</span></code></pre>
-<p>这里出现了一个 <code>semi join</code>, 没有见过呢, 查看一下文档, 大意就是, 比如使用 <code>INNER JOIN</code> 的时候, 会返回匹配次数个结果. 但是我们并不关注匹配的次数, 比如如下语句, 我想取出有球员的 status 为 0 的球队, 可以这样写</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> team </span><span style="color:#b48ead;">INNER JOIN</span><span> player ON </span><span style="color:#d08770;">team</span><span>.</span><span style="color:#d08770;">id </span><span>= team_id </span><span style="color:#b48ead;">WHERE </span><span style="color:#d08770;">player</span><span>.</span><span style="color:#d08770;">status </span><span>= </span><span style="color:#d08770;">0</span><span>;
-</span></code></pre>
-<p>如果一个球队里有多个 status 为 0 的球员, 那么就会出现多个记录, 比如这样</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>+----+--------+----+---------+--------+
+</span></code></pre><p>这里出现了一个 <code>semi join</code>, 没有见过呢, 查看一下文档, 大意就是, 比如使用 <code>INNER JOIN</code> 的时候, 会返回匹配次数个结果. 但是我们并不关注匹配的次数, 比如如下语句, 我想取出有球员的 status 为 0 的球队, 可以这样写<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT </span><span style=color:#bf616a>* </span><span style=color:#b48ead>FROM</span><span> team </span><span style=color:#b48ead>INNER JOIN</span><span> player ON </span><span style=color:#d08770>team</span><span>.</span><span style=color:#d08770>id </span><span>= team_id </span><span style=color:#b48ead>WHERE </span><span style=color:#d08770>player</span><span>.</span><span style=color:#d08770>status </span><span>= </span><span style=color:#d08770>0</span><span>;
+</span></code></pre><p>如果一个球队里有多个 status 为 0 的球员, 那么就会出现多个记录, 比如这样<pre style=color:#c0c5ce;background-color:#2b303b><code><span>+----+--------+----+---------+--------+
 </span><span>| id | status | id | team_id | status |
 </span><span>+----+--------+----+---------+--------+
 </span><span>|  1 |      0 |  1 |       1 |      0 |
@@ -324,120 +70,43 @@
 </span><span>|  2 |      0 |  5 |       2 |      0 |
 </span><span>|  2 |      0 |  6 |       2 |      0 |
 </span><span>+----+--------+----+---------+--------+
-</span></code></pre>
-<p>这样明显有些冗余的数据了. 当然我们可以用 <code>DISTINCT</code> 什么的再处理一遍, 但是这样效率会比较低. 那么, 就可以用类似的子查询就方便多了</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#b48ead;">SELECT </span><span style="color:#bf616a;">* </span><span style="color:#b48ead;">FROM</span><span> team </span><span style="color:#b48ead;">WHERE</span><span> id IN (</span><span style="color:#b48ead;">SELECT</span><span> team_id </span><span style="color:#b48ead;">FROM</span><span> player </span><span style="color:#b48ead;">WHERE</span><span> status = </span><span style="color:#d08770;">0</span><span>);
-</span></code></pre>
-<p>返回的结果也简洁多了</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>+----+--------+
+</span></code></pre><p>这样明显有些冗余的数据了. 当然我们可以用 <code>DISTINCT</code> 什么的再处理一遍, 但是这样效率会比较低. 那么, 就可以用类似的子查询就方便多了<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#b48ead>SELECT </span><span style=color:#bf616a>* </span><span style=color:#b48ead>FROM</span><span> team </span><span style=color:#b48ead>WHERE</span><span> id IN (</span><span style=color:#b48ead>SELECT</span><span> team_id </span><span style=color:#b48ead>FROM</span><span> player </span><span style=color:#b48ead>WHERE</span><span> status = </span><span style=color:#d08770>0</span><span>);
+</span></code></pre><p>返回的结果也简洁多了<pre style=color:#c0c5ce;background-color:#2b303b><code><span>+----+--------+
 </span><span>| id | status |
 </span><span>+----+--------+
 </span><span>|  1 |      0 |
 </span><span>|  2 |      0 |
 </span><span>+----+--------+
-</span></code></pre>
-<p>当然, 要这样优化还是有很多条件的, 林林总总的, 可以去官方文档查看</p>
-<p>看了这么多, 感觉还是和这个问题没什么关系啊, 试着 EXPLAIN 一下正确的语句</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#bf616a;">*************************** </span><span style="color:#d08770;">1</span><span>. row </span><span style="color:#bf616a;">***************************
-</span><span>           id: </span><span style="color:#d08770;">1
+</span></code></pre><p>当然, 要这样优化还是有很多条件的, 林林总总的, 可以去官方文档查看<p>看了这么多, 感觉还是和这个问题没什么关系啊, 试着 EXPLAIN 一下正确的语句<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#bf616a>*************************** </span><span style=color:#d08770>1</span><span>. row </span><span style=color:#bf616a>***************************
+</span><span>           id: </span><span style=color:#d08770>1
 </span><span>  select_type: SIMPLE
 </span><span>        table: team
-</span><span>   partitions: </span><span style="color:#d08770;">NULL
+</span><span>   partitions: </span><span style=color:#d08770>NULL
 </span><span>         type: ALL
 </span><span>possible_keys: PRIMARY
-</span><span>          key: </span><span style="color:#d08770;">NULL
-</span><span>      key_len: </span><span style="color:#d08770;">NULL
-</span><span>          ref: </span><span style="color:#d08770;">NULL
-</span><span>         rows: </span><span style="color:#d08770;">2
-</span><span>     filtered: </span><span style="color:#d08770;">100</span><span>.</span><span style="color:#d08770;">00
-</span><span>        Extra: </span><span style="color:#d08770;">NULL
-</span><span style="color:#bf616a;">*************************** </span><span style="color:#d08770;">2</span><span>. row </span><span style="color:#bf616a;">***************************
-</span><span>           id: </span><span style="color:#d08770;">1
+</span><span>          key: </span><span style=color:#d08770>NULL
+</span><span>      key_len: </span><span style=color:#d08770>NULL
+</span><span>          ref: </span><span style=color:#d08770>NULL
+</span><span>         rows: </span><span style=color:#d08770>2
+</span><span>     filtered: </span><span style=color:#d08770>100</span><span>.</span><span style=color:#d08770>00
+</span><span>        Extra: </span><span style=color:#d08770>NULL
+</span><span style=color:#bf616a>*************************** </span><span style=color:#d08770>2</span><span>. row </span><span style=color:#bf616a>***************************
+</span><span>           id: </span><span style=color:#d08770>1
 </span><span>  select_type: SIMPLE
 </span><span>        table: player
-</span><span>   partitions: </span><span style="color:#d08770;">NULL
+</span><span>   partitions: </span><span style=color:#d08770>NULL
 </span><span>         type: ALL
-</span><span>possible_keys: </span><span style="color:#d08770;">NULL
-</span><span>          key: </span><span style="color:#d08770;">NULL
-</span><span>      key_len: </span><span style="color:#d08770;">NULL
-</span><span>          ref: </span><span style="color:#d08770;">NULL
-</span><span>         rows: </span><span style="color:#d08770;">5
-</span><span>     filtered: </span><span style="color:#d08770;">20</span><span>.</span><span style="color:#d08770;">00
-</span><span>        Extra: </span><span style="color:#b48ead;">Using where</span><span>; FirstMatch(team); </span><span style="color:#b48ead;">Using join</span><span> buffer (Block Nested Loop)
-</span><span style="color:#d08770;">2</span><span> rows in </span><span style="color:#b48ead;">set</span><span>, </span><span style="color:#d08770;">1</span><span> warning (</span><span style="color:#d08770;">0</span><span>.</span><span style="color:#d08770;">001</span><span> sec)
-</span></code></pre>
-<p>再看看 warnings</p>
-<pre data-lang="SQL" style="background-color:#2b303b;color:#c0c5ce;" class="language-SQL "><code class="language-SQL" data-lang="SQL"><span style="color:#bf616a;">*************************** </span><span style="color:#d08770;">1</span><span>. row </span><span style="color:#bf616a;">***************************
+</span><span>possible_keys: </span><span style=color:#d08770>NULL
+</span><span>          key: </span><span style=color:#d08770>NULL
+</span><span>      key_len: </span><span style=color:#d08770>NULL
+</span><span>          ref: </span><span style=color:#d08770>NULL
+</span><span>         rows: </span><span style=color:#d08770>5
+</span><span>     filtered: </span><span style=color:#d08770>20</span><span>.</span><span style=color:#d08770>00
+</span><span>        Extra: </span><span style=color:#b48ead>Using where</span><span>; FirstMatch(team); </span><span style=color:#b48ead>Using join</span><span> buffer (Block Nested Loop)
+</span><span style=color:#d08770>2</span><span> rows in </span><span style=color:#b48ead>set</span><span>, </span><span style=color:#d08770>1</span><span> warning (</span><span style=color:#d08770>0</span><span>.</span><span style=color:#d08770>001</span><span> sec)
+</span></code></pre><p>再看看 warnings<pre class=language-SQL data-lang=SQL style=color:#c0c5ce;background-color:#2b303b><code class=language-SQL data-lang=SQL><span style=color:#bf616a>*************************** </span><span style=color:#d08770>1</span><span>. row </span><span style=color:#bf616a>***************************
 </span><span>  Level: Note
-</span><span>   Code: </span><span style="color:#d08770;">1003
-</span><span>Message: </span><span style="color:#65737e;">/* select#1 */ </span><span style="color:#b48ead;">select </span><span>`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">team</span><span>`.`</span><span style="color:#a3be8c;">id</span><span>` AS `</span><span style="color:#a3be8c;">id</span><span>`,`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">team</span><span>`.`</span><span style="color:#a3be8c;">status</span><span>` AS `</span><span style="color:#a3be8c;">status</span><span>` </span><span style="color:#b48ead;">from </span><span>`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">team</span><span>` semi </span><span style="color:#b48ead;">join</span><span> (`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">player</span><span>`) </span><span style="color:#b48ead;">where</span><span> ((`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">player</span><span>`.`</span><span style="color:#a3be8c;">team_id</span><span>` = `</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">team</span><span>`.`</span><span style="color:#a3be8c;">id</span><span>`) and (`</span><span style="color:#a3be8c;">test</span><span>`.`</span><span style="color:#a3be8c;">player</span><span>`.`</span><span style="color:#a3be8c;">status</span><span>` = </span><span style="color:#d08770;">1</span><span>))
-</span><span style="color:#d08770;">1</span><span> row in </span><span style="color:#b48ead;">set</span><span> (</span><span style="color:#d08770;">0</span><span>.</span><span style="color:#d08770;">001</span><span> sec)
-</span></code></pre>
-<p>对照着实际运行的语句的 Note, 发现错误的语句缺少了以下这个条件</p>
-<blockquote>
-<p>((<code>test</code>.<code>player</code>.<code>team_id</code> = <code>test</code>.<code>team</code>.<code>id</code>)</p>
-</blockquote>
-<p>难道就是你! 但是为什么又有</p>
-<blockquote>
-<p>Field or reference 'test.team.id' of SELECT #2 was resolved in SELECT #1</p>
-</blockquote>
-<p>这个问题呢</p>
-<p>总感觉是个Bug......</p>
-<p>To Be Continued......</p>
-<h2 id="can-kao-zi-liao"><a class="zola-anchor" href="#can-kao-zi-liao" aria-label="Anchor link for: can-kao-zi-liao">参考资料</a></h2>
-<ol>
-<li><a href="https://dev.mysql.com/doc/refman/5.7/en/semijoins.html">Optimizing Subqueries, Derived Tables, and View References with Semijoin Transformations</a></li>
-</ol>
-
-            </section>
-        </article>
-    </main>
-</div>
-
-
-
-            
-                
-            
-
-            
-        </div>
-
-        <div class="right-content">
-            
-    
-    
-        <div class="toc">
-    <div class="heading">Table of Contents</div>
-    <ul class="toc-list">
-        
-            <li class="parent">
-                
-                <a href="https://memwey.github.io/posts/oh-mysql-in-subquery/#xian-xiang-hui-fang">现象回放</a>
-
-                
-            </li>
-        
-            <li class="parent">
-                
-                <a href="https://memwey.github.io/posts/oh-mysql-in-subquery/#wen-ti-pai-cha">问题排查</a>
-
-                
-            </li>
-        
-            <li class="parent">
-                
-                <a href="https://memwey.github.io/posts/oh-mysql-in-subquery/#can-kao-zi-liao">参考资料</a>
-
-                
-            </li>
-        
-    </ul>
-</div>
-
-    
-
-        </div>
-    </body>
-
-</html>
+</span><span>   Code: </span><span style=color:#d08770>1003
+</span><span>Message: </span><span style=color:#65737e>/* select#1 */ </span><span style=color:#b48ead>select </span><span>`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>team</span><span>`.`</span><span style=color:#a3be8c>id</span><span>` AS `</span><span style=color:#a3be8c>id</span><span>`,`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>team</span><span>`.`</span><span style=color:#a3be8c>status</span><span>` AS `</span><span style=color:#a3be8c>status</span><span>` </span><span style=color:#b48ead>from </span><span>`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>team</span><span>` semi </span><span style=color:#b48ead>join</span><span> (`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>player</span><span>`) </span><span style=color:#b48ead>where</span><span> ((`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>player</span><span>`.`</span><span style=color:#a3be8c>team_id</span><span>` = `</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>team</span><span>`.`</span><span style=color:#a3be8c>id</span><span>`) and (`</span><span style=color:#a3be8c>test</span><span>`.`</span><span style=color:#a3be8c>player</span><span>`.`</span><span style=color:#a3be8c>status</span><span>` = </span><span style=color:#d08770>1</span><span>))
+</span><span style=color:#d08770>1</span><span> row in </span><span style=color:#b48ead>set</span><span> (</span><span style=color:#d08770>0</span><span>.</span><span style=color:#d08770>001</span><span> sec)
+</span></code></pre><p>对照着实际运行的语句的 Note, 发现错误的语句缺少了以下这个条件<blockquote><p>((<code>test</code>.<code>player</code>.<code>team_id</code> = <code>test</code>.<code>team</code>.<code>id</code>)</blockquote><p>难道就是你! 但是为什么又有<blockquote><p>Field or reference 'test.team.id' of SELECT #2 was resolved in SELECT #1</blockquote><p>这个问题呢<p>总感觉是个Bug......<p>To Be Continued......<h2 id=can-kao-zi-liao><a aria-label="Anchor link for: can-kao-zi-liao" class=zola-anchor href=#can-kao-zi-liao>参考资料</a></h2><ol><li><a href=https://dev.mysql.com/doc/refman/5.7/en/semijoins.html>Optimizing Subqueries, Derived Tables, and View References with Semijoin Transformations</a></ol></section></article></main></div></div><div class=right-content><div class=toc><div class=heading>Table of Contents</div><ul class=toc-list><li class=parent><a href=https://memwey.github.io/posts/oh-mysql-in-subquery/#xian-xiang-hui-fang>现象回放</a><li class=parent><a href=https://memwey.github.io/posts/oh-mysql-in-subquery/#wen-ti-pai-cha>问题排查</a><li class=parent><a href=https://memwey.github.io/posts/oh-mysql-in-subquery/#can-kao-zi-liao>参考资料</a></ul></div></div>

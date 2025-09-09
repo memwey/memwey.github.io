@@ -71,7 +71,7 @@ Hello(ctx context.Context, req *HelloRequest) (resp *HelloResponse, err error)
 
 ## 服务调用流程图
 下图展示了从接收客户端请求到与数据库交互的完整分层调用链, 它强调了接口与实现分离 (依赖倒置原则), 以及各层在项目中的位置. 这样保证了每一个层级的职责清晰, 耦合度低, 方便维护和扩展, 也方便进行单元测试和排查问题.
-```text
+```
 [ API Request ]
       |
       v
@@ -114,7 +114,7 @@ Hello(ctx context.Context, req *HelloRequest) (resp *HelloResponse, err error)
 
 ## 示例项目目录结构
 这是一个遵循上述规范的示例项目结构. 它以一个用户注册场景为例, 其中 `registrationflow` 是一个复杂流程, 负责编排 `authuc` (认证用例) 和 `notiuc` (通知用例).
-```text
+```
 /
 ├── app/
 │   ├── registrationflow/           # “用户注册”流程的实现

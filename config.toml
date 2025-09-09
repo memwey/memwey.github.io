@@ -4,6 +4,11 @@ taxonomies = [{ name = "tags" }]
 
 # The URL the site will be built for
 base_url = "https://memwey.github.io"
+title = "Mem.Wey's Github Pages"
+description = "Tsukkomi Lolicon's GitHub Pages Blog"
+
+minify_html = true
+generate_feeds = true
 
 [markdown]
 # Whether to do syntax highlighting
@@ -28,3 +33,7 @@ enabled = true
 
 [extra.analytics.google]
 tracking_id = "G-VLQ5DBCKGT"
+
+[extra.taxonomies]
+sort_by = "page_count"
+reverse = true
