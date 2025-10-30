@@ -5,7 +5,7 @@
     </url>
     <url>
         <loc>https://memwey.github.io/about/</loc>
-        <lastmod>2025-09-07</lastmod>
+        <lastmod>2025-10-30</lastmod>
     </url>
     <url>
         <loc>https://memwey.github.io/link/</loc>
@@ -60,6 +60,10 @@
     </url>
     <url>
         <loc>https://memwey.github.io/posts/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://memwey.github.io/posts/playstation-4-pro-rediscovering/</loc>
+        <lastmod>2025-10-30T19:38:09+09:00</lastmod>
     </url>
     <url>
         <loc>https://memwey.github.io/posts/prometheus-from-scratch/</loc>
@@ -122,6 +126,9 @@
     </url>
     <url>
         <loc>https://memwey.github.io/tags/device/</loc>
+    </url>
+    <url>
+        <loc>https://memwey.github.io/tags/gaming/</loc>
     </url>
     <url>
         <loc>https://memwey.github.io/tags/golang/</loc>
