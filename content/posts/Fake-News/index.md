@@ -1,6 +1,7 @@
 +++
 title = "Fake News 的一件小事"
 date = "2025-11-13T15:08:27+09:00"
+updated = "2025-11-13T18:20:27+09:00"
 draft = false
 description = ""
 [taxonomies]
@@ -13,6 +14,11 @@ tags = ["History", "Commentary"]
 
 具体的日文原文如下:
 > 勝手に突っ込んできたその汚い首は一瞬の躊躇もなく斬ってやるしかない。覚悟が出来ているのか。
+
+其回应的推特原文如下:
+> 高市首相、台湾有事「存立危機事態になりうる」　認定なら武力行使も
+> https://www.asahi.com/articles/ASTC722TVTC7UQIP04NM.html
+> 「実際に発生した事態の個別、具体的な状況に応じて、政府がすべての情報を総合して判断する。武力攻撃が発生したら、これは存立危機事態にあたる可能性が高い」とも語りました。
 
 `FOX NEWS` 在新闻页面上给出的英文翻译如下:
 > That filthy neck that barged in on its own. I've got no choice but to cut if off without a moment's hesitation. Are you prepared for that?
@@ -31,3 +37,5 @@ tags = ["History", "Commentary"]
 
 ## 参考资料
 * [Trump pulls back curtain on relationship with Xi Jinping](https://www.youtube.com/watch?v=7juiv6qrYds)
+* [高市首相、台湾有事「存立危機事態になりうる」　武力攻撃の発生時](https://www.asahi.com/articles/ASTC722TVTC7UQIP04NM.html)
+* [高市首相、台湾有事「存立危機事態になりうる」　認定なら武力行使も](https://x.com/asahicom/status/1986702380969144741)
