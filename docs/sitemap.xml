@@ -5,7 +5,7 @@
     </url>
     <url>
         <loc>https://memwey.github.io/about/</loc>
-        <lastmod>2025-10-30</lastmod>
+        <lastmod>2025-11-13</lastmod>
     </url>
     <url>
         <loc>https://memwey.github.io/link/</loc>
@@ -29,6 +29,10 @@
     <url>
         <loc>https://memwey.github.io/posts/dell-t1700-sff/</loc>
         <lastmod>2021-06-06T23:29:40+08:00</lastmod>
+    </url>
+    <url>
+        <loc>https://memwey.github.io/posts/fake-news/</loc>
+        <lastmod>2025-11-13T15:08:27+09:00</lastmod>
     </url>
     <url>
         <loc>https://memwey.github.io/posts/first-blog/</loc>
@@ -117,6 +121,9 @@
     </url>
     <url>
         <loc>https://memwey.github.io/tags/blog/</loc>
+    </url>
+    <url>
+        <loc>https://memwey.github.io/tags/commentary/</loc>
     </url>
     <url>
         <loc>https://memwey.github.io/tags/data-structure/</loc>

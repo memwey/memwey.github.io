@@ -5,8 +5,51 @@
     <link rel="self" type="application/atom+xml" href="https://memwey.github.io/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://memwey.github.io"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2025-11-01T21:44:35+09:00</updated>
+    <updated>2025-11-13T15:08:27+09:00</updated>
     <id>https://memwey.github.io/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Fake News 的一件小事</title>
+        <published>2025-11-13T15:08:27+09:00</published>
+        <updated>2025-11-13T15:08:27+09:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://memwey.github.io/posts/fake-news/"/>
+        <id>https://memwey.github.io/posts/fake-news/</id>
+        
+        <content type="html" xml:base="https://memwey.github.io/posts/fake-news/">&lt;p&gt;最近, 中华人民共和国驻大阪总领事薛剑在 X 上的言论引起了一些争议, 具体的言论如图:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;memwey.github.io&#x2F;posts&#x2F;fake-news&#x2F;images&#x2F;screenshot.jpeg&quot; alt=&quot;截图&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;具体的日文原文如下:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;勝手に突っ込んできたその汚い首は一瞬の躊躇もなく斬ってやるしかない。覚悟が出来ているのか。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;code&gt;FOX NEWS&lt;&#x2F;code&gt; 在新闻页面上给出的英文翻译如下:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;That filthy neck that barged in on its own. I&#x27;ve got no choice but to cut if off without a moment&#x27;s hesitation. Are you prepared for that?&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;在与特朗普的专访对谈中, 劳拉·英格拉哈姆, 美国一位广播脱口秀主持人, 畅销书作家和保守派政论家, 这样描述这段发言:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Laura Ingraham: And over the weekend, the new Japanese prime minister, who I know you like a lot, Takaichi, called the Taiwan situation extremely severe in its phase and that they may consider any move on Taiwan by China to be a national survival crisis for Japan. Now that gets better. A Chinese diplomat today said in a social media post that, she the prime minister of Japan, should be beheaded for her comments.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;而特朗普做出的回应如下:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;President Donald Trump: Well, a lot of our allies aren&#x27;t our friends either. Our allies took advantage of us on trade more than China did. And China took big advantage. We built their military. We built their whole thing.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;从这个事件, 可以清晰的看到 Fake News 是如何产生的. 在节目中为了构建中国官方&lt;strong&gt;野蛮暴力&lt;&#x2F;strong&gt;的形象, 达到&lt;strong&gt;耸人听闻&lt;&#x2F;strong&gt;的效果, 将原本的&lt;strong&gt;激烈言辞&lt;&#x2F;strong&gt;转化成了更&lt;strong&gt;直接&lt;&#x2F;strong&gt;, 更&lt;strong&gt;具体&lt;&#x2F;strong&gt;, 更具&lt;strong&gt;爆炸性&lt;&#x2F;strong&gt;的对日本首相的&lt;strong&gt;人身威胁&lt;&#x2F;strong&gt;, 甚至可以当面&lt;strong&gt;诱导&lt;&#x2F;strong&gt;美国总统.&lt;&#x2F;p&gt;
+&lt;p&gt;这位美国总统多次表明过, &lt;strong&gt;不准确&lt;&#x2F;strong&gt;, &lt;strong&gt;偏见&lt;&#x2F;strong&gt;, &lt;strong&gt;断章取义&lt;&#x2F;strong&gt;的新闻报道是 &lt;strong&gt;Fake News&lt;&#x2F;strong&gt;, 也算是身经百战见得多了, 没有具体事情上做评论, 而是谈起来日本并不是美国的朋友, 转回他熟悉的对盟友在经贸问题上占便宜的叙事框架, 场面一度略显尴尬.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;can-kao-zi-liao&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#can-kao-zi-liao&quot; aria-label=&quot;Anchor link for: can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=7juiv6qrYds&quot;&gt;Trump pulls back curtain on relationship with Xi Jinping&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>PlayStation 4 Pro 拾遗</title>
         <published>2025-10-30T19:38:09+09:00</published>
@@ -2457,7 +2500,7 @@
     <entry xml:lang="en">
         <title>关于</title>
         <published>2016-06-14T00:00:00+00:00</published>
-        <updated>2025-10-30T00:00:00+00:00</updated>
+        <updated>2025-11-13T00:00:00+00:00</updated>
         
         <author>
           <name>
@@ -2475,7 +2518,7 @@
 &lt;ul&gt;
 &lt;li&gt;应该也许大概会在这里做一些技术方面的笔记 _(:_」∠)_&lt;&#x2F;li&gt;
 &lt;li&gt;因为拖延症严重的不行所以可能不会经常更新......唔, 努力更新一下吧&lt;&#x2F;li&gt;
-&lt;li&gt;偶尔聊聊历史&lt;&#x2F;li&gt;
+&lt;li&gt;偶尔聊聊历史, 希望可以记录一些近现代的事情, 用以存史&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;guan-yu-gong-zuo&quot;&gt;关于工作&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;xian-zai-de&quot;&gt;现在的&lt;&#x2F;h3&gt;
