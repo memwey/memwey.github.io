@@ -4,7 +4,7 @@ date = "2019-10-28T18:55:42+08:00"
 draft = false
 description = ""
 [taxonomies]
-tags = ["Kubernetes", "Translation"]
+tags = ["Kubernetes", "Translation", "Computer Network"]
 +++
 
 [英文原文](https://sookocheff.com/post/kubernetes/understanding-kubernetes-networking-model/)

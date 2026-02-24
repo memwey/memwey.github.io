@@ -67,6 +67,10 @@
         <lastmod>2019-09-21T15:22:58+08:00</lastmod>
     </url>
     <url>
+        <loc>https://memwey.github.io/posts/openwrt-and-tailscale/</loc>
+        <lastmod>2026-02-24T14:32:01+09:00</lastmod>
+    </url>
+    <url>
         <loc>https://memwey.github.io/posts/page/1/</loc>
     </url>
     <url>
@@ -128,6 +132,9 @@
     </url>
     <url>
         <loc>https://memwey.github.io/tags/commentary/</loc>
+    </url>
+    <url>
+        <loc>https://memwey.github.io/tags/computer-network/</loc>
     </url>
     <url>
         <loc>https://memwey.github.io/tags/data-structure/</loc>

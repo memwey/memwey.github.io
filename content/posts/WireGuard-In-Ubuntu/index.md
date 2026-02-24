@@ -3,7 +3,7 @@ title = "搭建 WireGuard 网络"
 description = "搭建 WireGuard 服务器端, 附带有客户端的一些配置"
 date = "2022-11-29T19:00:24+09:00"
 [taxonomies]
-tags=["Linux"]
+tags=["Linux", "Computer Network"]
 +++
 
 本文介绍在一台 `Ubuntu 22.04` 的服务器下搭建 WireGuard 服务器端, 附带有客户端的一些配置.
