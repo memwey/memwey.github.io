@@ -5,12 +5,12 @@
     <link rel="self" type="application/atom+xml" href="https://memwey.github.io/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://memwey.github.io"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-02-24T14:32:01+09:00</updated>
+    <updated>2026-02-25T20:33:08+09:00</updated>
     <id>https://memwey.github.io/atom.xml</id>
     <entry xml:lang="en">
         <title>在 OpenWrt 上配置 Tailscale 服务</title>
         <published>2026-02-24T14:32:01+09:00</published>
-        <updated>2026-02-24T14:32:01+09:00</updated>
+        <updated>2026-02-25T20:33:08+09:00</updated>
         
         <author>
           <name>
@@ -25,22 +25,33 @@
         
         <content type="html" xml:base="https://memwey.github.io/posts/openwrt-and-tailscale/">&lt;p&gt;&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;tailscale.com&#x2F;&quot;&gt;Tailscale&lt;&#x2F;a&gt; 是一个基于 WireGuard 协议的组网服务, 它可以实现跨平台的内网互联, 作为一个 Golang 编写的开源软件, 它提供了较为慷慨的免费服务如 DERP 等, 同时也为有更多需求的用户提供付费服务.&lt;&#x2F;p&gt;
 &lt;p&gt;我的使用环境比较特殊, 家在佛山, 而我平时在东京租房上班, 使用 Tailscale 实现东京与佛山的设备互联, 方便通信和管理. 同时, 也可以实现一些需要特定网络环境的场景, 比如区域授权流媒体或者一些需要在特定网络环境下运行的应用.&lt;&#x2F;p&gt;
+&lt;p&gt;在东京实际搭建的时候, 发现东京的主路由 K2P 性能实在孱弱, 一开始 ROM 不足以安装 Tailscale, 精简固件后勉强安装, 又 RAM 不足, 反复发生 OOM 的情况, 最终把一台一直吃灰的斐讯 N1 找了出来安装 Tailscale, 作为旁路路由处理 Tailscale 的流量. 最终形成了一个稍微复杂的网络结构, 佛山的主路由作为 Tailscale 网络的入口, 而东京的 N1 作为旁路路由, 处理 Tailscale 网络中的流量. 不过最终效果还是一样的, 即两地内网直接互访, 且均提供网络出口.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wang-luo-jie-gou&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#wang-luo-jie-gou&quot; aria-label=&quot;Anchor link for: wang-luo-jie-gou&quot;&gt;网络结构&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;地点&lt;&#x2F;th&gt;&lt;th&gt;设备角色&lt;&#x2F;th&gt;&lt;th&gt;设备系统&lt;&#x2F;th&gt;&lt;th&gt;Tailscale 节点用途&lt;&#x2F;th&gt;&lt;th&gt;内网网段&lt;&#x2F;th&gt;&lt;th&gt;设备型号&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
-&lt;tr&gt;&lt;td&gt;佛山&lt;&#x2F;td&gt;&lt;td&gt;主路由&lt;&#x2F;td&gt;&lt;td&gt;OpenWrt 24.10&lt;&#x2F;td&gt;&lt;td&gt;内网入口, 提供局域网穿透&lt;&#x2F;td&gt;&lt;td&gt;192.168.128.0&#x2F;24&lt;&#x2F;td&gt;&lt;td&gt;歌华链 GHL-R-001&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;tr&gt;&lt;td&gt;东京&lt;&#x2F;td&gt;&lt;td&gt;主路由&lt;&#x2F;td&gt;&lt;td&gt;OpenWrt 24.10&lt;&#x2F;td&gt;&lt;td&gt;内网入口, 提供局域网穿透&lt;&#x2F;td&gt;&lt;td&gt;192.168.9.0&#x2F;24&lt;&#x2F;td&gt;&lt;td&gt;斐讯 K2P&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;地点&lt;&#x2F;th&gt;&lt;th&gt;设备角色&lt;&#x2F;th&gt;&lt;th&gt;设备系统&lt;&#x2F;th&gt;&lt;th&gt;Tailscale 节点用途&lt;&#x2F;th&gt;&lt;th&gt;内网网段&lt;&#x2F;th&gt;&lt;th&gt;内网IP&lt;&#x2F;th&gt;&lt;th&gt;设备型号&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;佛山&lt;&#x2F;td&gt;&lt;td&gt;主路由&lt;&#x2F;td&gt;&lt;td&gt;OpenWrt 24.10&lt;&#x2F;td&gt;&lt;td&gt;内网入口, 提供局域网穿透&lt;&#x2F;td&gt;&lt;td&gt;192.168.128.0&#x2F;24&lt;&#x2F;td&gt;&lt;td&gt;192.168.128.1&lt;&#x2F;td&gt;&lt;td&gt;歌华链 GHL-R-001&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;东京&lt;&#x2F;td&gt;&lt;td&gt;主路由&lt;&#x2F;td&gt;&lt;td&gt;OpenWrt 24.10&lt;&#x2F;td&gt;&lt;td&gt;无&lt;&#x2F;td&gt;&lt;td&gt;192.168.9.0&#x2F;24&lt;&#x2F;td&gt;&lt;td&gt;192.168.9.1&lt;&#x2F;td&gt;&lt;td&gt;斐讯 K2P&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;东京&lt;&#x2F;td&gt;&lt;td&gt;旁路路由&lt;&#x2F;td&gt;&lt;td&gt;Armbian 26.2.1 trixie&lt;&#x2F;td&gt;&lt;td&gt;提供局域网穿透&lt;&#x2F;td&gt;&lt;td&gt;192.168.9.0&#x2F;24&lt;&#x2F;td&gt;&lt;td&gt;192.168.9.235&lt;&#x2F;td&gt;&lt;td&gt;斐讯 N1&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
 &lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
 &lt;p&gt;当前使用的是 1.94.2 版本的 Tailscale 客户端. 网络结构中内网网段不应该重叠, 不然会导致冲突.&lt;&#x2F;p&gt;
 &lt;p&gt;最终实现的网络拓扑是这样的:&lt;&#x2F;p&gt;
-&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;东京 LAN (192.168.9.0&#x2F;24)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;       │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;   OpenWrt + Tailscale&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;       │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    Tailscale 网络&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;       │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;   OpenWrt + Tailscale&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;       │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;佛山 LAN (192.168.128.0&#x2F;24)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot; aria-label=&quot;Anchor link for: zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot;&gt;在 OpenWrt 上安装 Tailscale 及 Web 管理界面&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    终端设备 (PC&#x2F;手机&#x2F;NAS)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;               │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;      东京 LAN (192.168.9.0&#x2F;24)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;               │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    ┌──────────┴──────────┐&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    │                     │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;  OpenWrt (192.168.9.1) ──┼─── [静态路由] ─── Armbian + Tailscale (192.168.9.235)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    │                     │                   ( 处理去往 192.168.128.0&#x2F;24 的流量 )&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    │                     └───────────────────┘&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    └─── 公网 (Internet) ─── Tailscale 网络 (DERP&#x2F;P2P)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;                │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;                │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;         OpenWrt + Tailscale (192.168.128.1)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;                │&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;         佛山 LAN (192.168.128.0&#x2F;24)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;在东京侧, 所有 LAN 设备的默认网关仍是 192.168.9.1, 通过静态路由, 去往佛山的流量会被中转给 192.168.9.235, 最终通过 Tailscale 网络到达佛山的设备.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot; aria-label=&quot;Anchor link for: zai-openwrt-shang-an-zhuang-tailscale-ji-web-guan-li-jie-mian&quot;&gt;在 OpenWrt 上安装 Tailscale 及 Web 管理界面&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
 &lt;p&gt;OpenWrt 使用 opkg 作为包管理工具, 官方自带的软件源中 Tailscale 长期没有更新了, 所以我们需要从第三方软件源中安装 Tailscale. 同时这个 Tailscale 经过裁剪和优化, 更适合路由器这种内存和闪存资源有限的设备. 并且我们增加 Tailscale 的 LuCI Web 管理界面, 方便管理和配置.&lt;&#x2F;p&gt;
 &lt;p&gt;下面提供的是命令行的过程, 主要是添加证书需要到设备的命令行中执行, 另外两项操作添加软件源和安装其实也可以在 LuCI Web 管理界面中完成. 这里需要注意, 添加第三方证书有一定的风险, 可能会有供应链攻击的风险.&lt;&#x2F;p&gt;
 &lt;h3 id=&quot;an-zhuang-tailscale-fu-wu&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#an-zhuang-tailscale-fu-wu&quot; aria-label=&quot;Anchor link for: an-zhuang-tailscale-fu-wu&quot;&gt;安装 Tailscale 服务&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
@@ -51,8 +62,7 @@
 &lt;p&gt;安装&lt;&#x2F;p&gt;
 &lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;opkg update &amp;amp;&amp;amp; opkg install tailscale&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;an-zhuang-tailscale-luci-web-guan-li-jie-mian&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#an-zhuang-tailscale-luci-web-guan-li-jie-mian&quot; aria-label=&quot;Anchor link for: an-zhuang-tailscale-luci-web-guan-li-jie-mian&quot;&gt;安装 Tailscale LuCI Web 管理界面&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
 &lt;p&gt;添加证书&lt;&#x2F;p&gt;
-&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;wget https:&#x2F;&#x2F;Tokisaki-Galaxy.github.io&#x2F;luci-app-tailscale-community&#x2F;all&#x2F;key-build.pub -O &#x2F;tmp&#x2F;key-build.pub&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
-&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;opkg-key add &#x2F;tmp&#x2F;key-build.pub&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;wget https:&#x2F;&#x2F;Tokisaki-Galaxy.github.io&#x2F;luci-app-tailscale-community&#x2F;all&#x2F;key-build.pub -O &#x2F;tmp&#x2F;key-build.pub &amp;amp;&amp;amp; opkg-key add &#x2F;tmp&#x2F;key-build.pub&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;添加软件源&lt;&#x2F;p&gt;
 &lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;echo &amp;quot;src&#x2F;gz tailscale_community https:&#x2F;&#x2F;Tokisaki-Galaxy.github.io&#x2F;luci-app-tailscale-community&#x2F;all&amp;quot; &amp;gt;&amp;gt; &#x2F;etc&#x2F;opkg&#x2F;customfeeds.conf&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;安装&lt;&#x2F;p&gt;
@@ -60,6 +70,19 @@
 &lt;p&gt;此时应该可以在 LuCI Web 管理界面中看到 服务 -&amp;gt; Tailscale 选项, 点击进入配置页面. 在设置中点击登录, 会跳转到 Tailscale 网站进行登陆授权, 把这台设备添加到 Tailscale 网络中.&lt;&#x2F;p&gt;
 &lt;p&gt;回到路由器的 LuCI Web 管理界面的 Tailscale 选项卡中, 需要打开 &lt;code&gt;接受路由&lt;&#x2F;code&gt;, &lt;code&gt;通告出口节点&lt;&#x2F;code&gt; 这两个选项. &lt;code&gt;接受路由&lt;&#x2F;code&gt; 用于接收 Tailscale 网络中的子网路由配置, 以实现不同内网的直接通信. 而 &lt;code&gt;通告出口节点&lt;&#x2F;code&gt; 则可以让 Tailscale 网络中别的设备选择通过这台设备代理进行网络访问, 即这台设备可以作为代理出口.&lt;&#x2F;p&gt;
 &lt;p&gt;随后需要填写 &lt;code&gt;通告路由&lt;&#x2F;code&gt;, 填写的值应该是主路由对应的内网网段, 比如我这里, 佛山的 GHL-R-001 内网网段是 192.168.128.0&#x2F;24, 东京的 K2P 内网网段是 192.168.9.0&#x2F;24.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-armbian-shang-de-tailscale-ke-hu-duan&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#pei-zhi-armbian-shang-de-tailscale-ke-hu-duan&quot; aria-label=&quot;Anchor link for: pei-zhi-armbian-shang-de-tailscale-ke-hu-duan&quot;&gt;配置 Armbian 上的 Tailscale 客户端&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;在 Armbian 上安装 Tailscale 客户端的过程与 OpenWrt 类似, 只是需要在 Armbian 上需要使用命令行操作. 最终运行的命令如下&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;tailscale up --accept-routes=true --accept-dns=true --advertise-routes=192.168.9.0&#x2F;24 --advertise-exit-node&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;pei-zhi-armbian-de-zhuan-fa&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#pei-zhi-armbian-de-zhuan-fa&quot; aria-label=&quot;Anchor link for: pei-zhi-armbian-de-zhuan-fa&quot;&gt;配置 Armbian 的转发&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;确认 ipv4, ipv6 转发都已开启, 即值为 1&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;echo &amp;#39;net.ipv4.ip_forward = 1&amp;#39; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;echo &amp;#39;net.ipv6.conf.all.forwarding = 1&amp;#39; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;sudo sysctl -p &#x2F;etc&#x2F;sysctl.conf&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;配置防火墙规则, 确保 Tailscale 网络中的流量可以正确转发&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;iptables -t mangle -A FORWARD -o tailscale0 -p tcp -m tcp \&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;--tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;并且固化以防止重启丢失&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;sudo netfilter-persistent save&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;zai-zhu-lu-you-shang-pei-zhi-jing-tai-lu-you&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#zai-zhu-lu-you-shang-pei-zhi-jing-tai-lu-you&quot; aria-label=&quot;Anchor link for: zai-zhu-lu-you-shang-pei-zhi-jing-tai-lu-you&quot;&gt;在主路由上配置静态路由&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;在东京主路由 K2P 上, 需要配置旁路网关的静态路由, 以确保流量可以正确路由到 Tailscale 网络中的设备. 具体来说, 需要在主路由上添加一条路由规则, &lt;strong&gt;到 192.168.128.0&#x2F;24 的路由，下一跳为 192.168.9.235&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;pei-zhi-tailscale-fu-wu-guan-li&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#pei-zhi-tailscale-fu-wu-guan-li&quot; aria-label=&quot;Anchor link for: pei-zhi-tailscale-fu-wu-guan-li&quot;&gt;配置 Tailscale 服务管理&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
 &lt;p&gt;登陆 &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;login.tailscale.com&#x2F;admin&#x2F;machines&quot;&gt;Tailscale 管理页面&lt;&#x2F;a&gt;, 可以看到设备已经添加到 Tailscale 网络中了. 还需要在这个页面的设备管理上, 点击 &lt;code&gt;Edit route settings...&lt;&#x2F;code&gt;, 勾选对应的 &lt;code&gt;Subnet routes&lt;&#x2F;code&gt; 和 &lt;code&gt;Exit node&lt;&#x2F;code&gt; 选项. 不同设备都需要操作. 同时如果设备长期在线且物理安全可控, 也建议选择 &lt;code&gt;Disable key expiry&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;p&gt;这里可能会有人纠结为什么要配置两次. 其实是因为 Tailscale 网络的 P2P 零信任的特性, 将节点状态的宣告和承认分开了. 宣告是节点将自己的路由信息告诉 Tailscale 网络, 而承认是 Tailscale 网络承认这个信息, 然后将这个节点宣告的路由信息通知给网络中的其他节点, 所以需要在节点和 Tailscale 管理页面上都配置一次.&lt;&#x2F;p&gt;
