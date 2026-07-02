@@ -5,8 +5,47 @@
     <link rel="self" type="application/atom+xml" href="https://memwey.github.io/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://memwey.github.io"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-02-25T20:33:08+09:00</updated>
+    <updated>2026-07-02T11:52:30+09:00</updated>
     <id>https://memwey.github.io/atom.xml</id>
+    <entry xml:lang="en">
+        <title>日语台词 - 001</title>
+        <published>2026-07-02T11:52:30+09:00</published>
+        <updated>2026-07-02T11:52:30+09:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://memwey.github.io/posts/japanese-serifu-001/"/>
+        <id>https://memwey.github.io/posts/japanese-serifu-001/</id>
+        
+        <content type="html" xml:base="https://memwey.github.io/posts/japanese-serifu-001/">&lt;hr &#x2F;&gt;
+&lt;p&gt;ララァ・スンは、私(わたし)の母(はは)になってくれるかもしれなかった女性(じょせい)だ。そのララァを殺(ころ)したお前(まえ)に言(い)えた事(こと)か！&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;抵抗(ていこう)すると無駄死(むだじ)にするだけだって、何故(なぜ)分(わ)からないんだ！？&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;人(ひと)は同(おな)じ過(あやま)ちを繰(く)り返(かえ)す...&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;親父(おやじ)にもぶたれたことないのに！！！&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;それが甘(あま)ったれなんだ。殴(なぐ)られもせずに一人前(いちにんまえ)になった奴(やつ)がどこにいるものか！&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;あんなの飾(かざ)りです！偉(えら)い人(ひと)にはそれがわからんのですよ！&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;僕(ぼく)は…取(と)り返(かえ)しのつかないことをしてしまった。&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;認(みと)めたくないものだな、自分自身(じぶんじしん)の若(わか)さゆえの過(あやま)ちというものを。&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;当(あ)たらなければどうということはない。援護(えんご)しろ。&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;たかが石(いし)ころ一(ひと)つ、ガンダムで押(お)し出(だ)してやる！&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>在 OpenWrt 上配置 Tailscale 服务</title>
         <published>2026-02-24T14:32:01+09:00</published>
