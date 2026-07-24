@@ -2,7 +2,7 @@
 title = "[翻译] Kubernetes 网络模型指南"
 date = "2019-10-28T18:55:42+08:00"
 draft = false
-description = ""
+description = "[翻译] 从网络命名空间到 Service, 逐层讲透容器 / Pod / Service 的流量如何在 Kubernetes 中路由"
 [taxonomies]
 tags = ["Kubernetes", "Translation", "Computer Network"]
 +++

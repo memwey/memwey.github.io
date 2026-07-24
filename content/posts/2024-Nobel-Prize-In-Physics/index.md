@@ -2,7 +2,7 @@
 title = "2024 诺贝尔物理学奖小记"
 date = "2024-10-09T20:18:58+09:00"
 draft = false
-description = ""
+description = "物理学家之间奇妙的时代联系"
 [taxonomies]
 tags = ["History"]
 +++

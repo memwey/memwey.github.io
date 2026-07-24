@@ -2,7 +2,7 @@
 title = "在CentOS上使用较新的软件"
 date = "2016-08-02T23:30:33+08:00"
 draft = false
-description = ""
+description = "借助 IUS 社区源, 在自带软件老旧的 CentOS 上装上较新版本的 git 与 Python"
 [taxonomies]
 tags = ["Linux"]
 +++

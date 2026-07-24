@@ -2,7 +2,7 @@
 title = "炸鸡与西瓜"
 date = "2025-08-07T21:46:01+09:00"
 draft = false
-description = ""
+description = "美国一段关于种族, 刻板印象与自由的历史"
 [taxonomies]
 tags = ["History"]
 +++

@@ -2,7 +2,7 @@
 title = "Redis LRU"
 date = "2020-12-25T14:26:24+08:00"
 draft = false
-description = ""
+description = "Redis 中的 LRU 缓存置换算法原理与其近似实现"
 [taxonomies]
 tags = ["Data Structure", "Redis", "Database"]
 +++

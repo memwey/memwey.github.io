@@ -209,10 +209,39 @@ Message: /* select#1 */ select `test`.`team`.`id` AS `id`,`test`.`team`.`status`
 
 这个问题呢
 
-总感觉是个Bug......
+## 破案
 
-To Be Continued......
+后来翻了翻文档, 发现这压根不是 `MySQL` 的 Bug, 而是 SQL 一条相当坑的作用域规则, 子查询里解析不了的列名, 会跑到外层查询去找.
+
+关键还是在那个派生表 `a`
+
+```SQL
+(SELECT team_id FROM player WHERE status = 1) AS a
+```
+
+它只有 `team_id` 一列, 根本没有 `id`. 于是外面那句 `SELECT id FROM a` 里的 `id`, 在 `a` 里是找不到的. 按照作用域规则, 内层找不到就往外层找, 而外层的 `team` 表恰好有 `id`, 所以这个 `id` 就被解析成了 `team.id`. 这也正是那条 Note 想告诉我们的
+
+> Field or reference 'test.team.id' of SELECT #2 was resolved in SELECT #1
+
+`id` 变成 `team.id` 之后, 子查询就成了「对当前这一行 `team`, 返回它自己的 `team.id`, `a` 里有几行就返回几次」, 整个条件相当于
+
+```SQL
+team.id IN (SELECT team.id FROM a)
+```
+
+只要 `a` 非空, 也就是全表里存在任意一个 `status` 为 `1` 的球员, 这个 `IN` 对每一行 `team` 都恒为真. 本该起作用的关联条件 `player.team_id = team.id` 从头到尾就没参与进来, 所以每支球队都被捞了出来, 等价于 `SELECT * FROM team`. 再对照前面两条 Note 里 `semi join` 的 `where`, 一个有 `team_id = team.id`, 一个没有, 也就说得通了.
+
+回过头看之前那几个奇怪的现象, 也都顺理成章了
+
+* 单独跑 `SELECT id FROM a` 会报错, 是因为没有外层可以借, `id` 真的无处可寻
+* 嵌套里把 `id` 换成 `not_exist_field` 也报错, 是因为这个名字在 `a` 和外层 `team` 里都不存在
+* 唯独 `id` 不报错, 只是因为它恰好是外层 `team` 的列, 被悄悄借走了, 报错被吃掉, 结果却全错
+
+所以并不是 `MySQL` 抽风, 而是「外层恰好有个同名列」, 把一句本该报错的语句, 变成了能跑但结果完全不对的语句, 属实有点阴险.
+
+教训还是开头那句, 在数据库里直接操作一定要多小心. 具体到这个坑, 一个好习惯是子查询里的列名都带上表名或别名, 写 `a.team_id` 而不是光秃秃的 `id`, 一旦写错会立刻报错, 而不会被外层悄悄借走. 另外, 这个规则在 `DELETE FROM team WHERE id IN (SELECT id FROM ...)` 里最要命, 列名一写错解析成外层的 `id`, 条件恒真, 整张表就没了.
 
 ## 参考资料
 
 1. [Optimizing Subqueries, Derived Tables, and View References with Semijoin Transformations](https://dev.mysql.com/doc/refman/5.7/en/semijoins.html)
+2. [Correlated Subqueries](https://dev.mysql.com/doc/refman/8.0/en/correlated-subqueries.html)

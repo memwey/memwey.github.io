@@ -2461,11 +2461,29 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 &lt;p&gt;Field or reference &#x27;test.team.id&#x27; of SELECT #2 was resolved in SELECT #1&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
 &lt;p&gt;这个问题呢&lt;&#x2F;p&gt;
-&lt;p&gt;总感觉是个Bug......&lt;&#x2F;p&gt;
-&lt;p&gt;To Be Continued......&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;po-an&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#po-an&quot; aria-label=&quot;Anchor link for: po-an&quot;&gt;破案&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;后来翻了翻文档, 发现这压根不是 &lt;code&gt;MySQL&lt;&#x2F;code&gt; 的 Bug, 而是 SQL 一条相当坑的作用域规则, 子查询里解析不了的列名, 会跑到外层查询去找.&lt;&#x2F;p&gt;
+&lt;p&gt;关键还是在那个派生表 &lt;code&gt;a&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt;SELECT&lt;&#x2F;span&gt;&lt;span&gt; team_id &lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt;FROM&lt;&#x2F;span&gt;&lt;span&gt; player &lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt;WHERE&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt; status&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt; =&lt;&#x2F;span&gt;&lt;span class=&quot;z-constant&quot;&gt; 1&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt;AS&lt;&#x2F;span&gt;&lt;span&gt; a&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;它只有 &lt;code&gt;team_id&lt;&#x2F;code&gt; 一列, 根本没有 &lt;code&gt;id&lt;&#x2F;code&gt;. 于是外面那句 &lt;code&gt;SELECT id FROM a&lt;&#x2F;code&gt; 里的 &lt;code&gt;id&lt;&#x2F;code&gt;, 在 &lt;code&gt;a&lt;&#x2F;code&gt; 里是找不到的. 按照作用域规则, 内层找不到就往外层找, 而外层的 &lt;code&gt;team&lt;&#x2F;code&gt; 表恰好有 &lt;code&gt;id&lt;&#x2F;code&gt;, 所以这个 &lt;code&gt;id&lt;&#x2F;code&gt; 就被解析成了 &lt;code&gt;team.id&lt;&#x2F;code&gt;. 这也正是那条 Note 想告诉我们的&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Field or reference &#x27;test.team.id&#x27; of SELECT #2 was resolved in SELECT #1&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;&lt;code&gt;id&lt;&#x2F;code&gt; 变成 &lt;code&gt;team.id&lt;&#x2F;code&gt; 之后, 子查询就成了「对当前这一行 &lt;code&gt;team&lt;&#x2F;code&gt;, 返回它自己的 &lt;code&gt;team.id&lt;&#x2F;code&gt;, &lt;code&gt;a&lt;&#x2F;code&gt; 里有几行就返回几次」, 整个条件相当于&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-constant&quot;&gt;team&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-constant&quot;&gt;id&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt; IN&lt;&#x2F;span&gt;&lt;span&gt; (&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt;SELECT&lt;&#x2F;span&gt;&lt;span class=&quot;z-constant&quot;&gt; team&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-constant&quot;&gt;id&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt; FROM&lt;&#x2F;span&gt;&lt;span&gt; a)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;只要 &lt;code&gt;a&lt;&#x2F;code&gt; 非空, 也就是全表里存在任意一个 &lt;code&gt;status&lt;&#x2F;code&gt; 为 &lt;code&gt;1&lt;&#x2F;code&gt; 的球员, 这个 &lt;code&gt;IN&lt;&#x2F;code&gt; 对每一行 &lt;code&gt;team&lt;&#x2F;code&gt; 都恒为真. 本该起作用的关联条件 &lt;code&gt;player.team_id = team.id&lt;&#x2F;code&gt; 从头到尾就没参与进来, 所以每支球队都被捞了出来, 等价于 &lt;code&gt;SELECT * FROM team&lt;&#x2F;code&gt;. 再对照前面两条 Note 里 &lt;code&gt;semi join&lt;&#x2F;code&gt; 的 &lt;code&gt;where&lt;&#x2F;code&gt;, 一个有 &lt;code&gt;team_id = team.id&lt;&#x2F;code&gt;, 一个没有, 也就说得通了.&lt;&#x2F;p&gt;
+&lt;p&gt;回过头看之前那几个奇怪的现象, 也都顺理成章了&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;单独跑 &lt;code&gt;SELECT id FROM a&lt;&#x2F;code&gt; 会报错, 是因为没有外层可以借, &lt;code&gt;id&lt;&#x2F;code&gt; 真的无处可寻&lt;&#x2F;li&gt;
+&lt;li&gt;嵌套里把 &lt;code&gt;id&lt;&#x2F;code&gt; 换成 &lt;code&gt;not_exist_field&lt;&#x2F;code&gt; 也报错, 是因为这个名字在 &lt;code&gt;a&lt;&#x2F;code&gt; 和外层 &lt;code&gt;team&lt;&#x2F;code&gt; 里都不存在&lt;&#x2F;li&gt;
+&lt;li&gt;唯独 &lt;code&gt;id&lt;&#x2F;code&gt; 不报错, 只是因为它恰好是外层 &lt;code&gt;team&lt;&#x2F;code&gt; 的列, 被悄悄借走了, 报错被吃掉, 结果却全错&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;所以并不是 &lt;code&gt;MySQL&lt;&#x2F;code&gt; 抽风, 而是「外层恰好有个同名列」, 把一句本该报错的语句, 变成了能跑但结果完全不对的语句, 属实有点阴险.&lt;&#x2F;p&gt;
+&lt;p&gt;教训还是开头那句, 在数据库里直接操作一定要多小心. 具体到这个坑, 一个好习惯是子查询里的列名都带上表名或别名, 写 &lt;code&gt;a.team_id&lt;&#x2F;code&gt; 而不是光秃秃的 &lt;code&gt;id&lt;&#x2F;code&gt;, 一旦写错会立刻报错, 而不会被外层悄悄借走. 另外, 这个规则在 &lt;code&gt;DELETE FROM team WHERE id IN (SELECT id FROM ...)&lt;&#x2F;code&gt; 里最要命, 列名一写错解析成外层的 &lt;code&gt;id&lt;&#x2F;code&gt;, 条件恒真, 整张表就没了.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;can-kao-zi-liao&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#can-kao-zi-liao&quot; aria-label=&quot;Anchor link for: can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;5.7&#x2F;en&#x2F;semijoins.html&quot;&gt;Optimizing Subqueries, Derived Tables, and View References with Semijoin Transformations&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.0&#x2F;en&#x2F;correlated-subqueries.html&quot;&gt;Correlated Subqueries&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
 &lt;&#x2F;ol&gt;
 </content>
         

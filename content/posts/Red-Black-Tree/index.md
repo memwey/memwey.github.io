@@ -2,7 +2,7 @@
 title = "红黑树笔记"
 date = "2016-09-13T23:32:27+08:00"
 draft = false
-description = ""
+description = "红黑树学习笔记: 从 2-3 树理解它的平衡与自底向上的调整思想"
 [taxonomies]
 tags = ["Data Structure"]
 +++

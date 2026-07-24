@@ -2,7 +2,7 @@
 title = "Oh MySQL Emoji"
 date = "2019-10-14T11:12:33+08:00"
 draft = false
-description = ""
+description = "MySQL 中的 Emoji 到 Unicode / UTF-8 的编码漫谈"
 [taxonomies]
 tags = ["Database", "MySQL"]
 +++

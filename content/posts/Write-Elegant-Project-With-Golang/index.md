@@ -1,6 +1,6 @@
 +++
 title = "实现优雅的 Golang 项目结构"
-description = ""
+description = "不止于优雅的代码: 一套自顶向下, 经过实践检验的 Go 项目结构规范"
 date = "2021-02-19T18:10:22+08:00"
 updated = "2021-02-19T18:10:22+08:00"
 draft = false

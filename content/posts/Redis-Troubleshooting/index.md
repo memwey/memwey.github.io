@@ -2,7 +2,7 @@
 title = "Redis 查询偶尔超时问题排查"
 date = "2022-10-28T14:54:14+09:00"
 draft = false
-description = ""
+description = "AWS ElastiCache 上 Redis 偶发查询超时问题的排查过程"
 [taxonomies]
 tags = ["Redis", "Database"]
 +++

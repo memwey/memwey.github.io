@@ -3,7 +3,7 @@ title = "DELL Precision T1700 SFF"
 date = "2020-12-04T00:52:03+08:00"
 updated = "2021-06-06T23:29:40+08:00"
 draft = false
-description = ""
+description = "用 DELL Precision T1700 SFF 准系统, 让 E3-1231v3 老平台配半高显卡焕发青春"
 [taxonomies]
 tags = ["Device", "Life"]
 +++

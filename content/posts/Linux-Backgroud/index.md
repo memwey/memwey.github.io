@@ -2,7 +2,7 @@
 title = "Linux后台命令"
 date = "2016-06-15T23:28:24+08:00"
 draft = false
-description = ""
+description = "nohup, &, 2>&1: Linux 进程后台运行与输出重定向的原理小结"
 [taxonomies]
 tags = ["Linux"]
 +++

@@ -1,6 +1,6 @@
 +++
 title = "Redis ZINTERSTORE"
-description = ""
+description = "Redis 3.0 源码中 ZINTERSTORE 的实现"
 date = "2021-04-21T20:30:43+08:00"
 updated = "2021-04-21T20:30:43+08:00"
 draft = false
