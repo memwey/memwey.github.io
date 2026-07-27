@@ -586,6 +586,192 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
         
     </entry>
     <entry xml:lang="en">
+        <title>一个对象同时只能有一笔有效支付</title>
+        <published>2024-08-18T16:20:33+09:00</published>
+        <updated>2024-08-18T16:20:33+09:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://memwey.github.io/posts/one-active-payment/"/>
+        <id>https://memwey.github.io/posts/one-active-payment/</id>
+        
+        <content type="html" xml:base="https://memwey.github.io/posts/one-active-payment/">&lt;h2 id=&quot;cong-yi-ge-kan-qi-lai-hen-jian-dan-de-xu-qiu-shuo-qi&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#cong-yi-ge-kan-qi-lai-hen-jian-dan-de-xu-qiu-shuo-qi&quot; aria-label=&quot;Anchor link for: cong-yi-ge-kan-qi-lai-hen-jian-dan-de-xu-qiu-shuo-qi&quot;&gt;从一个看起来很简单的需求说起&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;一个订单要能支付. 听上去就是加一个 &lt;code&gt;status&lt;&#x2F;code&gt; 字段: 未支付, 支付中, 已支付, 支付失败.&lt;&#x2F;p&gt;
+&lt;p&gt;真做起来会发现不够用:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;支付失败了可以再试, 于是一个订单对应的是&lt;strong&gt;多笔&lt;&#x2F;strong&gt;支付记录, 不是一笔.&lt;&#x2F;li&gt;
+&lt;li&gt;用户点了支付, 跳到渠道的支付页面, 又退回来再点一次. 这时候不能建第二笔.&lt;&#x2F;li&gt;
+&lt;li&gt;支付结果是异步回来的, 回来的时候得知道它对应哪一笔.&lt;&#x2F;li&gt;
+&lt;li&gt;后来账单和预约也要支付, 流程几乎一样.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;这几件事合起来, 就不是一个状态字段能表达的了.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xian-shuo-qing-chu-yi-bi-zhi-fu-shi-shen-me&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#xian-shuo-qing-chu-yi-bi-zhi-fu-shi-shen-me&quot; aria-label=&quot;Anchor link for: xian-shuo-qing-chu-yi-bi-zhi-fu-shi-shen-me&quot;&gt;先说清楚「一笔支付」是什么&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;一笔支付指的是&lt;strong&gt;一次支付尝试&lt;&#x2F;strong&gt;, 对应一条交易记录, 它自己有:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;交易 ID&lt;&#x2F;strong&gt; —— 全局唯一, 后面会看到它同时是发给渠道的幂等键;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;状态&lt;&#x2F;strong&gt; —— 待支付 &#x2F; 支付中 &#x2F; 成功 &#x2F; 失败 &#x2F; 取消 &#x2F; 已退款;&lt;&#x2F;li&gt;
+&lt;li&gt;金额, 支付方式, 以及渠道侧返回的流水号.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;用户第一次点支付, 建一笔. 失败了再点, 是&lt;strong&gt;新的一笔&lt;&#x2F;strong&gt;, 而不是把原来那笔改回「待支付」重来. 原来那笔停在失败终态, 之后不再变动.&lt;&#x2F;p&gt;
+&lt;p&gt;这一点值得强调: 交易记录进了终态就不再改. 所以对账的时候能还原出&quot;这个订单被尝试支付过几次, 每次分别是什么结果&quot;. 如果复用同一条记录反复改状态, 这些信息就没了, 出了问题只能靠日志去猜.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;li-shi-liu-shui-yu-dang-qian-you-xiao&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#li-shi-liu-shui-yu-dang-qian-you-xiao&quot; aria-label=&quot;Anchor link for: li-shi-liu-shui-yu-dang-qian-you-xiao&quot;&gt;历史流水与「当前有效」&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;第二件要分清楚的事: &lt;strong&gt;一个业务对象会有很多笔支付, 但任一时刻最多只有一笔是「当前有效」的.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;历史流水: 每次发起支付都是一条记录, 有自己的状态和终态, 不删不改;&lt;&#x2F;li&gt;
+&lt;li&gt;当前有效: 这个订单现在到底压在哪一笔上.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;把这两件事混在一起, 就会写出&quot;取最新一条支付记录&quot;这样的查询. 它在大多数时候是对的, 在并发的时候不是.&lt;&#x2F;p&gt;
+&lt;p&gt;所以把「当前有效」显式建成一个东西, 一个从业务对象指向当前交易的指针:&lt;&#x2F;p&gt;
+&lt;script src=https:&#x2F;&#x2F;memwey.github.io&#x2F;js&#x2F;mermaid.js&gt;&lt;&#x2F;script&gt;
+
+&lt;pre class=&quot;mermaid&quot;&gt;
+  flowchart LR
+    Target[&quot;业务对象&lt;br&#x2F;&gt;订单 &#x2F; 账单 &#x2F; 预约&quot;]
+    Gateway[&quot;支付渠道&quot;]
+    Result[&quot;异步结果&lt;br&#x2F;&gt;回调 &#x2F; 查询 &#x2F; 前端跳转&quot;]
+    Unknown[&quot;调用栈失败&lt;br&#x2F;&gt;受理状态未知&quot;]
+
+    subgraph TxModule[&quot;支付模块&quot;]
+        Active[&quot;ActivePayment&lt;br&#x2F;&gt;当前有效交易指针&quot;]
+        Tx[&quot;Transaction&lt;br&#x2F;&gt;历史流水 + 当前状态&quot;]
+        Final[&quot;终态&lt;br&#x2F;&gt;成功 &#x2F; 失败 &#x2F; 取消 &#x2F; 退款&quot;]
+        Active --&gt; Tx
+        Tx --&gt; Final
+    end
+
+    Target --&gt; TxModule
+    Tx --&gt;|&quot;发起支付&lt;br&#x2F;&gt;交易 ID 作为幂等键&quot;| Gateway
+    Gateway --&gt; Result
+    Result --&gt;|&quot;收敛结果, 更新状态&quot;| Tx
+    Tx --&gt;|&quot;支付中: 幂等拦截&quot;| Target
+    Gateway -.-&gt; Unknown
+    Unknown -.-&gt;|&quot;调用失败 ≠ 业务失败&lt;br&#x2F;&gt;保持支付中&quot;| Tx
+&lt;&#x2F;pre&gt;
+&lt;p&gt;这个指针有三条约束:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;唯一索引.&lt;&#x2F;strong&gt; 数据库层面保证一个业务对象只能有一条有效记录. 这是兜底, 不是优化 —— 应用层的判断一定会有漏网的并发路径.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;创建新交易和切换指针在同一个事务里.&lt;&#x2F;strong&gt; 否则会出现&quot;交易建好了但没人指向它&quot;, 或者反过来.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;切换时带上旧的交易一起匹配&lt;&#x2F;strong&gt;, 匹配不上就不切.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;第三条是关键. 两个请求同时想发起支付, 都读到&quot;当前没有有效交易&quot;, 都去创建. 没有第三条, 后一个会盖掉前一个, 于是有两笔交易都以为自己是有效的. 把旧值作为更新条件, 就只有一个能成功 —— 是 CAS 的思路, 只不过落在数据库上.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;yi-ge-qian-ti-qu-dao-bi-xu-zhi-chi-mi-deng-jian&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#yi-ge-qian-ti-qu-dao-bi-xu-zhi-chi-mi-deng-jian&quot; aria-label=&quot;Anchor link for: yi-ge-qian-ti-qu-dao-bi-xu-zhi-chi-mi-deng-jian&quot;&gt;一个前提: 渠道必须支持幂等键&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;接外部支付渠道之前, 有一件事要先确认: &lt;strong&gt;渠道必须支持幂等键&lt;&#x2F;strong&gt;. 后面讲的所有做法都建立在这个前提上.&lt;&#x2F;p&gt;
+&lt;p&gt;具体说, 发起支付的时候要带一个自己生成的唯一标识, 渠道保证同一个标识只受理一次. 第二次带着同样的标识过来, 它返回的是第一次的结果, 而不是再扣一次钱. 这个东西在各家渠道的文档里通常叫「商户订单号」或者 idempotency key.&lt;&#x2F;p&gt;
+&lt;p&gt;前面说的交易 ID 正好就是这个键, 两件事是配套的:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同一笔支付的重发&lt;&#x2F;strong&gt; —— 同一个交易 ID —— 渠道认得出来, 不会重复受理;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;失败后重新发起&lt;&#x2F;strong&gt; —— 新的一笔, 新的交易 ID —— 渠道当成一个新请求处理.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;所以&quot;一笔支付一个 ID&quot;不只是为了记账. 没有它, 你没办法告诉渠道&quot;这是同一次尝试的重发&quot;; 而没有渠道侧的幂等保证, 你根本不敢重发.&lt;&#x2F;p&gt;
+&lt;p&gt;如果渠道不支持幂等键, 后面的做法就都要打折扣: 超时之后不敢重发, 只能干等查询或回调; 查询接口还必须能按你自己的标识来查, 否则拿回一堆渠道流水, 你对不上是哪一笔; 最坏的情况是只能人工对账.&lt;&#x2F;p&gt;
+&lt;p&gt;这件事在接入前确认, 比写完之后再补要容易得多.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;san-ge-bu-deng-yu&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#san-ge-bu-deng-yu&quot; aria-label=&quot;Anchor link for: san-ge-bu-deng-yu&quot;&gt;三个「不等于」&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;接了外部支付渠道之后, 真正的麻烦才开始. 踩过的坑可以归纳成三句话.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;yi-shou-li-cheng-gong-zhi-fu-cheng-gong&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#yi-shou-li-cheng-gong-zhi-fu-cheng-gong&quot; aria-label=&quot;Anchor link for: yi-shou-li-cheng-gong-zhi-fu-cheng-gong&quot;&gt;一, 受理成功 ≠ 支付成功&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;调用渠道的支付接口返回成功, 只说明对方&lt;strong&gt;受理&lt;&#x2F;strong&gt;了这笔请求. 用户可能还没输密码, 3DS 验证可能还没过, 发卡行可能还要几秒钟.&lt;&#x2F;p&gt;
+&lt;p&gt;所以接口返回之后, 交易的状态是「支付中」, 不是「成功」. 真正的结果通过回调, 主动查询或者前端跳转带回来.&lt;&#x2F;p&gt;
+&lt;p&gt;这条比较容易接受. 下一条就不是了.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;er-diao-yong-shi-bai-ye-wu-shi-bai&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#er-diao-yong-shi-bai-ye-wu-shi-bai&quot; aria-label=&quot;Anchor link for: er-diao-yong-shi-bai-ye-wu-shi-bai&quot;&gt;二, 调用失败 ≠ 业务失败&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;这是最危险的一条.&lt;&#x2F;p&gt;
+&lt;p&gt;调渠道的接口, 超时了. 或者连接断了. 或者收到一个 5xx. 直觉是把这笔标成失败, 让用户重试.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;这个直觉会导致重复扣款.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;因为超时只说明你没收到响应, 不说明对方没收到请求. 对方很可能已经受理了, 正在处理, 过一会还会给你回调:&lt;&#x2F;p&gt;
+&lt;script src=https:&#x2F;&#x2F;memwey.github.io&#x2F;js&#x2F;mermaid.js&gt;&lt;&#x2F;script&gt;
+
+&lt;pre class=&quot;mermaid&quot;&gt;
+  sequenceDiagram
+    participant B as 业务系统
+    participant G as 支付渠道
+    B-&gt;&gt;G: 发起支付
+    Note over G: 已受理, 开始处理
+    G--xB: 超时 &#x2F; 连接断开
+    Note over B: 若此时判失败&lt;br&#x2F;&gt;用户重试 → 重复扣款
+    G-&gt;&gt;B: 回调: 支付成功
+    Note over B: 保持「支付中」&lt;br&#x2F;&gt;才能正确收敛
+&lt;&#x2F;pre&gt;
+&lt;p&gt;正确的做法是: 调用栈失败的时候&lt;strong&gt;不下结论&lt;&#x2F;strong&gt;. 保持「支付中」, 把判断留给查询接口和回调. 宁可让用户多等一会, 也不能让他付两次.&lt;&#x2F;p&gt;
+&lt;p&gt;顺带一提, 这个问题是在测试阶段发现的, 不是线上. 能在测试阶段撞上, 是因为特意去构造了渠道受理超时的场景 —— 这类路径不主动造是撞不到的, 而它一旦在生产上出现, 后果是资金差错.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;san-zhi-fu-zhong-bi-xu-shi-yi-dao-mi-deng-dang-ban&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#san-zhi-fu-zhong-bi-xu-shi-yi-dao-mi-deng-dang-ban&quot; aria-label=&quot;Anchor link for: san-zhi-fu-zhong-bi-xu-shi-yi-dao-mi-deng-dang-ban&quot;&gt;三, 「支付中」必须是一道幂等挡板&lt;&#x2F;a&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;有了前面两条, 「支付中」这个状态就承担了很重的职责: 只要还在支付中, 任何重复的支付请求都不能建新单, 也不能重新发起.&lt;&#x2F;p&gt;
+&lt;p&gt;用户在渠道的支付页面上刷新, 后退再点一次, 前端超时自动重试 —— 这些都会打到同一个入口. 幂等在这里不是加分项, 是整套设计成立的前提.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;duo-chong-zhi-fu-fang-shi-yi-ge-sheng-ming-zhou-qi&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#duo-chong-zhi-fu-fang-shi-yi-ge-sheng-ming-zhou-qi&quot; aria-label=&quot;Anchor link for: duo-chong-zhi-fu-fang-shi-yi-ge-sheng-ming-zhou-qi&quot;&gt;多种支付方式, 一个生命周期&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;支付方式会越来越多, 而且形态差别很大:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务端直接发起&lt;&#x2F;strong&gt;: 拿到卡号或者已保存的支付凭证, 直接调渠道扣款;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;需要用户跳走&lt;&#x2F;strong&gt;: 生成一个页面地址, 用户跳到渠道那边完成, 再跳回来;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;需要用户在别处操作&lt;&#x2F;strong&gt;: 生成一个二维码或者付款码, 用户拿另一个 App 扫;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;异步到账&lt;&#x2F;strong&gt;: 生成一个待付款凭证, 用户去便利店或者网银付, 可能几小时甚至几天之后才到账.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;它们的差异全部在&lt;strong&gt;发起&lt;&#x2F;strong&gt;那一步: 参数不一样; 有的调完就结束了, 有的要先生成一个地址或者二维码存进交易里; 有的发起之后还要等用户在另一个地方操作.&lt;&#x2F;p&gt;
+&lt;p&gt;但发起之后的事情完全一样 —— 都进入支付中, 都等异步结果, 都要回写, 都要幂等. 所以差异收敛在入口, 共性收敛在生命周期:&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;发起支付   -&amp;gt;  按支付方式分支&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;收敛结果   -&amp;gt;  成功 &#x2F; 失败 &#x2F; 取消 &#x2F; 退款&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;新增一种支付方式, 只需要在发起那一步加一个分支, 不用碰状态机.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;duo-ge-ye-wu-dui-xiang-yi-tao-zhi-fu&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#duo-ge-ye-wu-dui-xiang-yi-tao-zhi-fu&quot; aria-label=&quot;Anchor link for: duo-ge-ye-wu-dui-xiang-yi-tao-zhi-fu&quot;&gt;多个业务对象, 一套支付&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;p&gt;后来账单和预约也要支付.&lt;&#x2F;p&gt;
+&lt;p&gt;最省事的做法是把订单那套复制一份. 但支付这块的复杂度上面已经讲过了 —— 复制一份意味着幂等, CAS, 异步回写这些坑要重新踩一遍, 而且三份代码会慢慢长得不一样.&lt;&#x2F;p&gt;
+&lt;p&gt;更好的做法是&lt;strong&gt;把方向反过来&lt;&#x2F;strong&gt;: 支付模块不去了解业务, 而是定义一份契约, 让业务对象来实现它.&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;go&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-keyword&quot;&gt;type&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt; PayTarget&lt;&#x2F;span&gt;&lt;span class=&quot;z-keyword&quot;&gt; interface&lt;&#x2F;span&gt;&lt;span&gt; {&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;	PayCheck&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span class=&quot;z-variable&quot;&gt;ctx&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt; context&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span class=&quot;z-storage z-type&quot;&gt; error&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-definition z-comment&quot;&gt;   &#x2F;&#x2F;&lt;&#x2F;span&gt;&lt;span class=&quot;z-comment&quot;&gt; 现在能不能支付&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;	Pay&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span class=&quot;z-variable&quot;&gt;ctx&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt; context&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span class=&quot;z-storage z-type&quot;&gt; error&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-definition z-comment&quot;&gt;        &#x2F;&#x2F;&lt;&#x2F;span&gt;&lt;span class=&quot;z-comment&quot;&gt; 锁定为支付中&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;	PaySuccess&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span class=&quot;z-variable&quot;&gt;ctx&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt; context&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span class=&quot;z-storage z-type&quot;&gt; error&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-definition z-comment&quot;&gt; &#x2F;&#x2F;&lt;&#x2F;span&gt;&lt;span class=&quot;z-comment&quot;&gt; 支付成功后回写&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;	PayFailed&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span class=&quot;z-variable&quot;&gt;ctx&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt; context&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;Context&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span class=&quot;z-storage z-type&quot;&gt; error&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-definition z-comment&quot;&gt;  &#x2F;&#x2F;&lt;&#x2F;span&gt;&lt;span class=&quot;z-comment&quot;&gt; 支付失败后回写&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;支付模块拿到一个目标 ID 和它的契约实现, 就能跑完整个流程. 业务模块只关心自己的状态和金额从哪来, 完全不需要知道渠道, 回调, 幂等这些东西:&lt;&#x2F;p&gt;
+&lt;script src=https:&#x2F;&#x2F;memwey.github.io&#x2F;js&#x2F;mermaid.js&gt;&lt;&#x2F;script&gt;
+
+&lt;pre class=&quot;mermaid&quot;&gt;
+  flowchart LR
+    Tx[&quot;支付模块&lt;br&#x2F;&gt;统一编排&quot;]
+    Target[&quot;Target&lt;br&#x2F;&gt;订单 ID &#x2F; 账单 ID &#x2F; 预约 ID&quot;]
+    Contract[&quot;PayTarget 契约&lt;br&#x2F;&gt;PayCheck &#x2F; Pay&lt;br&#x2F;&gt;PaySuccess &#x2F; PayFailed&quot;]
+    Order[&quot;订单&quot;]
+    Invoice[&quot;账单&quot;]
+    Booking[&quot;预约&quot;]
+    Method[&quot;支付方式&lt;br&#x2F;&gt;统一发起入口&quot;]
+    Direct[&quot;服务端直接发起&quot;]
+    Redirect[&quot;跳转渠道页面&quot;]
+    Code[&quot;二维码 &#x2F; 付款码&quot;]
+    Offline[&quot;待付款凭证&lt;br&#x2F;&gt;异步到账&quot;]
+    Gateway[&quot;支付渠道&quot;]
+
+    Tx --&gt; Target
+    Tx --&gt;|&quot;检查 &#x2F; 锁定 &#x2F; 回写&quot;| Contract
+    Contract -.-&gt; Order
+    Contract -.-&gt; Invoice
+    Contract -.-&gt; Booking
+    Tx --&gt; Method
+    Method --&gt; Direct
+    Method --&gt; Redirect
+    Method --&gt; Code
+    Method --&gt; Offline
+    Direct --&gt; Gateway
+    Redirect --&gt; Gateway
+    Code --&gt; Gateway
+    Offline --&gt; Gateway
+&lt;&#x2F;pre&gt;
+&lt;p&gt;接一个新的业务对象, 要写的就是那四个方法.&lt;&#x2F;p&gt;
+&lt;p&gt;这其实就是依赖倒置: 把&quot;支付调用业务&quot;定义成接口, 而不是让每个业务自己去调支付.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;xiao-jie&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#xiao-jie&quot; aria-label=&quot;Anchor link for: xiao-jie&quot;&gt;小结&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;一笔支付就是一次尝试, 有自己的 ID 和终态; 重试是新的一笔, 不是把旧的改回去.&lt;&#x2F;li&gt;
+&lt;li&gt;接入前先确认渠道支持幂等键, 交易 ID 就是这个键. 这是下面所有做法的前提.&lt;&#x2F;li&gt;
+&lt;li&gt;把「历史流水」和「当前有效」分开. 后者要显式建模, 用唯一索引兜底, 用带旧值的条件更新来切换.&lt;&#x2F;li&gt;
+&lt;li&gt;异步支付里, 受理不等于成功, 调用失败不等于业务失败. 拿不准的时候保持支付中, 不要急着下结论.&lt;&#x2F;li&gt;
+&lt;li&gt;「支付中」是一道幂等挡板, 不是一个普通状态.&lt;&#x2F;li&gt;
+&lt;li&gt;支付方式的差异收在发起那一步, 业务对象的差异收在契约里.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;这几件事单看都不复杂, 但它们是有先后的: 先有渠道侧的幂等键, 才谈得上重发; 先有唯一的当前有效交易, 才谈得上幂等; 先有幂等, 才敢在超时的时候不下结论.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
         <title>岩里武则与马尼拉战役</title>
         <published>2024-06-02T00:50:39+09:00</published>
         <updated>2024-06-02T00:50:39+09:00</updated>

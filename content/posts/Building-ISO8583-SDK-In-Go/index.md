@@ -4,7 +4,7 @@ description = "从上千页日文规格书到一个 Go SDK: 反射构造报文, 
 date = "2022-12-31T17:40:11+09:00"
 draft = false
 [taxonomies]
-tags = ["Golang", "Computer Network"]
+tags = ["Golang", "Computer Network", "Payment"]
 +++
 
 业务上要和日本某卡组织的交换中心直连, 走 ISO 8583.
