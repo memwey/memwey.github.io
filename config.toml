@@ -6,6 +6,7 @@ taxonomies = [{ name = "tags" }]
 base_url = "https://memwey.github.io"
 title = "Mem.Wey's Github Pages"
 description = "Tsukkomi Lolicon's GitHub Pages Blog"
+default_language = "zh-CN"
 
 minify_html = true
 generate_feeds = true

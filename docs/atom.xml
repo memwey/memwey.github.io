@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
     <title>Mem.Wey&#x27;s Github Pages</title>
     <subtitle>Tsukkomi Lolicon&#x27;s GitHub Pages Blog</subtitle>
     <link rel="self" type="application/atom+xml" href="https://memwey.github.io/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://memwey.github.io"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-07-30T13:57:17+09:00</updated>
+    <updated>2026-07-30T17:21:20+09:00</updated>
     <id>https://memwey.github.io/atom.xml</id>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>加入创业公司之前, 工程师能查些什么</title>
         <published>2026-07-30T13:57:17+09:00</published>
         <updated>2026-07-30T13:57:17+09:00</updated>
@@ -100,7 +100,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>日语台词 - 003</title>
         <published>2026-07-27T14:35:12+09:00</published>
         <updated>2026-07-27T14:35:12+09:00</updated>
@@ -125,7 +125,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>日语台词 - 002</title>
         <published>2026-07-02T12:40:19+09:00</published>
         <updated>2026-07-02T12:40:19+09:00</updated>
@@ -178,7 +178,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>日语台词 - 001</title>
         <published>2026-07-02T11:52:30+09:00</published>
         <updated>2026-07-02T11:52:30+09:00</updated>
@@ -217,7 +217,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>在 OpenWrt 上配置 Tailscale 服务</title>
         <published>2026-02-24T14:32:01+09:00</published>
         <updated>2026-02-25T20:33:08+09:00</updated>
@@ -313,7 +313,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>AI: 创新即复古</title>
         <published>2026-01-11T22:47:18+09:00</published>
         <updated>2026-07-30T12:41:51+09:00</updated>
@@ -442,7 +442,7 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>漫谈&lt;战场之狼2&gt;</title>
         <published>2025-11-17T16:31:57+09:00</published>
         <updated>2025-11-17T16:31:57+09:00</updated>
@@ -523,10 +523,10 @@
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Fake News 的一件小事</title>
         <published>2025-11-13T15:08:27+09:00</published>
-        <updated>2025-11-13T18:20:27+09:00</updated>
+        <updated>2026-07-30T00:00:00+00:00</updated>
         
         <author>
           <name>
@@ -563,7 +563,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 &lt;blockquote&gt;
 &lt;p&gt;President Donald Trump: Well, a lot of our allies aren&#x27;t our friends either. Our allies took advantage of us on trade more than China did. And China took big advantage. We built their military. We built their whole thing.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;从这个事件, 可以清晰的看到 Fake News 是如何产生的. 在节目中为了构建中国官方&lt;strong&gt;野蛮暴力&lt;&#x2F;strong&gt;的形象, 达到&lt;strong&gt;耸人听闻&lt;&#x2F;strong&gt;的效果, 将原本的&lt;strong&gt;激烈言辞&lt;&#x2F;strong&gt;转化成了更&lt;strong&gt;直接&lt;&#x2F;strong&gt;, 更&lt;strong&gt;具体&lt;&#x2F;strong&gt;, 更具&lt;strong&gt;爆炸性&lt;&#x2F;strong&gt;的对日本首相的&lt;strong&gt;人身威胁&lt;&#x2F;strong&gt;, 甚至可以当面&lt;strong&gt;诱导&lt;&#x2F;strong&gt;美国总统.&lt;&#x2F;p&gt;
+&lt;p&gt;从这个事件, 可以清晰的看到 Fake News 是如何产生的. 从传播效果看, 这次转述并非凭空捏造, 而是通过省略语境, 消除指代上的模糊, 把原文中带有暴力意象的&lt;strong&gt;激烈言辞&lt;&#x2F;strong&gt;, 收束成了一个更&lt;strong&gt;直接&lt;&#x2F;strong&gt;, 更&lt;strong&gt;具体&lt;&#x2F;strong&gt;的, 更具&lt;strong&gt;爆炸性&lt;&#x2F;strong&gt;的结论: 一名中国外交官主张斩首日本首相. 这种压缩强化了事件的耸动性, 也更容易让观众和美国总统特朗普将其理解为针对首相本人的明确&lt;strong&gt;人身威胁&lt;&#x2F;strong&gt;。&lt;&#x2F;p&gt;
 &lt;p&gt;这位美国总统多次表明过, &lt;strong&gt;不准确&lt;&#x2F;strong&gt;, &lt;strong&gt;偏见&lt;&#x2F;strong&gt;, &lt;strong&gt;断章取义&lt;&#x2F;strong&gt;的新闻报道是 &lt;strong&gt;Fake News&lt;&#x2F;strong&gt;, 也算是身经百战见得多了, 没有具体事情上做评论, 而是谈起来日本并不是美国的朋友, 转回他熟悉的对盟友在经贸问题上占便宜的叙事框架, 场面一度略显尴尬.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;can-kao-zi-liao&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#can-kao-zi-liao&quot; aria-label=&quot;Anchor link for: can-kao-zi-liao&quot;&gt;参考资料&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
 &lt;ul&gt;
@@ -574,7 +574,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>PlayStation 4 Pro 拾遗</title>
         <published>2025-10-30T19:38:09+09:00</published>
         <updated>2025-11-01T21:44:35+09:00</updated>
@@ -623,7 +623,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>炸鸡与西瓜</title>
         <published>2025-08-07T21:46:01+09:00</published>
         <updated>2025-08-07T21:46:01+09:00</updated>
@@ -647,7 +647,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Windsurf 入门指南</title>
         <published>2025-06-14T18:30:10+09:00</published>
         <updated>2025-07-28T10:58:23+09:00</updated>
@@ -784,7 +784,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>2024 诺贝尔物理学奖小记</title>
         <published>2024-10-09T20:18:58+09:00</published>
         <updated>2024-10-09T20:18:58+09:00</updated>
@@ -807,7 +807,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>一个对象同时只能有一笔有效支付</title>
         <published>2024-08-18T16:20:33+09:00</published>
         <updated>2024-08-18T16:20:33+09:00</updated>
@@ -993,10 +993,10 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>岩里武则与马尼拉战役</title>
         <published>2024-06-02T00:50:39+09:00</published>
-        <updated>2024-06-02T00:50:39+09:00</updated>
+        <updated>2026-07-30T17:21:20+09:00</updated>
         
         <author>
           <name>
@@ -1010,11 +1010,11 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
         <id>https://memwey.github.io/posts/iwasato-takenori-and-battle-of-manila/</id>
         
         <content type="html" xml:base="https://memwey.github.io/posts/iwasato-takenori-and-battle-of-manila/">&lt;p&gt;岩里武则, 岩里政男的哥哥, 在二战期间加入旧日本帝国海军, 前往日占菲律宾, 在马尼拉战役中被美军打死, 二战后, 以岩里武则的名字被供奉在靖国神社; 据称, 改姓岩里, 因为里字保留了李这个音, 而岩则源自李家祖籍福建龙岩&lt;&#x2F;p&gt;
-&lt;p&gt;发生在 1945 年初的马尼拉战役, 日军指挥官岩渊三次带领海军陆战队违反上级命令, 在人口稠密且拥有大量木制易燃建筑的马尼拉市区与美军进行巷战. 在美军的绝对优势下, 日军将愤怒发泄在菲律宾平民身上; 将近一个月的战斗中, 超过十万名菲律宾平民死亡, 其中大部分死于日军屠杀; 这个数字超过了东京大轰炸和广岛长崎的核爆&lt;&#x2F;p&gt;
+&lt;p&gt;发生在 1945 年初的马尼拉战役, 日军指挥官岩渊三次带领海军陆战队违反上级命令, 在人口稠密且拥有大量木制易燃建筑的马尼拉市区与美军进行巷战. 在美军的绝对优势下, 日军将愤怒发泄在菲律宾平民身上; 将近一个月的战斗中, 马尼拉城被彻底摧毁, 超过十万名菲律宾平民死亡, 其中大部分死于日军屠杀; 这个数字超过了东京大轰炸和广岛与长崎的核爆任一单次死亡&lt;&#x2F;p&gt;
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>在 TCP 上划报文边界</title>
         <published>2023-04-06T21:37:19+09:00</published>
         <updated>2023-04-06T21:37:19+09:00</updated>
@@ -1139,7 +1139,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>写一个 ISO 8583 的 SDK</title>
         <published>2022-12-31T17:40:11+09:00</published>
         <updated>2022-12-31T17:40:11+09:00</updated>
@@ -1691,7 +1691,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>搭建 WireGuard 网络</title>
         <published>2022-11-29T19:00:24+09:00</published>
         <updated>2022-11-29T19:00:24+09:00</updated>
@@ -1778,7 +1778,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 &lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;qrencode -t ansiutf8 &amp;lt; client.conf&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Redis 查询偶尔超时问题排查</title>
         <published>2022-10-28T14:54:14+09:00</published>
         <updated>2022-10-28T14:54:14+09:00</updated>
@@ -2031,7 +2031,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>把 crontab 从时间点变成时间段</title>
         <published>2022-09-11T15:42:08+09:00</published>
         <updated>2022-09-11T15:42:08+09:00</updated>
@@ -2167,7 +2167,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Prometheus 手把手</title>
         <published>2022-05-10T16:36:07+08:00</published>
         <updated>2022-05-10T16:36:07+08:00</updated>
@@ -2297,7 +2297,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Prometheus 从入门到放弃</title>
         <published>2022-04-17T16:30:08+08:00</published>
         <updated>2022-04-17T16:30:08+08:00</updated>
@@ -2466,7 +2466,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>一个离职小记</title>
         <published>2021-06-06T23:29:39+08:00</published>
         <updated>2021-06-06T23:29:39+08:00</updated>
@@ -2500,7 +2500,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Redis ZINTERSTORE</title>
         <published>2021-04-21T20:30:43+08:00</published>
         <updated>2021-04-21T20:30:43+08:00</updated>
@@ -2722,7 +2722,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>实现优雅的 Golang 项目结构</title>
         <published>2021-02-19T18:10:22+08:00</published>
         <updated>2021-02-19T18:10:22+08:00</updated>
@@ -2914,7 +2914,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Redis LRU</title>
         <published>2020-12-25T14:26:24+08:00</published>
         <updated>2020-12-25T14:26:24+08:00</updated>
@@ -3120,7 +3120,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>DELL Precision T1700 SFF</title>
         <published>2020-12-04T00:52:03+08:00</published>
         <updated>2021-06-06T23:29:40+08:00</updated>
@@ -3194,7 +3194,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>[翻译] Kubernetes 网络模型指南</title>
         <published>2019-10-28T18:55:42+08:00</published>
         <updated>2019-10-28T18:55:42+08:00</updated>
@@ -3415,7 +3415,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Oh MySQL Emoji</title>
         <published>2019-10-14T11:12:33+08:00</published>
         <updated>2019-10-14T11:12:33+08:00</updated>
@@ -3546,7 +3546,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Oh MySQL IN Subquery</title>
         <published>2019-09-21T15:22:58+08:00</published>
         <updated>2019-09-21T15:22:58+08:00</updated>
@@ -3734,7 +3734,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Yes</title>
         <published>2018-12-14T23:34:15+08:00</published>
         <updated>2018-12-14T23:34:15+08:00</updated>
@@ -3796,7 +3796,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>重新开始</title>
         <published>2018-09-17T23:26:20+08:00</published>
         <updated>2018-09-17T23:26:20+08:00</updated>
@@ -3817,7 +3817,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>红黑树笔记</title>
         <published>2016-09-13T23:32:27+08:00</published>
         <updated>2016-09-13T23:32:27+08:00</updated>
@@ -3844,10 +3844,10 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>在CentOS上使用较新的软件</title>
         <published>2016-08-02T23:30:33+08:00</published>
-        <updated>2016-08-02T23:30:33+08:00</updated>
+        <updated>2025-02-15T23:30:33+09:00</updated>
         
         <author>
           <name>
@@ -3860,7 +3860,10 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
         <link rel="alternate" type="text/html" href="https://memwey.github.io/posts/centos-latest-software/"/>
         <id>https://memwey.github.io/posts/centos-latest-software/</id>
         
-        <content type="html" xml:base="https://memwey.github.io/posts/centos-latest-software/">&lt;p&gt;公司的服务器都是 &lt;code&gt;CentOS&lt;&#x2F;code&gt; 的, 带的软件都比较旧, 让我这个不更新会死星人很难过啊.&lt;&#x2F;p&gt;
+        <content type="html" xml:base="https://memwey.github.io/posts/centos-latest-software/">&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;更新于 2025-02-15:&lt;&#x2F;strong&gt; &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;ius.io&#x2F;faq&quot;&gt;IUS 官方 FAQ&lt;&#x2F;a&gt; 已明确说明该项目不再维护, 历史软件包仅保存在 IUS Vault. 本文使用的 CentOS 6 仓库和安装命令均已失效, 请勿在新环境中继续使用; 正文仅作为历史记录保留. 新环境应选择仍受支持的操作系统版本及其官方软件源, 或软件供应方仍在维护的软件源.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;公司的服务器都是 &lt;code&gt;CentOS&lt;&#x2F;code&gt; 的, 带的软件都比较旧, 让我这个不更新会死星人很难过啊.&lt;&#x2F;p&gt;
 &lt;p&gt;开玩笑的, 主要问题是 &lt;code&gt;git&lt;&#x2F;code&gt; 版本太旧, &lt;code&gt;clone&lt;&#x2F;code&gt; 的时候会报错, 然后也需要 &lt;code&gt;python3.5&lt;&#x2F;code&gt;. 在 &lt;code&gt;git&lt;&#x2F;code&gt; 上面发现 &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;ius.io&#x2F;&quot;&gt;ius&lt;&#x2F;a&gt; 来解决这个问题.&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;ius.io&#x2F;&quot;&gt;ius&lt;&#x2F;a&gt; 是一个社区项目, 目的是为 &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;www.kernel.org&#x2F;&quot;&gt;Linux&lt;&#x2F;a&gt; 的企业发行版提供一些更新版本的RPM包.&lt;&#x2F;p&gt;
 &lt;pre class=&quot;giallo z-code&quot;&gt;&lt;code data-lang=&quot;shellscript&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-entity z-name&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span class=&quot;z-string&quot;&gt; yum&lt;&#x2F;span&gt;&lt;span class=&quot;z-string&quot;&gt; install&lt;&#x2F;span&gt;&lt;span class=&quot;z-string&quot;&gt; epel-release&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
@@ -3874,7 +3877,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>Linux后台命令</title>
         <published>2016-06-15T23:28:24+08:00</published>
         <updated>2016-06-15T23:28:24+08:00</updated>
@@ -3914,7 +3917,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>第一篇博客</title>
         <published>2016-06-14T23:22:32+08:00</published>
         <updated>2016-06-14T23:22:32+08:00</updated>
@@ -3938,7 +3941,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>关于</title>
         <published>2016-06-14T00:00:00+00:00</published>
         <updated>2025-11-13T00:00:00+00:00</updated>
@@ -3984,7 +3987,7 @@ https:&#x2F;&#x2F;www.asahi.com&#x2F;articles&#x2F;ASTC722TVTC7UQIP04NM.html
 </content>
         
     </entry>
-    <entry xml:lang="en">
+    <entry xml:lang="zh-CN">
         <title>链接</title>
         <published>2016-06-14T00:00:00+00:00</published>
         <updated>2025-09-07T00:00:00+00:00</updated>

@@ -1,7 +1,7 @@
 +++
 title = "Fake News 的一件小事"
 date = "2025-11-13T15:08:27+09:00"
-updated = "2025-11-13T18:20:27+09:00"
+updated = "2026-07-30"
 draft = false
 description = ""
 [taxonomies]
@@ -31,7 +31,7 @@ tags = ["History", "Commentary"]
 
 > President Donald Trump: Well, a lot of our allies aren't our friends either. Our allies took advantage of us on trade more than China did. And China took big advantage. We built their military. We built their whole thing.
 
-从这个事件, 可以清晰的看到 Fake News 是如何产生的. 在节目中为了构建中国官方**野蛮暴力**的形象, 达到**耸人听闻**的效果, 将原本的**激烈言辞**转化成了更**直接**, 更**具体**, 更具**爆炸性**的对日本首相的**人身威胁**, 甚至可以当面**诱导**美国总统.
+从这个事件, 可以清晰的看到 Fake News 是如何产生的. 从传播效果看, 这次转述并非凭空捏造, 而是通过省略语境, 消除指代上的模糊, 把原文中带有暴力意象的**激烈言辞**, 收束成了一个更**直接**, 更**具体**的, 更具**爆炸性**的结论: 一名中国外交官主张斩首日本首相. 这种压缩强化了事件的耸动性, 也更容易让观众和美国总统特朗普将其理解为针对首相本人的明确**人身威胁**。
 
 这位美国总统多次表明过, **不准确**, **偏见**, **断章取义**的新闻报道是 **Fake News**, 也算是身经百战见得多了, 没有具体事情上做评论, 而是谈起来日本并不是美国的朋友, 转回他熟悉的对盟友在经贸问题上占便宜的叙事框架, 场面一度略显尴尬.
 
