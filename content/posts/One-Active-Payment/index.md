@@ -43,7 +43,7 @@ tags = ["Payment"]
 
 所以把「当前有效」显式建成一个东西, 一个从业务对象指向当前交易的指针:
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
     Target["业务对象<br/>订单 / 账单 / 预约"]
     Gateway["支付渠道"]
@@ -65,7 +65,7 @@ flowchart LR
     Tx -->|"支付中: 幂等拦截"| Target
     Gateway -.-> Unknown
     Unknown -.->|"调用失败 ≠ 业务失败<br/>保持支付中"| Tx
-{% end %}
+{% </mermaid> %}
 
 这个指针有三条约束:
 
@@ -114,7 +114,7 @@ flowchart LR
 
 因为超时只说明你没收到响应, 不说明对方没收到请求. 对方很可能已经受理了, 正在处理, 过一会还会给你回调:
 
-{% mermaid() %}
+{% <mermaid> %}
 sequenceDiagram
     participant B as 业务系统
     participant G as 支付渠道
@@ -124,7 +124,7 @@ sequenceDiagram
     Note over B: 若此时判失败<br/>用户重试 → 重复扣款
     G->>B: 回调: 支付成功
     Note over B: 保持「支付中」<br/>才能正确收敛
-{% end %}
+{% </mermaid> %}
 
 正确的做法是: 调用栈失败的时候**不下结论**. 保持「支付中」, 把判断留给查询接口和回调. 宁可让用户多等一会, 也不能让他付两次.
 
@@ -175,7 +175,7 @@ type PayTarget interface {
 
 支付模块拿到一个目标 ID 和它的契约实现, 就能跑完整个流程. 业务模块只关心自己的状态和金额从哪来, 完全不需要知道渠道, 回调, 幂等这些东西:
 
-{% mermaid() %}
+{% <mermaid> %}
 flowchart LR
     Tx["支付模块<br/>统一编排"]
     Target["Target<br/>订单 ID / 账单 ID / 预约 ID"]
@@ -204,7 +204,7 @@ flowchart LR
     Redirect --> Gateway
     Code --> Gateway
     Offline --> Gateway
-{% end %}
+{% </mermaid> %}
 
 接一个新的业务对象, 要写的就是那四个方法.
 

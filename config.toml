@@ -43,3 +43,11 @@ tracking_id = "G-VLQ5DBCKGT"
 [extra.taxonomies]
 sort_by = "page_count"
 reverse = true
+
+# 主题的 header.html 会直接取 umami.website_id / goatcounter.user,
+# zola 0.23 的模板引擎下缺字段会报错, 所以留空占位
+[extra.analytics.umami]
+website_id = ""
+
+[extra.analytics.goatcounter]
+user = ""
