@@ -4,7 +4,7 @@ date = "2026-08-22T03:27:43+09:00"
 draft = false
 description = ""
 [taxonomies]
-tags = ["History", "Commentary"]
+tags = ["History", "Commentary", "Japan"]
 +++
 
 昭和控股, 1937 年设立的橡胶公司, 1952 年上市, 后来改组为纯持股公司, 旗下经营软式网球球, 和果子和网球用品, 总部在千叶县柏市. 东京证券交易所已经决定于 2026 年 8 月 25 日将其退市, 股价此前跌至 1 日元, 为日元的最小单位.

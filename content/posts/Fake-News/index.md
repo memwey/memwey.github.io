@@ -5,7 +5,7 @@ updated = "2026-07-30"
 draft = false
 description = ""
 [taxonomies]
-tags = ["History", "Commentary"]
+tags = ["History", "Commentary", "Japan"]
 +++
 
 最近, 中华人民共和国驻大阪总领事薛剑在 X 上的言论引起了一些争议, 具体的言论如图:
