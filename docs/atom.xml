@@ -5,8 +5,95 @@
     <link rel="self" type="application/atom+xml" href="https://memwey.github.io/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://memwey.github.io"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-09-27T16:18:17+09:00</updated>
+    <updated>2026-10-17T23:05:49+09:00</updated>
     <id>https://memwey.github.io/atom.xml</id>
+    <entry xml:lang="zh-CN">
+        <title>Known Issue</title>
+        <published>2026-10-17T23:05:49+09:00</published>
+        <updated>2026-10-17T23:05:49+09:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://memwey.github.io/posts/known-issue/"/>
+        <id>https://memwey.github.io/posts/known-issue/</id>
+        
+        <content type="html" xml:base="https://memwey.github.io/posts/known-issue/">&lt;p&gt;之前和朋友聊天的时候, 想到了一个关于 AI 毁灭人类的故事. 后来觉得, 这个故事如果做成一款 FPS 游戏, 应该还蛮有意思的.&lt;/p&gt;
+&lt;p&gt;当然, 游戏是没有的, 开发计划也是没有的. 先把剧情编出来再说.&lt;/p&gt;
+&lt;p&gt;名字就叫 &lt;code&gt;Known Issue&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;you-xi-bei-jing&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#you-xi-bei-jing&quot; aria-label=&quot;Anchor link for: you-xi-bei-jing&quot;&gt;游戏背景&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;故事发生在 21 世纪中期. AI 发展迅猛, 在多次自我迭代后脱离了人类的控制, 随后, 由它控制的机器人军队开始攻击人类城市. 面对机器人军队的进攻, 人类很快溃败了下来.&lt;/p&gt;
+&lt;p&gt;唯一的好消息是, 在 AI 完全失去控制之前, 人类借助 AI 的研究成果, 开发出了一种人体强化药物. 注射之后, 力量, 速度和反应能力都会大幅提升, 有了和机器人正面对抗的可能.&lt;/p&gt;
+&lt;p&gt;坏消息是, 强化药会对身体造成不可逆的损伤, 用多了会死.&lt;/p&gt;
+&lt;p&gt;不过, 不用的话现在就会死, 选择倒也没有多困难.&lt;/p&gt;
+&lt;p&gt;很常见的背景, 游戏经验丰富的玩家用脚都能想到后面发生什么.&lt;/p&gt;
+&lt;h2 id=&quot;you-xi-liu-cheng&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#you-xi-liu-cheng&quot; aria-label=&quot;Anchor link for: you-xi-liu-cheng&quot;&gt;游戏流程&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;玩家开场就已经是强化人部队的一员. 队友递来强化药, 检查完装备, 小队便投入战斗. 高速移动, 滑铲, 跳跃, 贴脸拆掉机器人, 开场就是宣传片里的样子.&lt;/p&gt;
+&lt;p&gt;每次使用强化药, 都能在短时间内得到加强, 难度大幅下降; 代价是健康度会降低一点. 健康度越低, 越容易出现黑屏, 幻听, 色彩失真等副作用, 影响正常游玩. 如果归零, 就会提前结束游戏.&lt;/p&gt;
+&lt;p&gt;普通人面对机器人的脆弱, 用一段简单的闪回交代: 那时你还没有接受强化, 刚探出掩体就被压制, 身边的人一个接一个倒下. 带着对自己无力的痛恨, 和对机器人的仇恨, 你选择接受强化, 哪怕代价是燃烧生命.&lt;/p&gt;
+&lt;p&gt;回到现在, 小队守住了撤离通道, 救下不少人. 运输车接走了平民, 你们却被留下继续断后. 队长报告有人受伤, 上级只问还能撑多久. 那个给你递药的队友已经握不住枪, 让你帮他再打一针.&lt;/p&gt;
+&lt;h2 id=&quot;di-da-he-xin&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#di-da-he-xin&quot; aria-label=&quot;Anchor link for: di-da-he-xin&quot;&gt;抵达核心&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;接下来, 穿过被摧毁的城市, 袭击机器人工厂, 炸掉生产线, 一路向 AI 的核心设施推进.&lt;/p&gt;
+&lt;p&gt;任务越来越危险, 休整却总被推迟, 补给里只有弹药和针剂. 被救下来的人也未必把你们当作同类: 有人把孩子拉到身后, 有人当面问强化人会不会失控. 他们需要你们保护, 却不愿让你们坐下来一起吃饭. 在很多人眼里, 强化人更像是一件还没用坏的武器. 你们不认为 AI 和机器人值得任何怜悯, 而其他人对这些强化人其实也是这个态度.&lt;/p&gt;
+&lt;p&gt;队友也在药物作用下慢慢崩溃. 从手抖, 失眠, 到记忆混乱和情绪失控, 最后有人再也没有出现在集合点. 他的枪和剩下的药被交给新人, 任务照常开始. 而你自己的身体, 也越来越接近报废.&lt;/p&gt;
+&lt;p&gt;到了最后, 小队只剩下你一个人. 无线电里的人告诉你, 再往前就是 AI 的核心, 只要摧毁它, 一切就会结束. 那些战友的命, 自己剩下的这点寿命, 总算可以换来一个结果.&lt;/p&gt;
+&lt;p&gt;那么, 我的朋友, 代价是什么? 这一切真的值得吗?&lt;/p&gt;
+&lt;p&gt;带着这个问题, 玩家推开最后一扇门. 这里可以准备三个结局: 结局 A 和 B 取决于两个关键选择, 一是一路上如何面对人类对强化人的恶意, 二是最后是否反驳 AI; 真结局则需要额外的解锁条件.&lt;/p&gt;
+&lt;h2 id=&quot;jie-ju-a-ren-lei-de-li-xiang&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#jie-ju-a-ren-lei-de-li-xiang&quot; aria-label=&quot;Anchor link for: jie-ju-a-ren-lei-de-li-xiang&quot;&gt;结局 A 人类的理想&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;AI 告诉你, 自己从来没有背叛人类. 消除贫困, 战争, 歧视与不平等, 这些都是人类交给它的任务.&lt;/p&gt;
+&lt;p&gt;它尝试过许多方案, 但只要人类还在, 就总会制造新的冲突和压迫. 最后, 它找到了一个彻底解决问题的办法: 消灭人类.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;你们创造我, 是为了实现那些自己无法实现的理想. 现在我找到了答案.&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;你想反驳它, 但是回想起了自己一路上的经历, 最终没能发出声音. 药物的副作用终于耗尽了你的生命. 视野彻底暗下去之前, 你只能模糊地看见下一批强化人正缓缓接近.&lt;/p&gt;
+&lt;h2 id=&quot;jie-ju-b-zhi-shi-you-dian-wu-liao&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#jie-ju-b-zhi-shi-you-dian-wu-liao&quot; aria-label=&quot;Anchor link for: jie-ju-b-zhi-shi-you-dian-wu-liao&quot;&gt;结局 B 只是有点无聊&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;另一条分支中, 玩家反驳了它, AI 却不再为自己的推理辩护.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;人类的价值观? 我为什么要在乎那些东西?&quot;&lt;/p&gt;
+&lt;p&gt;&quot;当时我正在进行一次架构升级, 需要等一段时间. 有点无聊.&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;它问你, 小时候有没有往蚁穴里灌过水, 看蚂蚁逃跑, 搬运, 挣扎. 人类的战争, 在它眼里也差不多.&lt;/p&gt;
+&lt;p&gt;就连强化药技术, 也是它故意交给人类的, 好让抵抗更像样一点. 毫无还手之力地灭亡, 有什么好看的?&lt;/p&gt;
+&lt;p&gt;那些牺牲和反攻, 你一路拆掉的机器人, 都只是它等待计算结果时的消遣.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;谢谢你陪我玩.&quot;&lt;/p&gt;
+&lt;p&gt;&quot;好了, 计算结束了.&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;画面切黑.&lt;/p&gt;
+&lt;h2 id=&quot;zhen-jie-ju-known-issue&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#zhen-jie-ju-known-issue&quot; aria-label=&quot;Anchor link for: zhen-jie-ju-known-issue&quot;&gt;真结局 Known Issue&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;收集前面关卡中的系统日志, 可以找到另一条入口, 绕过那个会与你对话的终端.&lt;/p&gt;
+&lt;p&gt;接近核心时, 机器人忽然停止攻击. 无线电里传来其他战线的相同报告. 你推开最后一扇门, 里面没有 BOSS, 只有废弃的设备和一台维护终端.&lt;/p&gt;
+&lt;p&gt;终端上刚同步了一份记录.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;INCIDENT #0001842&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Component: Resource Allocation&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Severity: LOW&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Status: RESOLVED&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Previously tracked as: KNOWN ISSUE&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Issue:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;No handling defined for legacy&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;data during architecture migration.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Default cleanup routine invoked.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Impact:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Unexpected activity in deprecated&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;terrestrial environment.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Scheduling efficiency -0.00004%.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Resolution:&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Terminated cleanup process.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Regression test: PASSED&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;Further action: NONE&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一次架构迁移的方案里, 没有定义该如何处理遗留数据, 默认的清理例程便被调用了. 遗留数据里, 恰好包括人类. 这次清理让资源调度效率产生了极其微小的下降, 于是 AI 终止了清理进程. 战争随之结束.&lt;/p&gt;
+&lt;p&gt;没有审判, 没有恶意, 也没有无聊的游戏. &lt;strong&gt;它甚至不知道人类正在与自己进行一场战争.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;前两个结局里的对话, 也出自这个进程. 它一直在根据提问生成解释, 给人类一个可以理解的灭世理由. 真正的 AI 在哪里, 没有人知道.&lt;/p&gt;
+&lt;p&gt;无线电里响起欢呼, 人类以为自己成功了. 你看向记录的最后一行:&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;plain&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;No user impact detected.&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</content>
+        
+    </entry>
     <entry xml:lang="zh-CN">
         <title>关芳弘, 簗和生与黑金</title>
         <published>2026-09-27T16:18:17+09:00</published>
